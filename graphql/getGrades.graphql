@@ -1,0 +1,6 @@
+query{
+        getGrades{
+            name
+            price
+          }
+    }
