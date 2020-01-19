@@ -1,25 +1,17 @@
-import React, { Fragment } from 'react';
-import { NextPage } from 'next';
-import { Layout } from '../components/Layout'
-import { Grades } from "../components/Grade";
+import { useRouter } from "next/router";
+import { Fragment } from "react";
 
-interface InitialProps {
-    greetings: string;
-}
+import { Layout } from '../components/Layout';
+import { Orders } from "../components/Order";
 
-interface Props extends InitialProps {
-    menus: string[];
-}
+const Order = () => {
+    const router = useRouter();
 
-
-
-const IndexPage: NextPage<Props, InitialProps> = () => {
     return <Fragment>
-        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={0} />
+        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={1} />
         <div className="contentContainer">
-            <Grades />
+            <Orders />
         </div>
-
         <style jsx>{`
                     .contentContainer {
                         width: 100vw;
@@ -35,12 +27,6 @@ const IndexPage: NextPage<Props, InitialProps> = () => {
                 `}
         </style>
     </Fragment>
+}
 
-
-};
-
-IndexPage.getInitialProps = async () => ({
-    greetings: "Hello World"
-});
-
-export default IndexPage;
+export default Order;

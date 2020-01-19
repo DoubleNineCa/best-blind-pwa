@@ -48,6 +48,8 @@ export type Item = {
   price: Scalars['Float'],
   handrailMaterial: Material,
   handrailType: Scalars['String'],
+  handrailLength: Scalars['Float'],
+  coverColor: Scalars['String'],
 };
 
 export type ItemInput = {
@@ -55,34 +57,47 @@ export type ItemInput = {
   height?: Maybe<Scalars['Float']>,
   handrailType?: Maybe<Scalars['String']>,
   handrailMaterial?: Maybe<Scalars['String']>,
+  handrailLength: Scalars['Float'],
+  coverColor: Scalars['String'],
 };
 
 export enum Material {
-  Rope = 'ROPE',
-  Beads = 'BEADS',
+  Basic = 'BASIC',
+  Crystal = 'CRYSTAL',
   Metal = 'METAL',
   Motor = 'MOTOR'
 }
 
 export type Mutation = {
   registerCustomer: Customer,
+  updateCustomer: Scalars['Boolean'],
+  deleteCustomer: Scalars['Boolean'],
   registerGrade: Grade,
   updateGrade: Scalars['Boolean'],
   registerPart: Part,
   updatePart: Scalars['Boolean'],
   createItem: Item,
   updateItem: Scalars['Boolean'],
+  deleteItem: Scalars['Boolean'],
   placeOrder: Order,
   updateOrder: Scalars['Boolean'],
+  deleteOrder: Scalars['Boolean'],
 };
 
 
 export type MutationRegisterCustomerArgs = {
-  note: Scalars['String'],
-  email: Scalars['String'],
-  address: Scalars['String'],
-  phone: Scalars['String'],
-  name: Scalars['String']
+  data: RegisterCustomerInput
+};
+
+
+export type MutationUpdateCustomerArgs = {
+  data: UpdateCustomerInput,
+  id: Scalars['Float']
+};
+
+
+export type MutationDeleteCustomerArgs = {
+  id: Scalars['Float']
 };
 
 
@@ -122,6 +137,11 @@ export type MutationUpdateItemArgs = {
 };
 
 
+export type MutationDeleteItemArgs = {
+  itemId: Scalars['Float']
+};
+
+
 export type MutationPlaceOrderArgs = {
   data: PlaceOrderInput
 };
@@ -131,6 +151,11 @@ export type MutationUpdateOrderArgs = {
   data: PlaceOrderInput,
   installDate: Scalars['DateTime'],
   orderId: Scalars['Float']
+};
+
+
+export type MutationDeleteOrderArgs = {
+  id: Scalars['Float']
 };
 
 export type Order = {
@@ -148,6 +173,7 @@ export type Order = {
   payment: Scalars['String'],
   orderDate: Scalars['DateTime'],
   installDate?: Maybe<Scalars['DateTime']>,
+  customer: Customer,
 };
 
 export type Part = {
@@ -188,10 +214,16 @@ export type PlaceOrderInput = {
 
 export type Query = {
   getCustomers: Array<Customer>,
+  getCustomer: Customer,
   getGrades: Array<Grade>,
   getParts: Array<Part>,
   getOrder: Order,
   getOrders: Array<Order>,
+};
+
+
+export type QueryGetCustomerArgs = {
+  id: Scalars['Float']
 };
 
 
@@ -205,6 +237,14 @@ export type QueryGetOrderArgs = {
   orderNo: Scalars['String']
 };
 
+export type RegisterCustomerInput = {
+  name: Scalars['String'],
+  address: Scalars['String'],
+  phone: Scalars['String'],
+  email: Scalars['String'],
+  note: Scalars['String'],
+};
+
 export enum Status {
   Measure = 'MEASURE',
   Manufacture = 'MANUFACTURE',
@@ -213,17 +253,38 @@ export enum Status {
   Complete = 'COMPLETE'
 }
 
+export type UpdateCustomerInput = {
+  name?: Maybe<Scalars['String']>,
+  address?: Maybe<Scalars['String']>,
+  phone?: Maybe<Scalars['String']>,
+  email?: Maybe<Scalars['String']>,
+  note?: Maybe<Scalars['String']>,
+};
+
 export type Unnamed_1_QueryVariables = {};
 
 
-export type Unnamed_1_Query = ({ __typename?: 'Query' } & { getGrades: Array<({ __typename?: 'Grade' } & Pick<Grade, 'name' | 'price'>)> });
+export type Unnamed_1_Query = ({ __typename?: 'Query' } & { getGrades: Array<({ __typename?: 'Grade' } & Pick<Grade, 'id' | 'name' | 'price'>)> });
+
+export type Unnamed_2_QueryVariables = {};
+
+
+export type Unnamed_2_Query = ({ __typename?: 'Query' } & { getOrders: Array<({ __typename?: 'Order' } & Pick<Order, 'id' | 'orderNo' | 'hst' | 'deposit' | 'discount' | 'installationDiscount' | 'payment' | 'orderDate' | 'installDate' | 'total'> & { items: Maybe<Array<({ __typename?: 'Item' } & Pick<Item, 'id' | 'partId' | 'width' | 'price' | 'height' | 'price' | 'handrailType' | 'handrailMaterial'>)>>, customer: ({ __typename?: 'Customer' } & Pick<Customer, 'name' | 'address'>) })> });
+
+export type Unnamed_3_MutationVariables = {
+  input: GradeInput
+};
+
+
+export type Unnamed_3_Mutation = ({ __typename?: 'Mutation' } & { registerGrade: ({ __typename?: 'Grade' } & Pick<Grade, 'id' | 'name' | 'price'>) });
 
 
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 
 export type ArrayOrIterable<T> = Array<T> | Iterable<T>;
 
-
+export type WithIndex<TObject> = TObject & Record<string, any>;
+export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
@@ -280,12 +341,12 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
-export type BaseEntityWithUuidResolvers<Context = any, ParentType = BaseEntityWithUuid> = {
+export type BaseEntityWithUuidResolvers<Context = any, ParentType = BaseEntityWithUuid> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
-};
+}>;
 
-export type CustomerResolvers<Context = any, ParentType = Customer> = {
+export type CustomerResolvers<Context = any, ParentType = Customer> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
   name?: Resolver<Scalars['String'], ParentType, Context>,
@@ -295,20 +356,20 @@ export type CustomerResolvers<Context = any, ParentType = Customer> = {
   orders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
   type?: Resolver<Scalars['String'], ParentType, Context>,
   note?: Resolver<Scalars['String'], ParentType, Context>,
-};
+}>;
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<Scalars['DateTime'], any> {
   name: 'DateTime'
 }
 
-export type GradeResolvers<Context = any, ParentType = Grade> = {
+export type GradeResolvers<Context = any, ParentType = Grade> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
   name?: Resolver<Scalars['String'], ParentType, Context>,
   price?: Resolver<Scalars['Float'], ParentType, Context>,
-};
+}>;
 
-export type ItemResolvers<Context = any, ParentType = Item> = {
+export type ItemResolvers<Context = any, ParentType = Item> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
   partId?: Resolver<Scalars['Float'], ParentType, Context>,
@@ -318,21 +379,27 @@ export type ItemResolvers<Context = any, ParentType = Item> = {
   price?: Resolver<Scalars['Float'], ParentType, Context>,
   handrailMaterial?: Resolver<Material, ParentType, Context>,
   handrailType?: Resolver<Scalars['String'], ParentType, Context>,
-};
+  handrailLength?: Resolver<Scalars['Float'], ParentType, Context>,
+  coverColor?: Resolver<Scalars['String'], ParentType, Context>,
+}>;
 
-export type MutationResolvers<Context = any, ParentType = Mutation> = {
+export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversObject<{
   registerCustomer?: Resolver<Customer, ParentType, Context, MutationRegisterCustomerArgs>,
+  updateCustomer?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateCustomerArgs>,
+  deleteCustomer?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteCustomerArgs>,
   registerGrade?: Resolver<Grade, ParentType, Context, MutationRegisterGradeArgs>,
   updateGrade?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateGradeArgs>,
   registerPart?: Resolver<Part, ParentType, Context, MutationRegisterPartArgs>,
   updatePart?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdatePartArgs>,
   createItem?: Resolver<Item, ParentType, Context, MutationCreateItemArgs>,
   updateItem?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateItemArgs>,
+  deleteItem?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteItemArgs>,
   placeOrder?: Resolver<Order, ParentType, Context, MutationPlaceOrderArgs>,
   updateOrder?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateOrderArgs>,
-};
+  deleteOrder?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteOrderArgs>,
+}>;
 
-export type OrderResolvers<Context = any, ParentType = Order> = {
+export type OrderResolvers<Context = any, ParentType = Order> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
   orderNo?: Resolver<Scalars['String'], ParentType, Context>,
@@ -347,9 +414,10 @@ export type OrderResolvers<Context = any, ParentType = Order> = {
   payment?: Resolver<Scalars['String'], ParentType, Context>,
   orderDate?: Resolver<Scalars['DateTime'], ParentType, Context>,
   installDate?: Resolver<Maybe<Scalars['DateTime']>, ParentType, Context>,
-};
+  customer?: Resolver<Customer, ParentType, Context>,
+}>;
 
-export type PartResolvers<Context = any, ParentType = Part> = {
+export type PartResolvers<Context = any, ParentType = Part> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
   type?: Resolver<Scalars['String'], ParentType, Context>,
@@ -360,17 +428,18 @@ export type PartResolvers<Context = any, ParentType = Part> = {
   grade?: Resolver<Scalars['String'], ParentType, Context>,
   modelNo?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
   stocks?: Resolver<Scalars['Float'], ParentType, Context>,
-};
+}>;
 
-export type QueryResolvers<Context = any, ParentType = Query> = {
+export type QueryResolvers<Context = any, ParentType = Query> = ResolversObject<{
   getCustomers?: Resolver<ArrayOrIterable<Customer>, ParentType, Context>,
+  getCustomer?: Resolver<Customer, ParentType, Context, QueryGetCustomerArgs>,
   getGrades?: Resolver<ArrayOrIterable<Grade>, ParentType, Context>,
   getParts?: Resolver<ArrayOrIterable<Part>, ParentType, Context, QueryGetPartsArgs>,
   getOrder?: Resolver<Order, ParentType, Context, QueryGetOrderArgs>,
   getOrders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
-};
+}>;
 
-export type IResolvers<Context = any> = {
+export type IResolvers<Context = any> = ResolversObject<{
   BaseEntityWithUuid?: BaseEntityWithUuidResolvers<Context>,
   Customer?: CustomerResolvers<Context>,
   DateTime?: GraphQLScalarType,
@@ -380,7 +449,7 @@ export type IResolvers<Context = any> = {
   Order?: OrderResolvers<Context>,
   Part?: PartResolvers<Context>,
   Query?: QueryResolvers<Context>,
-};
+}>;
 
 export type IDirectiveResolvers<Context = any> = {};
 

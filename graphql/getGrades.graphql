@@ -1,6 +1,7 @@
 query{
-        getGrades{
-            name
-            price
-          }
-    }
+  getGrades{
+    id
+    name
+    price
+  }
+}

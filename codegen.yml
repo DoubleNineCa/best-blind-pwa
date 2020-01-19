@@ -8,3 +8,5 @@ generates:
       - "typescript-operations"
       - "typescript-resolvers"
       - "typescript-react-apollo"
+config:
+  useIndexSignature: true

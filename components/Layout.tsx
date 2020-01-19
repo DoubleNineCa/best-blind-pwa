@@ -1,49 +1,55 @@
-import React from 'react';
+import React, { useState, Fragment } from 'react';
 import Link from 'next/link';
 
-export const Layout: React.FunctionComponent = ({ children }) => {
-    return <div className="pageContainer">
-        <header className="appHeader">
-            <div className="appHeaderLeft"></div>
-            <div className="appHeaderCenter">
-                <Link href='/'>
-                    <a className="headerImage">
-                        <img src="/static/logo.png" />
-                    </a>
-                </Link>
-            </div>
-            <div className="appHeaderRight"></div>
-        </header>
-        <div className="secondaryheader">
-            <Link href='/'>
-                <a className="orders-option orders-option-selected">
-                    <div className="sidebar-option-text">Dashboard</div>
-                </a>
-            </Link>
-            <Link href='/'>
-                <a className="secondaryheader-option">
-                    <div className="sidebar-option-text">Orders</div>
-                </a>
-            </Link>
-            <Link href='/'>
-                <a className="secondaryheader-option">
-                    <div className="sidebar-option-text">Customer</div>
-                </a>
-            </Link>
-            <Link href='/'>
-                <a className="secondaryheader-option">
-                    <div className="sidebar-option-text">Outsource</div>
-                </a>
-            </Link>
-            <Link href='/'>
-                <a className="secondaryheader-option">
-                    <div className="sidebar-option-text">Updates</div>
-                </a>
-            </Link>
-        </div>
+// interface SubHeaderState {
+//     currentLocation: number;
+// }
 
-        {children}
-        <style jsx>{`
+// const defaultState: SubHeaderState = {
+//     currentLocation: 0
+// };
+
+interface Props {
+    onTaskCreated: string[];
+    currentLocation: number;
+}
+
+export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentLocation }) => {
+    // const [subHeaderState, setSubHeaderState] = useState<SubHeaderState>(defaultState);
+    // const menuClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement, MouseEvent>) => {
+    //     const { id } = event.currentTarget;
+    //     setSubHeaderState({
+    //         currentLocation: Number(id)
+    //     })
+    // }
+
+    return <Fragment>
+        <div className="pageContainer">
+            <header className="appHeader">
+                <div className="appHeaderLeft"></div>
+                <div className="appHeaderCenter">
+                    <Link href='/'>
+                        <a className="headerImage">
+                            <img src="/static/logo.png" />
+                        </a>
+                    </Link>
+                </div>
+                <div className="appHeaderRight"></div>
+            </header>
+
+            <div className="secondaryheader">
+                {
+                    onTaskCreated.map((menu: any, i) => {
+                        return <Link href={`${menu === 'DashBoard' ? '/' : menu.toLowerCase()}`}>
+                            <a id={'' + i} className={i === currentLocation ? 'orders-option orders-option-selected' : 'secondaryheader-option'}>
+                                <div className="sidebar-option-text">{menu}</div>
+                            </a>
+                        </Link>
+                    })
+                }
+            </div>
+
+            <style jsx>{`
         div{
             display: block;
         }
@@ -73,7 +79,7 @@ export const Layout: React.FunctionComponent = ({ children }) => {
         .appHeader .appHeaderCenter {
             width: 88%;
             height: 100%;
-            padding-top: 0px;
+            padding-top: 8px;
         }
 
         .appHeader .appHeaderCenter .headerImage {
@@ -138,6 +144,7 @@ export const Layout: React.FunctionComponent = ({ children }) => {
             text-align: center;
           }
         `}
-        </style>
-    </div >
+            </style>
+        </div >
+    </Fragment>
 }

@@ -1,0 +1,7 @@
+mutation($input: GradeInput!){
+  registerGrade(data:$input){
+    id
+    name
+    price
+  }
+}
