@@ -211,13 +211,17 @@ const Customers: React.FC = () => {
                         note: detailState.customer.note
                     }
                 }
+            }).catch(error => {
+                alert(error);
             });
+
+
             if (mutationData && mutationData.data) {
                 alert(mutationData.data.registerCustomer.name + " is registered successfully.");
             }
-            if (mutationData.errors) {
-                alert("something went wrong");
-            }
+            // if (mutationData.errors) {
+            //     alert("something went wrong");
+            // }
         } else if (btnType === "update") {
             const mutationData = await updateCustomer({
                 variables: {
@@ -251,10 +255,10 @@ const Customers: React.FC = () => {
                 alert("something went wrong");
             }
         } else {
-            alert("Something went wrong");
+            alert("Invalid Request");
         }
 
-        return router.reload();
+        // return router.reload();
     }
 
     const viewDetails = (customer: Customer) => (e: React.MouseEvent) => {

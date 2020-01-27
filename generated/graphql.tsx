@@ -69,6 +69,8 @@ export enum Material {
 }
 
 export type Mutation = {
+  login?: Maybe<Staff>,
+  registerStaff: Staff,
   registerCustomer: Customer,
   updateCustomer: Scalars['Boolean'],
   deleteCustomer: Scalars['Boolean'],
@@ -82,6 +84,17 @@ export type Mutation = {
   placeOrder: Order,
   updateOrder: Scalars['Boolean'],
   deleteOrder: Scalars['Boolean'],
+};
+
+
+export type MutationLoginArgs = {
+  password: Scalars['String'],
+  staffId: Scalars['String']
+};
+
+
+export type MutationRegisterStaffArgs = {
+  data: RegisterInput
 };
 
 
@@ -245,6 +258,18 @@ export type RegisterCustomerInput = {
   note: Scalars['String'],
 };
 
+export type RegisterInput = {
+  staffId: Scalars['String'],
+  password: Scalars['String'],
+};
+
+export type Staff = {
+  id: Scalars['ID'],
+  uuid: Scalars['String'],
+  staffId: Scalars['String'],
+  password: Scalars['String'],
+};
+
 export enum Status {
   Measure = 'MEASURE',
   Manufacture = 'MANUFACTURE',
@@ -384,6 +409,8 @@ export type ItemResolvers<Context = any, ParentType = Item> = ResolversObject<{
 }>;
 
 export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversObject<{
+  login?: Resolver<Maybe<Staff>, ParentType, Context, MutationLoginArgs>,
+  registerStaff?: Resolver<Staff, ParentType, Context, MutationRegisterStaffArgs>,
   registerCustomer?: Resolver<Customer, ParentType, Context, MutationRegisterCustomerArgs>,
   updateCustomer?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateCustomerArgs>,
   deleteCustomer?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteCustomerArgs>,
@@ -439,6 +466,13 @@ export type QueryResolvers<Context = any, ParentType = Query> = ResolversObject<
   getOrders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
 }>;
 
+export type StaffResolvers<Context = any, ParentType = Staff> = ResolversObject<{
+  id?: Resolver<Scalars['ID'], ParentType, Context>,
+  uuid?: Resolver<Scalars['String'], ParentType, Context>,
+  staffId?: Resolver<Scalars['String'], ParentType, Context>,
+  password?: Resolver<Scalars['String'], ParentType, Context>,
+}>;
+
 export type IResolvers<Context = any> = ResolversObject<{
   BaseEntityWithUuid?: BaseEntityWithUuidResolvers<Context>,
   Customer?: CustomerResolvers<Context>,
@@ -449,6 +483,7 @@ export type IResolvers<Context = any> = ResolversObject<{
   Order?: OrderResolvers<Context>,
   Part?: PartResolvers<Context>,
   Query?: QueryResolvers<Context>,
+  Staff?: StaffResolvers<Context>,
 }>;
 
 export type IDirectiveResolvers<Context = any> = {};

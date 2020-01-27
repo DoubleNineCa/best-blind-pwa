@@ -32,6 +32,13 @@ const IndexPage: NextPage<Props, InitialProps> = () => {
                         align-content: center;
                         justify-content: space-between;
                     }
+
+                    @font-face {
+                        font-family: 'tecnico';
+                        font-style: normal;
+                        font-weight: normal;
+                        src: local('tecnico_regular'), url('../fonts/tecnico_regular.tff') format('tff');
+                      }
                 `}
         </style>
     </Fragment>

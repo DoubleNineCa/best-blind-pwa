@@ -6,14 +6,13 @@ export type MyApolloClientCache = any;
 let apolloClient: ApolloClient<MyApolloClientCache> | null = null;
 
 function create(initialState?: MyApolloClientCache) {
-    // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
     const isBrowser = typeof window !== 'undefined';
     return new ApolloClient({
         connectToDevTools: isBrowser,
         ssrMode: !isBrowser, // Disables forceFetch on the server (so queries are only run once)
         link: new HttpLink({
             uri: 'http://localhost:4000/graphql', // Server URL (must be absolute)
-            credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
+            credentials: 'include', // Additional fetch() options like `credentials` or `headers`
             // Use fetch() polyfill on the server
             fetch: !isBrowser ? fetch : undefined
         }),

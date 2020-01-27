@@ -94,7 +94,14 @@ export const Grades: React.FunctionComponent = () => {
                 if (loading) {
                     return <p>Loading.</p>
                 } else if (error) {
-                    return <p>An error occured.</p>
+                    return <p>
+                        An error occured.<br />
+                        {
+                            error.graphQLErrors.map((err, i) => {
+                                return <span> {i + 1} : {err.message}</span>
+                            })
+                        }
+                    </p>
                 }
 
                 const getGrades = data && data.getGrades ? data.getGrades : [];
