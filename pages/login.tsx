@@ -8,9 +8,9 @@ const Login = () => {
     const router = useRouter();
 
     return <Fragment>
-        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={0} />
+        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={Number(router.query.currentLocation)} />
         <div className="contentContainer">
-            <LoginView />
+            <LoginView currentLocation={Number(router.query.currentLocation)} />
         </div>
         <style jsx>{`
                     .contentContainer {
