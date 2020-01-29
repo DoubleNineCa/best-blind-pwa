@@ -5,6 +5,8 @@ import { useQuery, useMutation } from 'react-apollo';
 import { orderNoGenerator } from '../util/formatter';
 import { useRouter } from 'next/router';
 import { Part, Item, Order } from '../generated/graphql';
+import { ErrorView } from './ErrorView';
+
 
 interface Props {
     customerId: string,
@@ -360,8 +362,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
 
     if (loading) return <p>Loading...</p>
     else if (error) {
-        console.log(error)
-        return <p>An error occured</p>
+        return <ErrorView errMsg={error.message} currentLocation={3} />
     }
     return (
         <Fragment>
