@@ -7,7 +7,6 @@ import Select from "react-select";
 import { Print } from "../components/Print";
 import { Order, Item, Customer, Status } from "../generated/graphql";
 import { calFormatter, cashFormatter, numberFormatter } from "../util/formatter";
-import { ErrorView } from './ErrorView';
 
 
 
@@ -281,9 +280,7 @@ export const Orders: React.FunctionComponent = () => {
     }
 
     if (loading) { return <p> Loading..</p> }
-    else if (error) {
-        return <ErrorView errMsg={error.message} currentLocation={1} />
-    }
+    else if (error) { console.log(error); return <p>An error occured.</p> }
     else {
         const getOrders = data && data.getOrders ? data.getOrders : [];
         return <Fragment>

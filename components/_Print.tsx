@@ -2,7 +2,6 @@ import React, { Fragment, useState, Component } from 'react';
 import gql from 'graphql-tag';
 import { Item } from "../generated/graphql";
 import { useQuery } from 'react-apollo';
-import { ErrorView } from './ErrorView';
 // import { Customer } from "../generated/graphql";
 
 export interface Props {
@@ -66,7 +65,7 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
     }
 
     if (loading) return <p>Loading...</p>
-    else if (error) return <ErrorView errMsg={error.message} currentLocation={1} />
+    else if (error) return <p>An error occured</p>
 
     const items = data.getOrder.items;
     return <html>

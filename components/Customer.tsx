@@ -7,7 +7,6 @@ import { Customer, Order } from "../generated/graphql";
 import { Layout } from "../components/Layout";
 import { calFormatter, cashFormatter } from "../util/formatter";
 import Link from 'next/link';
-import { ErrorView } from './ErrorView';
 
 export interface Props {
     customer: Customer;
@@ -299,8 +298,9 @@ const Customers: React.FC = () => {
         if (loading) {
             return <p> Loading...</p>
         } else if (error) {
-            return <ErrorView errMsg={error.message} currentLocation={2} />
+            return <p> An error is occured.</p>
         } else {
+            console.log(keyword);
             if (data && data.getCustomers && keyword !== "") {
                 if (keyword === "all") {
                     setCustomerState({

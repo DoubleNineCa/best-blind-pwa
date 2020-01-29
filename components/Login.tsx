@@ -4,10 +4,6 @@ import gql from 'graphql-tag';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-apollo';
 
-export interface Props {
-    currentLocation: number
-}
-
 interface idInput {
     id: string
 }
@@ -33,7 +29,7 @@ mutation Login($id: String!, $password: String!){
   }
 `);
 
-export const LoginView: React.FC<Props> = ({ currentLocation }) => {
+export const LoginView: React.FC = () => {
     const router = useRouter();
     const [idInput, setIdInput] = useState<idInput>(defaultidInputState);
     const [pwInput, setPwInput] = useState<pwInput>(defaultpwInputState);
@@ -47,8 +43,8 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
                 password: pwInput.pw
             }
         });
-        const menu = ["/", "/orders", "/customer", "/quote"]
-        return router.push(`${menu[currentLocation]}`);
+
+        return router.push("/");
     }
 
     const idHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +76,7 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
                 </div>
 
                 <div className="inputRow">
-                    <button className="customerSubmit" >LOGIN</button>
+                    <button className="customerSubmit" >Register</button>
                 </div>
             </form>
         </div>

@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 import { Query, useQuery } from 'react-apollo';
 import { Grade } from "../generated/graphql";
 import { cashFormatter } from '../util/formatter';
-import { ErrorView } from './ErrorView';
 
 export interface Props {
     getGrades: Grade[];
@@ -95,7 +94,14 @@ export const Grades: React.FunctionComponent = () => {
                 if (loading) {
                     return <p>Loading.</p>
                 } else if (error) {
-                    return <p><ErrorView errMsg={error.message} currentLocation={0} /></p>
+                    return <p>
+                        An error occured.<br />
+                        {
+                            error.graphQLErrors.map((err, i) => {
+                                return <span> {i + 1} : {err.message}</span>
+                            })
+                        }
+                    </p>
                 }
 
                 const getGrades = data && data.getGrades ? data.getGrades : [];

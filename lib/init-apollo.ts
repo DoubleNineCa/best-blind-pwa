@@ -7,12 +7,11 @@ let apolloClient: ApolloClient<MyApolloClientCache> | null = null;
 
 function create(initialState?: MyApolloClientCache) {
     const isBrowser = typeof window !== 'undefined';
-    const _uri = process.env.apiServer + "/graphql";
     return new ApolloClient({
         connectToDevTools: isBrowser,
         ssrMode: !isBrowser, // Disables forceFetch on the server (so queries are only run once)
         link: new HttpLink({
-            uri: _uri, // Server URL (must be absolute)
+            uri: 'http://localhost:4000/graphql', // Server URL (must be absolute)
             credentials: 'include', // Additional fetch() options like `credentials` or `headers`
             // Use fetch() polyfill on the server
             fetch: !isBrowser ? fetch : undefined
