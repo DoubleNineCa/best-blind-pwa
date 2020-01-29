@@ -2,11 +2,12 @@ import React, { Fragment, useState, FormEvent } from 'react';
 import gql from 'graphql-tag';
 import { useRouter } from "next/router";
 import { useQuery, useMutation } from 'react-apollo';
+import Link from 'next/link';
 
 import { Customer, Order } from "../generated/graphql";
 import { Layout } from "../components/Layout";
 import { calFormatter, cashFormatter } from "../util/formatter";
-import Link from 'next/link';
+import { ErrorView } from './ErrorView';
 
 export interface Props {
     customer: Customer;
@@ -298,7 +299,7 @@ const Customers: React.FC = () => {
         if (loading) {
             return <p> Loading...</p>
         } else if (error) {
-            return <p> An error is occured.</p>
+            return <ErrorView errMsg={error.message} currentLocation={2} />
         } else {
             console.log(keyword);
             if (data && data.getCustomers && keyword !== "") {
