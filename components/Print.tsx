@@ -21,12 +21,6 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
     const [itemState, setItemState] = useState<itemState>(defaultItemState);
     const doPrint = () => {
         window.open("/print2", "_blank")!.focus();
-        // const printArea = document.getElementById('printTable')!.innerHTML;
-        // const printAreaHtml = '<html><head><title></title><style media="print">body{padding-top: 25px; padding-left: 12px;}</style></head><body>' + printArea + '</body></html>';
-        // const oldPage = document.body.innerHTML;
-        // document.body.innerHTML = printAreaHtml;
-        // window.print();
-        // document.body.innerHTML = oldPage;
     }
 
     return <Fragment>
@@ -37,13 +31,6 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
             <div className="printTable" id="printTable">
                 <div className="headerSection" onClick={doPrint}>doPrint</div>
                 <div className="printItems">
-                    {/* <div className="item" />
-                    <div className="item" />
-                    <div className="item" />
-                    <div className="item" />
-                    <div className="item" />
-                    <div className="item" /> */}
-
                     {
                         items !== undefined && items !== null && items.length > 0 ?
                             items.map((item, i) => {
@@ -130,7 +117,6 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
                 border-bottom: none;
                 border-top-left-radius: 7pt;
                 border-top-right-radius: 7pt;
-                // display: flex;
                 position: absolute;
                 top: 0;
                 
@@ -145,7 +131,6 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
                 padding: 2px 5px 2px;
                 font-family: tecnico;
                 float:left;
-                // display: flex;
                 align-items: center;
                 justify-content: center;
             }
@@ -153,7 +138,6 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
                 height: 25%;
                 display:flex;
                 text-align: center;
-                // border:1px solid black;
             }
             .hLeft{
                 width: 30%;
@@ -172,14 +156,12 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
                 height: 50%;
                 line-height: 45px;
                 text-align: center;
-                // border:1px solid red;
             }
             .itemFooter{
                 height: 25%;
                 display:flex;
                 text-align: center;
                 justify-content: space-evenly;
-                // border:1px solid blue;
             }
             .fLeft{
                 width: 25%;

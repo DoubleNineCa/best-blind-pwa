@@ -48,7 +48,7 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
             }
         });
 
-        const menu = ["/", "/orders", "/customer", "/quote"]
+        const menu = ["/", "/orders", "/customer", "/quote", "/update"]
         return router.push(`${menu[currentLocation]}`);
     }
 

@@ -23,9 +23,17 @@ export function numberFormatter(money: number | undefined | null) {
 
 export function orderNoGenerator(orderNo: string) {
     const year = new Date().getFullYear();
-    return Number(orderNo.substr(0, 4)) === year ? year + digitConverter((Number(orderNo.substr(4, 8)) + 1)) : Number(year + "0001");
+    return Number(orderNo.substr(0, 4)) === year ? Number(orderNo) + 1 : (year + "0001");
 }
 
 function digitConverter(input: number) {
-    return (input / 1000).toString().replace(".", "");
+    if (input < 10) {
+        return "000" + input;
+    } else if (input >= 10 && input < 100) {
+        return "00" + input;
+    } else if (input >= 100 && input < 1000) {
+        return "0" + input;
+    } else {
+        return input;
+    }
 }

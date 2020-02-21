@@ -249,8 +249,8 @@ const Customers: React.FC = () => {
                     id: Number(detailState.customer.id)
                 }
             });
-            if (mutationData && mutationData.data && mutationData.data.updateCustomer) {
-                alert("Update successfully done.");
+            if (mutationData.data.deleteCustomer) {
+                alert("Remove successfully done.");
             }
             if (mutationData.errors) {
                 alert("something went wrong");
@@ -259,7 +259,7 @@ const Customers: React.FC = () => {
             alert("Invalid Request");
         }
 
-        // return router.reload();
+        return router.reload();
     }
 
     const viewDetails = (customer: Customer) => (e: React.MouseEvent) => {

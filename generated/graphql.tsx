@@ -70,6 +70,7 @@ export enum Material {
 
 export type Mutation = {
   login?: Maybe<Staff>,
+  logout: Scalars['Boolean'],
   registerStaff: Staff,
   registerCustomer: Customer,
   updateCustomer: Scalars['Boolean'],
@@ -192,8 +193,8 @@ export type Order = {
 export type Part = {
   id: Scalars['ID'],
   uuid: Scalars['String'],
-  type: Scalars['String'],
-  kind: Scalars['String'],
+  type: PartType,
+  kind: PartKind,
   name: Scalars['String'],
   color: Scalars['String'],
   manufacturer: Scalars['String'],
@@ -203,8 +204,8 @@ export type Part = {
 };
 
 export type PartInput = {
-  type: Scalars['String'],
-  kind?: Maybe<Scalars['String']>,
+  type: PartType,
+  kind: PartKind,
   name?: Maybe<Scalars['String']>,
   color?: Maybe<Scalars['String']>,
   manufacturer?: Maybe<Scalars['String']>,
@@ -212,6 +213,17 @@ export type PartInput = {
   modelNo?: Maybe<Scalars['String']>,
   stocks?: Maybe<Scalars['Float']>,
 };
+
+export enum PartKind {
+  Combi = 'COMBI',
+  Roll = 'ROLL',
+  Triple = 'TRIPLE'
+}
+
+export enum PartType {
+  Fabric = 'FABRIC',
+  Component = 'COMPONENT'
+}
 
 export type PlaceOrderInput = {
   customerId: Scalars['Float'],
@@ -410,6 +422,7 @@ export type ItemResolvers<Context = any, ParentType = Item> = ResolversObject<{
 
 export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversObject<{
   login?: Resolver<Maybe<Staff>, ParentType, Context, MutationLoginArgs>,
+  logout?: Resolver<Scalars['Boolean'], ParentType, Context>,
   registerStaff?: Resolver<Staff, ParentType, Context, MutationRegisterStaffArgs>,
   registerCustomer?: Resolver<Customer, ParentType, Context, MutationRegisterCustomerArgs>,
   updateCustomer?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateCustomerArgs>,
@@ -447,8 +460,8 @@ export type OrderResolvers<Context = any, ParentType = Order> = ResolversObject<
 export type PartResolvers<Context = any, ParentType = Part> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
-  type?: Resolver<Scalars['String'], ParentType, Context>,
-  kind?: Resolver<Scalars['String'], ParentType, Context>,
+  type?: Resolver<PartType, ParentType, Context>,
+  kind?: Resolver<PartKind, ParentType, Context>,
   name?: Resolver<Scalars['String'], ParentType, Context>,
   color?: Resolver<Scalars['String'], ParentType, Context>,
   manufacturer?: Resolver<Scalars['String'], ParentType, Context>,

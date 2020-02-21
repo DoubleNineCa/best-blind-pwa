@@ -21,6 +21,12 @@ const IndexPage: NextPage<Props, InitialProps> = () => {
         </div>
 
         <style jsx>{`
+                    @font-face {
+                        font-family: 'tecnico';
+                        src: local('tecnico'), local('tecnico regular');
+                        url(../fonts/tecnico_regular.ttf) format('ttf')
+                    }
+
                     .contentContainer {
                         width: 100vw;
                         height: 87vh;

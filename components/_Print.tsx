@@ -109,47 +109,6 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             flex-direction: column;
         }
 
-        .printTopSection{
-            width: 812.6px;
-            height: 6vh;
-            border-radius: 5pt;
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .printTopSection .printSectionTitle{
-            width: 100px;
-            height: auto;
-            font-size: 1.125rem;
-            font-family: tecnico;
-            color: #2F3D4C;
-            padding: 10px 0px 0px 10px;
-            display: flex;
-            justify-content: flex-start;
-            // align-items: flex-start;
-        }
-
-        .printTable{
-            width: 812.6px;
-            height: 75vh;
-            padding-left: 30px;
-            position: absolute;
-            border: 2px solid black;
-            // float:left;
-            bottom: 0;
-            border-top-left-radius: 7pt;
-            border-top-right-radius: 7pt;
-        }
-
-        .printTable .headerSection{
-            height: 45.3px;
-            border: 1px solid red;
-            flex-direction: column;
-        }
-
         .printItems{
             width: 100%;
             height: 5vh;
@@ -157,7 +116,6 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             border-bottom: none;
             border-top-left-radius: 7pt;
             border-top-right-radius: 7pt;
-            // display: flex;
             position: absolute;
             top: 0;
 
@@ -172,7 +130,6 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             padding: 2px 5px 2px;
             font-family: tecnico;
             float:left;
-            // display: flex;
             align-items: center;
             justify-content: center;
         }
@@ -180,12 +137,12 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             height: 25%;
             display:flex;
             text-align: center;
-            // border:1px solid black;
         }
         .hLeft{
             width: 30%;
             text-align: left;
             color: skyblue;
+            margin-left: 10px;
         }
         .hCenter{
             width: 40%;
@@ -199,19 +156,18 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             height: 50%;
             line-height: 45px;
             text-align: center;
-            // border:1px solid red;
         }
         .itemFooter{
             height: 25%;
             display:flex;
             text-align: center;
             justify-content: space-evenly;
-            // border:1px solid blue;
         }
         .fLeft{
             width: 25%;
             height: 18px;
             text-align: center;
+            margin-left: 10px;
             justify-content:center;
             border-radius: 5px;
             font-weight: bold;

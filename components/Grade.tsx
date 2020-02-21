@@ -19,16 +19,18 @@ interface regularPriceState {
 const defaultRegularPrice: regularPriceState = {
     width: 0,
     height: 0,
-    grade: 0,
+    grade: 44,
     price: 0
 }
 
 interface inchState {
-    cm: number
+    width: number,
+    height: number
 }
 
 const defaultCm: inchState = {
-    cm: 0
+    width: 0,
+    height: 0
 }
 
 const gradesQuery = gql(`
@@ -54,9 +56,24 @@ export const Grades: React.FunctionComponent = () => {
     const [inchState, setInchState] = useState<inchState>(defaultCm);
     const { loading, error, data } = useQuery<GetGradesQuery>(gradesQuery);
 
-    const converter = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInchState({
-            cm: Number(e.currentTarget.value) * 2.54
+    const wconverter = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const area = Number(e.currentTarget.value) * regularPriceState.height / 10000;
+        setRegularPriceState({
+            width: Number(e.currentTarget.value) * 2.54,
+            height: regularPriceState.height,
+            grade: regularPriceState.grade,
+            price: area < 1.5 ? 1.5 * regularPriceState.grade : area * regularPriceState.grade
+        })
+
+    }
+
+    const hconverter = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const area = Number(e.currentTarget.value) * regularPriceState.width / 10000;
+        setRegularPriceState({
+            width: regularPriceState.width,
+            height: Number(e.currentTarget.value) * 2.54,
+            grade: regularPriceState.grade,
+            price: area < 1.5 ? 1.5 * regularPriceState.grade : area * regularPriceState.grade
         })
     }
 
@@ -68,6 +85,7 @@ export const Grades: React.FunctionComponent = () => {
             grade: regularPriceState.grade,
             price: area < 1.5 ? 1.5 * regularPriceState.grade : area * regularPriceState.grade
         })
+
     }
 
     const heightHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +96,7 @@ export const Grades: React.FunctionComponent = () => {
             grade: regularPriceState.grade,
             price: area < 1.5 ? 1.5 * regularPriceState.grade : area * regularPriceState.grade
         })
+
     }
 
     const gradeHandle = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -132,22 +151,31 @@ export const Grades: React.FunctionComponent = () => {
                             <div className="section">
                                 <div className="itemInputRow">
                                     <div className="rowTitle">INCH</div>
-                                    <input type="text" className="itemInput" placeholder="0" onChange={converter} />
-                                    <div>{inchState.cm}cm</div>
+                                    <span className="flex-item-1">
+                                        <input type="text" className="styledInput-1" placeholder="0" onChange={wconverter} />
+                                    </span>
+                                    X
+                                    <span className="flex-item-1">
+                                        <input type="text" className="styledInput-1" placeholder="0" onChange={hconverter} />
+                                    </span>
                                 </div>
                             </div>
                             <div className="section">
                                 <div className="itemInputRow">
                                     <div className="rowTitle">WIDTH</div>
-                                    <input type="text" className="itemInput" placeholder="0" onChange={widthHandle} />
+                                    <span className="flex-item">
+                                        <input type="text" className="styledInput" value={regularPriceState.width} placeholder="0" onChange={widthHandle} />
+                                    </span>
                                 </div>
                                 <div className="itemInputRow">
                                     <div className="rowTitle">HEIGHT</div>
-                                    <input type="text" className="itemInput" placeholder="0" onChange={heightHandle} />
+                                    <span className="flex-item">
+                                        <input type="text" className="styledInput" value={regularPriceState.height} placeholder="0" onChange={heightHandle} />
+                                    </span>
                                 </div>
                                 <div className="itemInputRow">
                                     <div className="rowTitle">FABRIC GRADE</div>
-                                    <select className="gradeSelect" onChange={gradeHandle}>
+                                    <select className="selectInput" onChange={gradeHandle}>
                                         {
                                             getGrades.map((grade, i) => {
                                                 return <option value={grade.price}>{i + 1}</option>
@@ -165,15 +193,11 @@ export const Grades: React.FunctionComponent = () => {
                                     <div className="rowTitle">Tax</div>
                                     <div>{cashFormatter(regularPriceState.price * 0.13)}</div>
                                 </div>
-                                <div className="itemInputRow">
-                                    <div className="rowTitle">Installation</div>
-                                    <div>{cashFormatter(10)}</div>
-                                </div>
                             </div>
                             <div className="section">
                                 <div className="itemInputRow">
                                     <div className="rowTitle">Total</div>
-                                    <div>{cashFormatter(regularPriceState.price * 1.13 + 10)}</div>
+                                    <div>{cashFormatter(regularPriceState.price * 1.13)}</div>
                                 </div>
                             </div>
                         </div>
@@ -359,7 +383,8 @@ export const Grades: React.FunctionComponent = () => {
 
     .gradeController{
         width: 25vw;
-        max-height: 81vh;
+        max-height: 75vh;
+        margin-top: 5vh;
         border: 2px solid black;
         border-top: 10px solid #2F3D4C;
         border-radius: 10pt;
@@ -408,6 +433,57 @@ export const Grades: React.FunctionComponent = () => {
         align-items: flex-start;
         flex-direction: column;
         font-size: 0.875rem;
+    }
+
+    .flex-item {
+        width: 180px;
+        justify-content: center;
+        margin-top:5px;
+        border: 1px solid #dde5ff;
+        border-radius: 4px;
+        color: #5d647b;
+        outline: 0;
+        padding: 10px;
+        text-align:right;
+      }
+
+    .styledInput{
+        width: 170px;
+        border: none;
+        font-family: tecnico;
+        font-size: 14px;
+        text-align:right;
+    }
+
+    .flex-item-1 {
+        width: 70px;
+        justify-content: center;
+        margin-top:5px;
+        border: 1px solid #dde5ff;
+        border-radius: 4px;
+        color: #5d647b;
+        outline: 0;
+        padding: 10px;
+        text-align:right;
+      }
+
+    .styledInput-1{
+        width: 70px;
+        border: none;
+        font-family: tecnico;
+        font-size: 14px;
+        text-align:right;
+    }
+
+    .selectInput{
+        width: 200px;
+        border: 1px solid #dde5ff;
+        border-radius: 4px;
+        font-family: tecnico;
+        font-size: 14px;
+        color: #5d647b;
+        padding: 10px;
+        text-align:right;
     }
 `}
                     </style>
