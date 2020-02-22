@@ -301,7 +301,6 @@ const Customers: React.FC = () => {
         } else if (error) {
             return <ErrorView errMsg={error.message} currentLocation={2} />
         } else {
-            console.log(keyword);
             if (data && data.getCustomers && keyword !== "") {
                 if (keyword === "all") {
                     setCustomerState({

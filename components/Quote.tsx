@@ -376,7 +376,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                             <div className="registerTitleSection">New Order Placement</div>
                             <div className="inputRow">
                                 <div className="rowTitle">ORDER#</div>
-                                <input type="text" className="registerInput" value={orderNoGenerator(data.getOrder.orderNo)} readOnly />
+                                <input type="text" className="registerInput" value={data.getOrder ? orderNoGenerator(data.getOrder.orderNo) : orderNoGenerator("0000")} readOnly />
                             </div>
                             <div className="inputRow">
                                 <div className="rowTitle">DEPOSIT</div>
