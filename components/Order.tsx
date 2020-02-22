@@ -304,18 +304,21 @@ export const Orders: React.FunctionComponent = () => {
                     </div>
                     <div className="orderList">
                         {
-                            getOrders.map((order: Order) => {
-                                return (<div key={order.id} id={order.id} className={hoverState.currentLocation === Number(order.id) ? "orderOverviewOn" : "orderOverview"} onClick={viewDetails(order)} onMouseOver={onDisplay} onMouseLeave={offDisplay}>
-                                    <div className="orderNo">{order.orderNo}</div>
-                                    <div className="orderName">{order.customer.name}</div>
-                                    <div className="orderDate">{calFormatter(order.orderDate)}</div>
-                                    <div className="orderInstall">{calFormatter(order.installDate)}</div>
-                                    <div className="orderStatus">{order.status}</div>
-                                    <div className="orderInstallation">{cashFormatter(order.installation)}</div>
-                                    <div className="orderDeposit">{cashFormatter(order.deposit)}</div>
-                                    <div className="orderTotal">{cashFormatter(order.total)}</div>
-                                </div>)
-                            })
+                            getOrders.length > 0 ?
+                                getOrders.map((order: Order) => {
+                                    return (<div key={order.id} id={order.id} className={hoverState.currentLocation === Number(order.id) ? "orderOverviewOn" : "orderOverview"} onClick={viewDetails(order)} onMouseOver={onDisplay} onMouseLeave={offDisplay}>
+                                        <div className="orderNo">{order.orderNo}</div>
+                                        <div className="orderName">{order.customer.name}</div>
+                                        <div className="orderDate">{calFormatter(order.orderDate)}</div>
+                                        <div className="orderInstall">{calFormatter(order.installDate)}</div>
+                                        <div className="orderStatus">{order.status}</div>
+                                        <div className="orderInstallation">{cashFormatter(order.installation)}</div>
+                                        <div className="orderDeposit">{cashFormatter(order.deposit)}</div>
+                                        <div className="orderTotal">{cashFormatter(order.total)}</div>
+                                    </div>)
+                                })
+                                :
+                                <div className="noOrder">None of the list</div>
                         }
                     </div>
 
@@ -797,6 +800,18 @@ export const Orders: React.FunctionComponent = () => {
         z-index: 1;
         bottom: 0;
         overflow: scroll;
+    }
+
+    .noOrder{
+        width: 100%;
+        min-height: 50px;
+        font-size: 0.8rem;
+        border: none;
+        border-bottom: 1px solid black;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .orderOverview{
