@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-apollo';
+import { ApolloError } from 'apollo-boost';
 
 export interface Props {
     currentLocation: number
@@ -46,6 +47,8 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
                 id: idInput.id,
                 password: pwInput.pw
             }
+        }).catch((err: ApolloError) => {
+            alert(err.graphQLErrors[0].message);
         });
 
         const menu = ["/", "/orders", "/customer", "/quote", "/update"]
