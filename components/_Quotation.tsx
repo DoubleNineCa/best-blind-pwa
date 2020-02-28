@@ -63,7 +63,23 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     const items = order.items;
     const printedItems = items.concat(new Array<Item>(24 - items.length));
     const emptyItem = { itemName: "none" } as Item;
-    const filledItems = printedItems.fill(emptyItem, items.length, printedItems.length - 1);
+    printedItems.fill(emptyItem, items.length, printedItems.length - 1);
+
+    const totalPrice = {
+        sqrt: 0,
+        selectTotalPrice: 0,
+        negoTotalPrice: 0,
+        saleTotalPrice: 0
+    }
+    items.map((item: Item) => {
+        totalPrice.sqrt += (item.width * item.height / 10000) > 1.5 ? (item.width * item.height / 10000) : 1.5;
+        totalPrice.selectTotalPrice += item.price;
+        totalPrice.negoTotalPrice += item.price * order.discount / 100;
+    });
+
+    totalPrice.selectTotalPrice += order.installation;
+    totalPrice.negoTotalPrice += order.installationDiscount;
+    totalPrice.saleTotalPrice = totalPrice.selectTotalPrice - totalPrice.negoTotalPrice;
 
     return <Fragment>
         <div className="container">
@@ -108,12 +124,15 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                         <div className="quoteLRTitle">L/R</div>
                         <div className="quoteControlTitle">Control Height</div>
                         <div className="quoteSelectPTitle">SELECT PRICE</div>
-                        <div className="quoteNegoTitle">NEGO (0%)</div>
+                        <div className="quoteNegoTitle">NEGO ({order.discount}%)</div>
                         <div className="quoteSalePTitle">SALE PRICE</div>
                     </div>
                     <div className="quoteList">
                         {
                             printedItems.map((item: Item, idx: any) => {
+                                const discountedPrice = item.price * order.discount / 100;
+                                const salePrice = item.price - discountedPrice;
+
                                 if (item.id) {
                                     return (<div className="quoteOverview">
                                         <div className="quoteRoom">거실</div>
@@ -125,8 +144,8 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                                         <div className="quoteLR">{item.handrailType}</div>
                                         <div className="quoteControl">{item.handrailLength}</div>
                                         <div className="quoteSelectP">{cashFormatter(item.price)}</div>
-                                        <div className="quoteNego">{cashFormatter(item.price * order.discount / 100)}</div>
-                                        <div className="quoteSaleP">{cashFormatter(item.price - (item.price * order.discount / 100))}</div>
+                                        <div className="quoteNego">{cashFormatter(discountedPrice)}</div>
+                                        <div className="quoteSaleP">{cashFormatter(salePrice)}</div>
                                     </div>)
                                 }
 
@@ -160,7 +179,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                             <div className="quoteSaleP"></div>
                         </div>
                         <div className="quoteOverviewBottom">
-                            <div className="quoteRoom">총(6)창</div>
+                            <div className="quoteRoom">총({items.length})창</div>
                             <div className="quoteWindow"></div>
                             <div className="quoteBlind"></div>
                             <div className="quoteWidth"></div>
@@ -168,8 +187,8 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                             <div className="quoteSqrt"></div>
                             <div className="quoteLR"></div>
                             <div className="quoteControl"></div>
-                            <div className="quoteSelectP">$100.00</div>
-                            <div className="quoteNego">$217.60</div>
+                            <div className="quoteSelectP">{cashFormatter(order.installation)}</div>
+                            <div className="quoteNego">{cashFormatter(order.installationDiscount)}</div>
                             <div className="quoteSaleP"></div>
                         </div>
                         <div className="quoteOverviewTotal">
@@ -178,12 +197,12 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                             <div className="quoteBlind"></div>
                             <div className="quoteWidth"></div>
                             <div className="quoteHeight"></div>
-                            <div className="quoteSqrt">12.7</div>
+                            <div className="quoteSqrt">{totalPrice.sqrt.toPrecision(2)}</div>
                             <div className="quoteLR"></div>
                             <div className="quoteControl"></div>
-                            <div className="quoteSelectP">$1,217.60</div>
-                            <div className="quoteNego">$217.60</div>
-                            <div className="quoteSaleP">$1,000.00</div>
+                            <div className="quoteSelectP">{cashFormatter(totalPrice.selectTotalPrice)}</div>
+                            <div className="quoteNego">{cashFormatter(totalPrice.negoTotalPrice)}</div>
+                            <div className="quoteSaleP">{cashFormatter(totalPrice.saleTotalPrice)}</div>
                         </div>
                     </div>
                 </div>
@@ -209,19 +228,19 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     <div className="summary">
                         <div className="summaryOverview">
                             <div className="summaryType">&nbsp;SALE PRICE</div>
-                            <div className="summaryValue">$1234.00</div>
+                            <div className="summaryValue">{cashFormatter(totalPrice.saleTotalPrice)}</div>
                         </div>
                         <div className="summaryOverview">
                             <div className="summaryType">&nbsp;HST(13%)</div>
-                            <div className="summaryValue">$1234.00</div>
+                            <div className="summaryValue">{cashFormatter(totalPrice.saleTotalPrice * 0.13)}</div>
                         </div>
                         <div className="summaryOverview">
                             <div className="summaryType">&nbsp;DEPOSIT</div>
-                            <div className="summaryValue">$1234.00</div>
+                            <div className="summaryValue">{cashFormatter(order.deposit)}</div>
                         </div>
                         <div className="summaryOverview">
                             <div className="summaryType">&nbsp;TOTAL PRICE</div>
-                            <div className="summaryValue">$1234.00</div>
+                            <div className="summaryValue">{cashFormatter(totalPrice.saleTotalPrice + totalPrice.saleTotalPrice * 0.13 - order.deposit)}</div>
                         </div>
                     </div>
                     <div className="stamp">

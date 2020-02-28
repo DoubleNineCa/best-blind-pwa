@@ -66,11 +66,11 @@ const defaultInstallationState: installationState = {
 }
 
 interface installdcState {
-    installationDC: number;
+    installationDC: string;
 }
 
 const defaultInstallcState: installdcState = {
-    installationDC: 0
+    installationDC: ""
 }
 
 interface statusState {
@@ -170,7 +170,7 @@ export const Orders: React.FunctionComponent = () => {
                 installation: detail.installation
             })
             setInstalldcState({
-                installationDC: detail.installationDiscount
+                installationDC: detail.installationDiscount + ""
             })
             setStatusState({
                 label: detail.status.toString(),
@@ -230,7 +230,7 @@ export const Orders: React.FunctionComponent = () => {
 
     const handleInstallationDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInstalldcState({
-            installationDC: Number(e.currentTarget.value)
+            installationDC: e.currentTarget.value
         })
     }
 
@@ -265,7 +265,7 @@ export const Orders: React.FunctionComponent = () => {
                     deposit: depositState.deposit,
                     discount: discountState.discount,
                     installation: installationState.installation,
-                    installationDiscount: installdcState.installationDC,
+                    installationDiscount: Number(installdcState.installationDC),
                     status: statusState.value,
                     payment: "cash"
                 }
@@ -277,6 +277,14 @@ export const Orders: React.FunctionComponent = () => {
         } else {
             alert("Something went wrong");
         }
+
+    }
+
+    const printWorkSheet = async (e: React.MouseEvent) => {
+        window.open(`printQuote?orderNo=${detailState.orderDetail.orderNo}`, "_blank")!.focus();
+    }
+
+    const printInvoice = async (e: React.MouseEvent) => {
 
     }
 
@@ -443,7 +451,7 @@ export const Orders: React.FunctionComponent = () => {
                                 $<input
                                     className="orderInput"
                                     type="text"
-                                    value={Number(installdcState.installationDC)}
+                                    value={installdcState.installationDC}
                                     onChange={handleInstallationDiscount} />
                             </span>
                         </div>
@@ -476,6 +484,13 @@ export const Orders: React.FunctionComponent = () => {
                         </div>
                         <div>
                             <span className="blodeFont">Components : </span>
+                        </div>
+                    </div>
+                    <div className="section">
+                        <div>
+                            <span className="blodeFont">Documents</span>
+                            <button className="workSheet" onClick={printWorkSheet}>WORK SHEET</button>
+                            <button className="invoice" onClick={printInvoice}>INVOICE</button>
                         </div>
                     </div>
                     <div className="buttonSection">

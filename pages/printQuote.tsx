@@ -7,7 +7,7 @@ const PrintQuote = () => {
     const router = useRouter();
 
     return <Fragment>
-        <_Quotation orderNo={"20200001"} />
+        <_Quotation orderNo={router.query.orderNo.toString()} />
     </Fragment>
 }
 
