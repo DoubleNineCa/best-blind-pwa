@@ -467,7 +467,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                 </div>
                                 <div className="itemInputRow">
                                     <div className="rowTitle">HEIGHT</div>
-                                    <input type="text" className="itemInput" placeholder={selectedHeight.height.toString()} onChange={heightHandle} />
+                                    <input type="text" className="itemInput" value={selectedHeight.height.toString()} onChange={heightHandle} />
                                 </div>
                                 <div className="itemInputRow">
                                     <div className="rowTitle">COVER COLOR</div>
