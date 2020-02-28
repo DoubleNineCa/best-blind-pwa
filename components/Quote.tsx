@@ -520,7 +520,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
             <style jsx>{`
                 .registerContainer{
                     width:100vw;
-                    height:100vw;
+                    
                     border-radius: 10pt;
                 }
 
@@ -539,7 +539,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     margin-left: auto;
                     margin-right: auto;
                     width: 80%;
-                    height: 60%;
+                    height: 80%;
                     justify-content: center;
                     align-items: center;
                     display: flex;
