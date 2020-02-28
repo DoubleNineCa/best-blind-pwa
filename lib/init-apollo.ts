@@ -13,7 +13,7 @@ function create(initialState?: MyApolloClientCache) {
         connectToDevTools: isBrowser,
         ssrMode: !isBrowser, // Disables forceFetch on the server (so queries are only run once)
         link: new HttpLink({
-            uri: "http://localhost:4000/graphql", // Server URL (must be absolute)
+            uri: "https://bestblind.herokuapp.com", // Server URL (must be absolute)
             credentials: 'include', // Additional fetch() options like `credentials` or `headers`
             // Use fetch() polyfill on the server
             fetch: !isBrowser ? fetch : undefined
