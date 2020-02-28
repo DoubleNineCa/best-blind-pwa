@@ -132,6 +132,19 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
             width: 70%;
             margin-top: 0;
         }
+
+        .customerSubmit{
+            width: 100%;
+            height: 40px;
+            font-family: tecnico;
+            background: #FFBD00;
+            color: white;
+            font-size: 0.875rem;
+            box-shadow: 1px 1px 1px grey;
+            border: none;
+            border-radius: 4pt;
+            outline: none;
+        }
         `}</style>
     </Fragment>
 }
