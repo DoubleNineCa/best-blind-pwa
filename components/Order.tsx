@@ -285,7 +285,7 @@ export const Orders: React.FunctionComponent = () => {
     }
 
     const printInvoice = async (e: React.MouseEvent) => {
-
+        window.open(`printInvoice?orderNo=${detailState.orderDetail.orderNo}`, "_blank")!.focus();
     }
 
     if (loading) { return <p> Loading..</p> }
@@ -297,7 +297,16 @@ export const Orders: React.FunctionComponent = () => {
         return <Fragment>
             <div className="orderContainer">
                 <div className="orderTopSection">
-                    <div className="orderSectionTitle">{!detailState.status ? "Orders" : "Detail"}</div>
+                    <div className="orderSectionTitle">
+                        {!detailState.status ? "Orders" : "Detail"}
+                    </div>
+                    <div className="printSection">
+                        <div className="printBtnSection">
+                            <button className="worksheetBtn" onClick={printWorkSheet} style={{ display: detailState.orderDetail.orderNo ? "block" : "none" }}>🖨 WORK SHEET</button>
+                            <button className="invoiceBtn" onClick={printInvoice} style={{ display: detailState.orderDetail.status !== Status.Measure && detailState.orderDetail.status ? "block" : "none" }}>🖨 INVOICE</button>
+                        </div>
+                    </div>
+
                 </div>
                 <div className="orderTable" style={{ display: detailState.status ? "none" : "block" }}>
                     <div className="orderTitles">
@@ -531,6 +540,13 @@ export const Orders: React.FunctionComponent = () => {
         overflow: scroll;
     }
 
+    .orderTopSection{
+        width: 100%;
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+
     .orderTopSection .orderSectionTitle{
         width: 100px;
         height: auto;
@@ -541,6 +557,43 @@ export const Orders: React.FunctionComponent = () => {
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
+    }
+    .printSection{
+        width: 15%;
+        align-items: center;
+        display:flex;
+    }
+
+    .printBtnSection{
+        width: 100%;
+        height: 7%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        font-family: tecnico;
+        font-size: 0.7rem;
+    }
+
+    .worksheetBtn{
+        width: 55%;
+        height: 30px;
+        background: #FFBD00;
+        color: white;
+        box-shadow: 1px 1px 1px grey;
+        border: none;
+        border-radius: 4pt;
+        outline: none;
+    }
+
+    .invoiceBtn{
+        width: 40%;
+        height: 30px;
+        background: #FFBD00;
+        color: white;
+        box-shadow: 1px 1px 1px grey;
+        border: none;
+        border-radius: 4pt;
+        outline: none;
     }
 
     .orderContainer .orderTable{
