@@ -94,7 +94,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     <div className="location">
                         # 11 - 70 GIBSON DR.<br />
                         MARKHAM, ON L3R 4C2<br />
-                        ☎︎: (416)333-7094, (416)568-3303
+                        ☎︎: (647)718-0333, (416)385-3030
                     </div>
                 </div>
                 <div className="workTitle">
