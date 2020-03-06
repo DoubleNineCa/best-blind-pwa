@@ -424,6 +424,26 @@ export const Orders: React.FunctionComponent = () => {
                             </span>
                         </div>
                         <div className="orderUpdate">
+                            <span className="blodeFont">InvoiceDate : </span>
+                            <span className="flex-dateItem">
+                                <input
+                                    className="dateInput"
+                                    type="text"
+                                    placeholder="dd"
+                                    onChange={handleDiscount} />
+                                <input
+                                    className="dateInput"
+                                    type="text"
+                                    placeholder="mm"
+                                    onChange={handleDiscount} />
+                                <input
+                                    className="dateInput"
+                                    type="text"
+                                    placeholder="yy"
+                                    onChange={handleDiscount} />
+                            </span>
+                        </div>
+                        <div className="orderUpdate">
                             <span className="blodeFont">Deposit : </span>
                             <span className="flex-item">
                                 $<input
@@ -1183,6 +1203,25 @@ export const Orders: React.FunctionComponent = () => {
         font-family: tecnico;
         font-size: 14px;
         text-align:right;
+    }
+
+    .flex-dateItem{
+        width: 30px;
+        justify-content: center;
+        margin-top: 5px;
+        border: 1px solid #dde5ff;
+        border-radius: 4px;
+        color: #5d647b;
+        outline: 0;
+        padding: 10px;
+    }
+
+    .dateInput{
+        width: 20px;
+        border: none;
+        font-family: tecnico;
+        font-size: 14px;
+        text-align: center;
     }
 
     .statusSel{

@@ -21,19 +21,19 @@ const defaultSelectedBilnd: selectedBlind = {
 }
 
 interface selectedWidth {
-    width: number
+    width: string
 }
 
 const defaultSelectedWidth: selectedWidth = {
-    width: 0
+    width: "0"
 }
 
 interface selectedHeight {
-    height: number
+    height: string
 }
 
 const defaultSelectedHeight: selectedHeight = {
-    height: 0
+    height: "0"
 }
 
 interface selectedCover {
@@ -258,8 +258,8 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     partId: Number(selectedBlind.blind),
                     data: {
                         coverColor: selectedCover.cover,
-                        width: selectedWidth.width,
-                        height: selectedHeight.height,
+                        width: Number(selectedWidth.width),
+                        height: Number(selectedHeight.height),
                         handrailType: selectedType.type,
                         handrailMaterial: selectedMaterial.material,
                         handrailLength: Number(selectedLength.length)
@@ -299,13 +299,13 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
 
     const widthHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedWidth({
-            width: Number(e.currentTarget.value)
+            width: e.currentTarget.value
         })
     }
 
     const heightHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedHeight({
-            height: Number(e.currentTarget.value)
+            height: e.currentTarget.value
         })
     }
 
@@ -341,10 +341,10 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
             blind: (item.partId).toString()
         })
         setSelectedWidth({
-            width: item.width
+            width: item.width.toString()
         })
         setSelectedHeight({
-            height: item.height
+            height: item.height.toString()
         })
         setSelectedCover({
             cover: item.coverColor
