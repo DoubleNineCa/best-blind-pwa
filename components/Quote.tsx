@@ -273,8 +273,8 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     partId: Number(selectedBlind.blind),
                     data: {
                         coverColor: selectedCover.cover,
-                        width: selectedWidth.width,
-                        height: selectedHeight.height,
+                        width: Number(selectedWidth.width),
+                        height: Number(selectedHeight.height),
                         handrailType: selectedType.type,
                         handrailMaterial: selectedMaterial.material,
                         handrailLength: Number(selectedLength.length)
