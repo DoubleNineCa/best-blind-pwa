@@ -454,7 +454,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                         {
                                             blindsData && blindsData.getParts ?
                                                 blindsData.getParts.map((part: Part) => {
-                                                    return <option value={part.id} selected={part.id === selectedBlind.blind ? true : false}> [{part.id}] / {part.name}</option>
+                                                    return <option value={part.id} selected={part.id === selectedBlind.blind ? true : false}> [{part.id}] / {part.name}[{part.color}]</option>
                                                 })
                                                 :
                                                 <option value="-1">none</option>
