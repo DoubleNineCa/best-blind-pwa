@@ -72,7 +72,8 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
         saleTotalPrice: 0
     }
     items.map((item: Item) => {
-        totalPrice.sqrt += (item.width * item.height / 10000) > 1.5 ? (item.width * item.height / 10000) : 1.5;
+        //Math.round(input * 100) / 100
+        totalPrice.sqrt += Math.round((item.width * item.height / 10000) * 100) / 100 > 1.5 ? Math.round((item.width * item.height / 10000) * 100) / 100 : 1.5;
         totalPrice.selectTotalPrice += item.price;
         totalPrice.negoTotalPrice += item.price * order.discount / 100;
     });
