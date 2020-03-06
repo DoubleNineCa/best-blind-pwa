@@ -198,7 +198,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                             <div className="quoteBlind"></div>
                             <div className="quoteWidth"></div>
                             <div className="quoteHeight"></div>
-                            <div className="quoteSqrt">{totalPrice.sqrt.toPrecision(2)}</div>
+                            <div className="quoteSqrt">{totalPrice.sqrt}</div>
                             <div className="quoteLR"></div>
                             <div className="quoteControl"></div>
                             <div className="quoteSelectP">{cashFormatter(totalPrice.selectTotalPrice)}</div>
