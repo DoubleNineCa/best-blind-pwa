@@ -6,7 +6,7 @@ import Select from "react-select";
 
 import { Print } from "../components/Print";
 import { Order, Item, Customer, Status } from "../generated/graphql";
-import { calFormatter, cashFormatter, numberFormatter } from "../util/formatter";
+import { calFormatter, cashFormatter, numberFormatter, roundUp } from "../util/formatter";
 import { ErrorView } from './ErrorView';
 
 
@@ -370,7 +370,7 @@ export const Orders: React.FunctionComponent = () => {
                                             <div className="coverColor">{item.coverColor}</div>
                                             <div className="bWidth">{item.width}</div>
                                             <div className="bHeight">{item.height}</div>
-                                            <div className="baseArea">{Math.round(((item.width * item.height) / 10000) * 10) / 10}</div>
+                                            <div className="baseArea">{roundUp((item.width * item.height) / 10000, 10)}</div>
                                             <div className="handlePosition">{item.handrailType}</div>
                                             <div className="controlHeight">{item.handrailLength}</div>
                                             <div className="regularPrice">{cashFormatter(item.price)}</div>

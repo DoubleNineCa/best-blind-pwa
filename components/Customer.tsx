@@ -74,6 +74,7 @@ query GetCustomer{
       address
       phone
       email
+      note
       orders{
         id
         orderNo
@@ -259,7 +260,7 @@ const Customers: React.FC = () => {
             alert("Invalid Request");
         }
 
-        return router.reload();
+        // return router.reload();
     }
 
     const viewDetails = (customer: Customer) => (e: React.MouseEvent) => {
@@ -301,6 +302,7 @@ const Customers: React.FC = () => {
         } else if (error) {
             return <ErrorView errMsg={error.message} currentLocation={2} />
         } else {
+            console.log("here");
             if (data && data.getCustomers && keyword !== "") {
                 if (keyword === "all") {
                     setCustomerState({
@@ -376,9 +378,9 @@ const Customers: React.FC = () => {
                                     <div className="contentSection">
                                         <div>{detailState.customer.name}</div>
                                         <div>{detailState.customer.address}</div>
-                                        <div>{detailState.customer.email}</div>
+                                        <div>{detailState.customer.email ? detailState.customer.email : detailState.customer.email === null ? " - " : "  "}</div>
                                         <div>{detailState.customer.phone}</div>
-                                        <div>{detailState.customer.note === undefined ? " - " : detailState.customer.note}</div>
+                                        <div>{detailState.customer.note ? detailState.customer.note : detailState.customer.note === null ? " - " : " "}</div>
                                     </div>
                                 </div>
                             </div>
@@ -445,11 +447,11 @@ const Customers: React.FC = () => {
                                 </div>
                                 <div className="inputRow">
                                     <div className="rowTitle">EMAIL</div>
-                                    <input type="text" id="email" className="registerInput" value={detailState.customer.email} onChange={changeHandle} />
+                                    <input type="text" id="email" className="registerInput" value={detailState.customer.email ? detailState.customer.email : ""} onChange={changeHandle} />
                                 </div>
                                 <div className="inputRow">
                                     <div className="rowTitle">NOTE</div>
-                                    <input type="text" id="note" className="registerInput" value={detailState.customer.note} onChange={changeHandle} />
+                                    <input type="text" id="note" className="registerInput" value={detailState.customer.note ? detailState.customer.note : ""} onChange={changeHandle} />
                                 </div>
 
                                 <div className="inputRow">

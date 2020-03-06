@@ -19,10 +19,10 @@ export type Customer = {
   name: Scalars['String'],
   address: Scalars['String'],
   phone: Scalars['String'],
-  email: Scalars['String'],
+  email?: Maybe<Scalars['String']>,
   orders: Array<Order>,
   type: Scalars['String'],
-  note: Scalars['String'],
+  note?: Maybe<Scalars['String']>,
 };
 
 
@@ -50,6 +50,7 @@ export type Item = {
   handrailType: Scalars['String'],
   handrailLength: Scalars['Float'],
   coverColor: Scalars['String'],
+  roomName?: Maybe<Scalars['String']>,
 };
 
 export type ItemInput = {
@@ -79,6 +80,7 @@ export type Mutation = {
   updateGrade: Scalars['Boolean'],
   registerPart: Part,
   updatePart: Scalars['Boolean'],
+  deletePart: Scalars['Boolean'],
   createItem: Item,
   updateItem: Scalars['Boolean'],
   deleteItem: Scalars['Boolean'],
@@ -137,6 +139,11 @@ export type MutationUpdatePartArgs = {
 };
 
 
+export type MutationDeletePartArgs = {
+  id: Scalars['Float']
+};
+
+
 export type MutationCreateItemArgs = {
   data: ItemInput,
   partId: Scalars['Float'],
@@ -163,6 +170,7 @@ export type MutationPlaceOrderArgs = {
 
 export type MutationUpdateOrderArgs = {
   data: PlaceOrderInput,
+  invoiceDate: Scalars['DateTime'],
   installDate: Scalars['DateTime'],
   orderId: Scalars['Float']
 };
@@ -188,6 +196,7 @@ export type Order = {
   orderDate: Scalars['DateTime'],
   installDate?: Maybe<Scalars['DateTime']>,
   customer: Customer,
+  invoiceDate?: Maybe<Scalars['DateTime']>,
 };
 
 export type Part = {
@@ -242,7 +251,7 @@ export type Query = {
   getCustomer: Customer,
   getGrades: Array<Grade>,
   getParts: Array<Part>,
-  getOrder: Order,
+  getOrder?: Maybe<Order>,
   getOrders: Array<Order>,
 };
 
@@ -266,8 +275,8 @@ export type RegisterCustomerInput = {
   name: Scalars['String'],
   address: Scalars['String'],
   phone: Scalars['String'],
-  email: Scalars['String'],
-  note: Scalars['String'],
+  email?: Maybe<Scalars['String']>,
+  note?: Maybe<Scalars['String']>,
 };
 
 export type RegisterInput = {
@@ -389,10 +398,10 @@ export type CustomerResolvers<Context = any, ParentType = Customer> = ResolversO
   name?: Resolver<Scalars['String'], ParentType, Context>,
   address?: Resolver<Scalars['String'], ParentType, Context>,
   phone?: Resolver<Scalars['String'], ParentType, Context>,
-  email?: Resolver<Scalars['String'], ParentType, Context>,
+  email?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
   orders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
   type?: Resolver<Scalars['String'], ParentType, Context>,
-  note?: Resolver<Scalars['String'], ParentType, Context>,
+  note?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
 }>;
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<Scalars['DateTime'], any> {
@@ -418,6 +427,7 @@ export type ItemResolvers<Context = any, ParentType = Item> = ResolversObject<{
   handrailType?: Resolver<Scalars['String'], ParentType, Context>,
   handrailLength?: Resolver<Scalars['Float'], ParentType, Context>,
   coverColor?: Resolver<Scalars['String'], ParentType, Context>,
+  roomName?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
 }>;
 
 export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversObject<{
@@ -431,6 +441,7 @@ export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversO
   updateGrade?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateGradeArgs>,
   registerPart?: Resolver<Part, ParentType, Context, MutationRegisterPartArgs>,
   updatePart?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdatePartArgs>,
+  deletePart?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeletePartArgs>,
   createItem?: Resolver<Item, ParentType, Context, MutationCreateItemArgs>,
   updateItem?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateItemArgs>,
   deleteItem?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteItemArgs>,
@@ -455,6 +466,7 @@ export type OrderResolvers<Context = any, ParentType = Order> = ResolversObject<
   orderDate?: Resolver<Scalars['DateTime'], ParentType, Context>,
   installDate?: Resolver<Maybe<Scalars['DateTime']>, ParentType, Context>,
   customer?: Resolver<Customer, ParentType, Context>,
+  invoiceDate?: Resolver<Maybe<Scalars['DateTime']>, ParentType, Context>,
 }>;
 
 export type PartResolvers<Context = any, ParentType = Part> = ResolversObject<{
@@ -475,7 +487,7 @@ export type QueryResolvers<Context = any, ParentType = Query> = ResolversObject<
   getCustomer?: Resolver<Customer, ParentType, Context, QueryGetCustomerArgs>,
   getGrades?: Resolver<ArrayOrIterable<Grade>, ParentType, Context>,
   getParts?: Resolver<ArrayOrIterable<Part>, ParentType, Context, QueryGetPartsArgs>,
-  getOrder?: Resolver<Order, ParentType, Context, QueryGetOrderArgs>,
+  getOrder?: Resolver<Maybe<Order>, ParentType, Context, QueryGetOrderArgs>,
   getOrders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
 }>;
 

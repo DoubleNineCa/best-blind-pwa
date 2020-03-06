@@ -26,6 +26,9 @@ export function orderNoGenerator(orderNo: string) {
     return Number(orderNo.substr(0, 4)) === year ? Number(orderNo) + 1 : (year + "0001");
 }
 
+export function roundUp(input: number, digits: number) {
+    return Math.ceil((Math.floor(input * digits * 10) / (digits * 10)) * digits) / 10;
+}
 function digitConverter(input: number) {
     if (input < 10) {
         return "000" + input;
