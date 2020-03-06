@@ -146,6 +146,7 @@ query getBlinds($input: String!){
       type
       kind
       name
+      color
     }
   }
 `);
@@ -262,7 +263,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                         height: Number(selectedHeight.height),
                         handrailType: selectedType.type,
                         handrailMaterial: selectedMaterial.material,
-                        handrailLength: Number(selectedLength.length)
+                        handrailLength: Number(selectedLength.length),
                     }
                 }
             })
