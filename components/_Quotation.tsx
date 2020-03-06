@@ -73,7 +73,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     }
     items.map((item: Item) => {
         //Math.round(input * 100) / 100
-        totalPrice.sqrt += Math.round((item.width * item.height / 10000) * 100) / 100 > 1.5 ? Math.round((item.width * item.height / 10000) * 100) / 100 : 1.5;
+        totalPrice.sqrt += Math.round((item.width * item.height / 10000) * 10) / 10 > 1.5 ? Math.round((item.width * item.height / 10000) * 10) / 10 : 1.5;
         totalPrice.selectTotalPrice += item.price;
         totalPrice.negoTotalPrice += item.price * order.discount / 100;
     });
@@ -141,7 +141,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                                         <div className="quoteBlind">{item.itemName}</div>
                                         <div className="quoteWidth">{item.width}</div>
                                         <div className="quoteHeight">{item.height}</div>
-                                        <div className="quoteSqrt">{Math.round((item.width * item.height / 10000) * 100) / 100 > 1.5 ? Math.round((item.width * item.height / 10000) * 100) / 100 : 1.5}</div>
+                                        <div className="quoteSqrt">{Math.round((item.width * item.height / 10000) * 10) / 10 > 1.5 ? Math.round((item.width * item.height / 10000) * 10) / 10 : 1.5}</div>
                                         <div className="quoteLR">{item.handrailType}</div>
                                         <div className="quoteControl">{item.handrailLength}</div>
                                         <div className="quoteSelectP">{cashFormatter(item.price)}</div>
