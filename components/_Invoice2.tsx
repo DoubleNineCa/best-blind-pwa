@@ -197,7 +197,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                     <div className="price">{cashFormatter(order.installation)}&nbsp;&nbsp;</div>
                 </div>
                 <div className="itemOverview bottomMinHeight">
-                    <div className="itemNo">Discount</div>
+                    <div className="itemNo">Round Off</div>
                     <div className="blind nonRight"></div>
                     <div className="bWidth nonRight"></div>
                     <div className="bHeight nonRight"></div>
@@ -210,7 +210,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                         <span className="notiDetail">♦︎ Customer Name : 2530861 ONTARIO LTD. ( TD Canada Trust )<br />
                             &nbsp;&nbsp;&nbsp;( Transit No : 19242 &nbsp;&nbsp;&nbsp; Inst No : 004 &nbsp;&nbsp;&nbsp; Account No : 5221593 )</span>
                         <span className="notiDetail">♦︎ Email - Transfer : bestblindsca@gmail.com</span>
-                        <span className="notiDetail">♦︎ 2 years warranty included on the fabric</span>
+                        <span className="notiDetail">♦︎ 2 years warranty</span>
                     </div>
                     <div className="amountTable">
                         <div className="attrOverview">

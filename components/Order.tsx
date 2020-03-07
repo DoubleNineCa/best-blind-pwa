@@ -2,14 +2,10 @@ import React, { Fragment, useState } from 'react';
 import gql from 'graphql-tag';
 import { Query, useQuery, useMutation } from 'react-apollo';
 import { useRouter } from 'next/router';
-import Select from "react-select";
 
-import { Print } from "../components/Print";
 import { Order, Item, Customer, Status } from "../generated/graphql";
 import { calFormatter, cashFormatter, numberFormatter, roundUp } from "../util/formatter";
 import { ErrorView } from './ErrorView';
-
-
 
 export interface Props {
     keyword: string;
@@ -83,6 +79,14 @@ const defaultStatusState: statusState = {
     value: Status.Measure
 }
 
+interface invoiceDateState {
+    invoiceDate: string
+}
+
+const defaultInvoiceDateState: invoiceDateState = {
+    invoiceDate: ""
+}
+
 const GET_ORDERS = gql(`
 {
     getOrders{
@@ -95,6 +99,7 @@ const GET_ORDERS = gql(`
       payment
       orderDate
       installDate
+      invoiceDate
       status
       installation
       total
@@ -138,6 +143,7 @@ export const Orders: React.FunctionComponent = () => {
     const [installationState, setInstallationState] = useState<installationState>(defaultInstallationState);
     const [installdcState, setInstalldcState] = useState<installdcState>(defaultInstallcState);
     const [statusState, setStatusState] = useState<statusState>(defaultStatusState);
+    const [invoiceDateState, setInvoiceDateState] = useState<invoiceDateState>(defaultInvoiceDateState);
     const { loading, error, data } = useQuery(GET_ORDERS);
     const [updateOrder] = useMutation(UPDATE_ORDER);
 
@@ -176,6 +182,11 @@ export const Orders: React.FunctionComponent = () => {
                 label: detail.status.toString(),
                 value: detail.status
             })
+            const revertedDate = new Date(detail.invoiceDate);
+
+            setInvoiceDateState({
+                invoiceDate: revertedDate.toLocaleDateString("en-US")
+            })
         }
     }
 
@@ -191,6 +202,10 @@ export const Orders: React.FunctionComponent = () => {
     }
 
     const onDetail = (e: React.MouseEvent) => {
+        if (detailState.orderDetail.customer === undefined) {
+            alert("Please select order before request details");
+            return;
+        }
         setDetailState({
             orderDetail: detailState.orderDetail,
             status: !detailState.status
@@ -241,6 +256,12 @@ export const Orders: React.FunctionComponent = () => {
         })
     }
 
+    // Handle Invoice Date
+    const handleInvoiceDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInvoiceDateState({
+            invoiceDate: e.currentTarget.value
+        })
+    }
     //HandleStatus enum
 
     const handlePayment = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,7 +288,8 @@ export const Orders: React.FunctionComponent = () => {
                     installation: installationState.installation,
                     installationDiscount: Number(installdcState.installationDC),
                     status: statusState.value,
-                    payment: "cash"
+                    payment: "cash",
+                    invoiceDate: new Date(invoiceDateState.invoiceDate)
                 }
             }
         })
@@ -303,7 +325,8 @@ export const Orders: React.FunctionComponent = () => {
                     <div className="printSection">
                         <div className="printBtnSection">
                             <button className="worksheetBtn" onClick={printWorkSheet} style={{ display: detailState.orderDetail.orderNo ? "block" : "none" }}>🖨 WORK SHEET</button>
-                            <button className="invoiceBtn" onClick={printInvoice} style={{ display: detailState.orderDetail.status !== Status.Measure && detailState.orderDetail.status ? "block" : "none" }}>🖨 INVOICE</button>
+                            <button className="invoiceBtn" onClick={printInvoice} style={{ display: detailState.orderDetail.status !== Status.Measure && detailState.orderDetail.status && detailState.orderDetail.hst ? "block" : "none" }}>🖨 INVOICE</button>
+                            <button className="stickerBtn" onClick={togglePopup} style={{ display: detailState.orderDetail.orderNo ? "block" : "none" }}>🖨 STICKER</button>
                         </div>
                     </div>
 
@@ -390,13 +413,8 @@ export const Orders: React.FunctionComponent = () => {
             <div className="orderController">
                 <div className="orderDetails">
                     <div className="section-1">
-                        <div><span className="blodeFont">Order # : </span>{detailState.orderDetail.orderNo}</div>
                         <div>
-                            <span className="blodeFont">Name : </span>
-                            {detailState.orderDetail.customer === undefined ? '' : detailState.orderDetail.customer.name}
-                        </div>
-                        <div>
-                            <span className="blodeFont">Phone : </span>
+                            <span className="blodeFont">Contact : </span>
                             {detailState.orderDetail.customer === undefined ? '' : detailState.orderDetail.customer.phone}
                         </div>
                         <div>
@@ -425,22 +443,14 @@ export const Orders: React.FunctionComponent = () => {
                         </div>
                         <div className="orderUpdate">
                             <span className="blodeFont">InvoiceDate : </span>
-                            <span className="flex-dateItem">
+                            <span className="flex-item">
                                 <input
                                     className="dateInput"
                                     type="text"
-                                    placeholder="dd"
-                                    onChange={handleDiscount} />
-                                <input
-                                    className="dateInput"
-                                    type="text"
-                                    placeholder="mm"
-                                    onChange={handleDiscount} />
-                                <input
-                                    className="dateInput"
-                                    type="text"
-                                    placeholder="yy"
-                                    onChange={handleDiscount} />
+                                    placeholder="MM/DD/YYYY"
+                                    value={invoiceDateState.invoiceDate}
+                                    onChange={handleInvoiceDate}
+                                />
                             </span>
                         </div>
                         <div className="orderUpdate">
@@ -515,13 +525,6 @@ export const Orders: React.FunctionComponent = () => {
                             <span className="blodeFont">Components : </span>
                         </div>
                     </div>
-                    <div className="section">
-                        <div>
-                            <span className="blodeFont">Documents</span>
-                            <button className="workSheet" onClick={printWorkSheet}>WORK SHEET</button>
-                            <button className="invoice" onClick={printInvoice}>INVOICE</button>
-                        </div>
-                    </div>
                     <div className="buttonSection">
                         <button className="specific" onClick={onDetail}>{detailState.status ? "List" : "Detail"}</button>
                         <button className="updateButton" onClick={onUpdate}>Edit</button>
@@ -579,7 +582,7 @@ export const Orders: React.FunctionComponent = () => {
         align-items: flex-start;
     }
     .printSection{
-        width: 15%;
+        width: 23%;
         align-items: center;
         display:flex;
     }
@@ -595,7 +598,7 @@ export const Orders: React.FunctionComponent = () => {
     }
 
     .worksheetBtn{
-        width: 55%;
+        width: 40%;
         height: 30px;
         background: #FFBD00;
         color: white;
@@ -606,7 +609,18 @@ export const Orders: React.FunctionComponent = () => {
     }
 
     .invoiceBtn{
-        width: 40%;
+        width: 27%;
+        height: 30px;
+        background: #FFBD00;
+        color: white;
+        box-shadow: 1px 1px 1px grey;
+        border: none;
+        border-radius: 4pt;
+        outline: none;
+    }
+
+    .stickerBtn{
+        width: 27%;
         height: 30px;
         background: #FFBD00;
         color: white;
@@ -1162,7 +1176,7 @@ export const Orders: React.FunctionComponent = () => {
         justify-content: center;
         align-items: flex-start;
         flex-direction: column;
-        font-size: 0.875rem;
+        font-size: 0.775rem;
     }
 
     .section {
@@ -1175,7 +1189,7 @@ export const Orders: React.FunctionComponent = () => {
         justify-content: center;
         align-items: flex-start;
         flex-direction: column;
-        font-size: 0.875rem;
+        font-size: 0.775rem;
     }
     
     .orderUpdate{
@@ -1201,7 +1215,7 @@ export const Orders: React.FunctionComponent = () => {
         width: 70px;
         border: none;
         font-family: tecnico;
-        font-size: 14px;
+        font-size: 0.775rem;
         text-align:right;
     }
 
@@ -1217,19 +1231,26 @@ export const Orders: React.FunctionComponent = () => {
     }
 
     .dateInput{
-        width: 20px;
+        width: 100%;
         border: none;
         font-family: tecnico;
-        font-size: 14px;
+        font-size: 0.775rem;
         text-align: center;
     }
 
     .statusSel{
-        margin-top:5px;
+        margin-top: 5px;
+        border: 1px solid #dde5ff;
+        border-radius: 4px;
+        font-family: tecnico;
+        font-size: 0.83rem;;
+        color: #5d647b;
+        padding: 10px;
+        text-align:right;
     }
 
     .orderHst{
-        height: 20px;
+        height: 10px;
     }
     
     .buttonSection{
@@ -1282,8 +1303,6 @@ export const Orders: React.FunctionComponent = () => {
         border: none;
         border-radius: 4pt;
     }
-
-    
 `}
             </style>
         </Fragment>
