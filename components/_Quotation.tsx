@@ -87,7 +87,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
             <div className="topSection">
                 <div className="companyInfo">
                     <div className="logo">
-                        <img src="/static/blue_logo.png" />
+                        <img src="/static/invoice_logo.png" />
                     </div>
                     <div className="webAddr">
                         www.Best-blinds.ca
@@ -136,7 +136,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
 
                                 if (item.id) {
                                     return (<div className="quoteOverview">
-                                        <div className="quoteRoom">거실</div>
+                                        <div className="quoteRoom">{item.roomName}</div>
                                         <div className="quoteWindow">{idx + 1}</div>
                                         <div className="quoteBlind">{item.itemName}</div>
                                         <div className="quoteWidth">{item.width}</div>
@@ -176,7 +176,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                             <div className="quoteLR"></div>
                             <div className="quoteControl"></div>
                             <div className="quoteSelectP">[Installation]</div>
-                            <div className="quoteNego">[Discount]</div>
+                            <div className="quoteNego">[Round Off]</div>
                             <div className="quoteSaleP"></div>
                         </div>
                         <div className="quoteOverviewBottom">

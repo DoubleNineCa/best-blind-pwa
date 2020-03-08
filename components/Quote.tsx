@@ -12,6 +12,14 @@ interface Props {
     customerId: string,
     orderNo: string
 }
+
+interface selectedRoomName {
+    roomName: string
+}
+
+const defaultSelectedRoomName: selectedRoomName = {
+    roomName: ""
+}
 interface selectedBlind {
     blind: string
 }
@@ -194,6 +202,7 @@ mutation DeleteItem($itemId: Float!){
 
 export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
     const router = useRouter();
+    const [selectedRoomName, setSelectedRoomName] = useState<selectedRoomName>(defaultSelectedRoomName);
     const [selectedBlind, setSelectedBlind] = useState<selectedBlind>(defaultSelectedBilnd);
     const [selectedWidth, setSelectedWidth] = useState<selectedWidth>(defaultSelectedWidth);
     const [selectedHeight, setSelectedHeight] = useState<selectedHeight>(defaultSelectedHeight);
@@ -290,6 +299,12 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
             })
         }
         return router.reload();
+    }
+
+    const roomHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedRoomName({
+            roomName: e.currentTarget.value
+        })
     }
 
     const blindHandle = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -406,7 +421,8 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                         <div className="itemContainer">
                             <div className="itemTable">
                                 <div className="itemTitles">
-                                    <div className="itemNotitle">ITEM #</div>
+                                    <div className="itemNoTitle">ITEM #</div>
+                                    <div className="roomNameTitle">ROOM NAME</div>
                                     <div className="blindNameTitle">BLIND</div>
                                     <div className="itemWidthTitle">WIDTH</div>
                                     <div className="itemHeightTitle">HEIGHT</div>
@@ -422,13 +438,14 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                             data.getOrder.items.map((item: Item, idx: any) => {
                                                 return <div id={item.id} className={selectedState.currentLocation === Number(item.id) ? "itemOverviewOn" : "itemOverview"} onClick={editItem(item)}>
                                                     <div className="itemNo">{idx + 1}</div>
+                                                    <div className="roomName">{item.roomName}</div>
                                                     <div className="blindName">{item.itemName}</div>
                                                     <div className="itemWidth">{item.width}</div>
                                                     <div className="itemHeight">{item.height}</div>
                                                     <div className="itemCoverColor">{item.coverColor}</div>
                                                     <div className="handrailType">{item.handrailType}</div>
                                                     <div className="handrailMaterial">{item.handrailMaterial}</div>
-                                                    <div className="handrailLength">{item.handrailLength}</div>
+                                                    <div className="handrailLength">{item.handrailLength}(M)</div>
                                                 </div>
                                             })
                                             :
@@ -449,6 +466,10 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                 onSubmit={itemHandleSubmit}
                             >
                                 <div className="itemAddTitleSection">ADD ITEM</div>
+                                <div className="itemInputRow">
+                                    <div className="rowTitle">ROOM NAME</div>
+                                    <input type="text" className="itemInput" value={selectedRoomName.roomName} onChange={roomHandle} />
+                                </div>
                                 <div className="itemInputRow">
                                     <div className="rowTitle">BLIND</div>
                                     <select className="itemSelect" onChange={blindHandle}>
@@ -628,7 +649,17 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     top: 0;
                 }
 
-                .itemNotitle{
+                .itemNoTitle{
+                    width: 5%;
+                    height: auto;
+                    font-family: tecnico;
+                    border-right: 1px solid black;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .roomNameTitle{
                     width: 20%;
                     height: auto;
                     font-family: tecnico;
@@ -699,7 +730,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 }
 
                 .handrailLengthTitle{
-                    width: 15%;
+                    width: 10%;
                     height: auto;
                     font-family: tecnico;
                     display: flex;
@@ -758,6 +789,16 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 }
 
                 .itemNo{
+                    width: 5%;
+                    height: 40px;
+                    border-right: 1px solid black;
+                    font-family: tecnico;
+                    justify-content: center;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .roomName{
                     width: 20%;
                     height: 40px;
                     border-right: 1px solid black;
@@ -828,7 +869,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 }
 
                 .handrailLength{
-                    width: 15%;
+                    width: 10%;
                     height: 40px;
                     font-family: tecnico;
                     justify-content: center;
@@ -869,6 +910,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 }
 
                 .itemAddTitleSection{
+                    padding-left: 10px;
                     font-size: 1.7rem;
                     justify-content: center;
                     align-items: center;
@@ -890,13 +932,16 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 }
 
                 .itemSelect{
-                    width: 50%;
-                    margin-right: auto;
-                    margin-left: auto;
-                    justify-content: space-between;
-                    align-items: center;
-                    display: flex;   
+                    width: 70%;
+                    border: 1px solid #dde5ff;
+                    border-radius: 4px;
+                    font-family: tecnico;
+                    font-size: 14px;
+                    color: #5d647b;
+                    padding: 10px;
+                    text-align:right; 
                 }
+                
 
                 .buttonSection{
                     width: 100%;

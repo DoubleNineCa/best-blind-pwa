@@ -114,7 +114,7 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
         }
 
         .inputRow{
-            width: 50%;
+            width: 30%;
             margin-top: 10px;
             margin-right: auto;
             margin-left: auto;
@@ -125,8 +125,20 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
         }
 
         .rowTitle{
-            width: 10%;
+            width: 20%;
+            text-align: center;
         }
+
+        input{
+            margin-top: 20px;
+            border: 1px solid #dde5ff;
+            border-radius: 4px;
+            color: #5d647b;
+            outline: 0;
+            font-size: 18px;
+            padding: 14px;
+            width: 90%;
+          }
 
         .loginInput{
             width: 70%;

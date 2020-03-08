@@ -12,6 +12,7 @@ export interface Props {
 const GET_ORDER = gql(`
 query getOrder($orderNo: String!){
     getOrder(orderNo: $orderNo){
+        orderNo,
         id,
         hst,
         deposit,
@@ -99,10 +100,10 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                         </div>
                         <div className="invContentOverview">
                             <div className="invContentLeft">
-                                2/23/2020
+                                {order.invoiceDate ? order.invoiceDate : new Date().toLocaleDateString("en-US")}
                             </div>
                             <div className="invContentRight">
-                                11394
+                                Inv{order.orderNo}
                             </div>
                         </div>
                     </div>
