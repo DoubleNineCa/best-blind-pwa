@@ -18,6 +18,9 @@ export type Customer = {
   uuid: Scalars['String'],
   name: Scalars['String'],
   address: Scalars['String'],
+  city?: Maybe<Scalars['String']>,
+  province?: Maybe<Scalars['String']>,
+  postal?: Maybe<Scalars['String']>,
   phone: Scalars['String'],
   email?: Maybe<Scalars['String']>,
   orders: Array<Order>,
@@ -54,6 +57,7 @@ export type Item = {
 };
 
 export type ItemInput = {
+  roomName?: Maybe<Scalars['String']>,
   width?: Maybe<Scalars['Float']>,
   height?: Maybe<Scalars['Float']>,
   handrailType?: Maybe<Scalars['String']>,
@@ -170,7 +174,6 @@ export type MutationPlaceOrderArgs = {
 
 export type MutationUpdateOrderArgs = {
   data: PlaceOrderInput,
-  invoiceDate: Scalars['DateTime'],
   installDate: Scalars['DateTime'],
   orderId: Scalars['Float']
 };
@@ -197,6 +200,10 @@ export type Order = {
   installDate?: Maybe<Scalars['DateTime']>,
   customer: Customer,
   invoiceDate?: Maybe<Scalars['DateTime']>,
+  invAddress?: Maybe<Scalars['String']>,
+  invCity?: Maybe<Scalars['String']>,
+  invProvince?: Maybe<Scalars['String']>,
+  invPostal?: Maybe<Scalars['String']>,
 };
 
 export type Part = {
@@ -238,12 +245,17 @@ export type PlaceOrderInput = {
   customerId: Scalars['Float'],
   orderNo: Scalars['String'],
   hst?: Maybe<Scalars['Boolean']>,
+  invAddress?: Maybe<Scalars['String']>,
+  invCity?: Maybe<Scalars['String']>,
+  invProvince?: Maybe<Scalars['String']>,
+  invPostal?: Maybe<Scalars['String']>,
   deposit?: Maybe<Scalars['Float']>,
   discount?: Maybe<Scalars['Float']>,
   installation?: Maybe<Scalars['Float']>,
   installationDiscount?: Maybe<Scalars['Float']>,
   status?: Maybe<Scalars['String']>,
   payment?: Maybe<Scalars['String']>,
+  invoiceDate?: Maybe<Scalars['DateTime']>,
 };
 
 export type Query = {
@@ -274,6 +286,9 @@ export type QueryGetOrderArgs = {
 export type RegisterCustomerInput = {
   name: Scalars['String'],
   address: Scalars['String'],
+  city?: Maybe<Scalars['String']>,
+  province?: Maybe<Scalars['String']>,
+  postal?: Maybe<Scalars['String']>,
   phone: Scalars['String'],
   email?: Maybe<Scalars['String']>,
   note?: Maybe<Scalars['String']>,
@@ -302,6 +317,9 @@ export enum Status {
 export type UpdateCustomerInput = {
   name?: Maybe<Scalars['String']>,
   address?: Maybe<Scalars['String']>,
+  city?: Maybe<Scalars['String']>,
+  province?: Maybe<Scalars['String']>,
+  postal?: Maybe<Scalars['String']>,
   phone?: Maybe<Scalars['String']>,
   email?: Maybe<Scalars['String']>,
   note?: Maybe<Scalars['String']>,
@@ -397,6 +415,9 @@ export type CustomerResolvers<Context = any, ParentType = Customer> = ResolversO
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
   name?: Resolver<Scalars['String'], ParentType, Context>,
   address?: Resolver<Scalars['String'], ParentType, Context>,
+  city?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
+  province?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
+  postal?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
   phone?: Resolver<Scalars['String'], ParentType, Context>,
   email?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
   orders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
@@ -467,6 +488,10 @@ export type OrderResolvers<Context = any, ParentType = Order> = ResolversObject<
   installDate?: Resolver<Maybe<Scalars['DateTime']>, ParentType, Context>,
   customer?: Resolver<Customer, ParentType, Context>,
   invoiceDate?: Resolver<Maybe<Scalars['DateTime']>, ParentType, Context>,
+  invAddress?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
+  invCity?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
+  invProvince?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
+  invPostal?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
 }>;
 
 export type PartResolvers<Context = any, ParentType = Part> = ResolversObject<{

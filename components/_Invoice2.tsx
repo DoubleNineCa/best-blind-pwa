@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import gql from 'graphql-tag';
 import { useQuery } from "react-apollo";
 import { ErrorView } from "./ErrorView";
@@ -7,6 +7,14 @@ import { cashFormatter } from "../util/formatter";
 
 export interface Props {
     orderNo: string
+}
+
+interface bgImg {
+    imgSrc: string
+}
+
+const defaultBgImg: bgImg = {
+    imgSrc: "none"
 }
 
 const GET_ORDER = gql(`
@@ -35,18 +43,27 @@ query getOrder($orderNo: String!){
         payment,  
         orderDate,
         installDate,
+        invoiceDate,
         customer{
             name,
             address,
+            city,
+            province,
+            postal,
             phone,
             note
-        }
+        },
+        invAddress,
+        invCity,
+        invProvince,
+        invPostal
         
     }
 }
 `);
 
 const _Invoice2: React.FC<Props> = ({ orderNo }) => {
+    const [bgImgState, setBgImgState] = useState<bgImg>(defaultBgImg);
     const { loading, error, data } = useQuery(GET_ORDER, {
         variables: {
             orderNo
@@ -66,9 +83,28 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
     const itemLists = items.concat(new Array<Item>(38 - items.length));
     const emptyItem = { itemName: "none" } as Item;
     itemLists.fill(emptyItem, items.length, itemLists.length - 1);
+    const revertedDate = new Date(order.invoiceDate);
 
+    const doPrint = async () => {
+        await setBgImgState({
+            imgSrc: "none"
+        })
+        window.print();
+    }
+
+    const showPrint = () => {
+        setBgImgState({
+            imgSrc: "url(/static/print_icon1.gif) #f0f0f0 no-repeat 50% 50%"
+        })
+    }
+
+    const offPrint = () => {
+        setBgImgState({
+            imgSrc: "none"
+        })
+    }
     return <Fragment>
-        <div className="container">
+        <div className="container" onClick={doPrint} onMouseOver={showPrint} onMouseOut={offPrint} style={{ background: bgImgState.imgSrc }}>
             <div className="topSection">
                 <div className="companyInfo">
                     <div className="companyDetails">
@@ -100,7 +136,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                         </div>
                         <div className="invContentOverview">
                             <div className="invContentLeft">
-                                {order.invoiceDate ? order.invoiceDate : new Date().toLocaleDateString("en-US")}
+                                {order.invoiceDate ? revertedDate.toLocaleDateString("en-US") : new Date().toLocaleDateString("en-US")}
                             </div>
                             <div className="invContentRight">
                                 Inv{order.orderNo}
@@ -117,9 +153,11 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                     </div>
                     <div className="addrInfo">
                         {customer.name}<br />
-                        {customer.address}<br />
-                        MARKHAM, ON<br />
-                        L3R 4C2
+                        {order.invAddress ? order.invAddress : customer.address}<br />
+                        {order.invCity ? order.invCity : customer.city}
+                        {(order.invCity && order.invProvince) || (customer.city && customer.province) ? ", " : ""}
+                        {order.invProvince ? order.invProvince : customer.province}<br />
+                        {order.invPostal ? order.invPostal : customer.postal}
                     </div>
                 </div>
                 <div className="shipTo">
@@ -127,10 +165,10 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                         <span>Ship To</span>
                     </div>
                     <div className="addrInfo">
-                        BEST BLIND<br />
-                        #11-70 GIBSON DRIVE<br />
-                        MARKHAM, ON<br />
-                        L3R 4C2
+                        {customer.name}<br />
+                        {customer.address}<br />
+                        {customer.city} {customer.city && customer.province ? ", " : ""} {customer.province}<br />
+                        {customer.postal}
                     </div>
                 </div>
             </div>

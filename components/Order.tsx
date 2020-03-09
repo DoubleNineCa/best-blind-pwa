@@ -61,6 +61,14 @@ const defaultInstallationState: installationState = {
     installation: 0
 }
 
+interface installDateState {
+    installDate: string
+}
+
+const defaultInstallDateState: installDateState = {
+    installDate: ""
+}
+
 interface installdcState {
     installationDC: string;
 }
@@ -85,6 +93,24 @@ interface invoiceDateState {
 
 const defaultInvoiceDateState: invoiceDateState = {
     invoiceDate: ""
+}
+
+interface invoiceAddrState {
+    invAddr: {
+        invAddress: string,
+        invCity: string,
+        invProvince: string,
+        invPostal: string
+    }
+}
+
+const defaultInvoiceAddrState: invoiceAddrState = {
+    invAddr: {
+        invAddress: "",
+        invCity: "",
+        invProvince: "",
+        invPostal: ""
+    }
 }
 
 const GET_ORDERS = gql(`
@@ -123,6 +149,10 @@ const GET_ORDERS = gql(`
         phone
         note
       }
+      invAddress
+      invCity
+      invProvince
+      invPostal
     }
   }
 `);
@@ -143,7 +173,9 @@ export const Orders: React.FunctionComponent = () => {
     const [installationState, setInstallationState] = useState<installationState>(defaultInstallationState);
     const [installdcState, setInstalldcState] = useState<installdcState>(defaultInstallcState);
     const [statusState, setStatusState] = useState<statusState>(defaultStatusState);
+    const [installDateState, setInstallDateState] = useState<installDateState>(defaultInstallDateState);
     const [invoiceDateState, setInvoiceDateState] = useState<invoiceDateState>(defaultInvoiceDateState);
+    const [invoiceAddrState, setInvoiceAddrState] = useState<invoiceAddrState>(defaultInvoiceAddrState);
     const { loading, error, data } = useQuery(GET_ORDERS);
     const [updateOrder] = useMutation(UPDATE_ORDER);
 
@@ -182,10 +214,25 @@ export const Orders: React.FunctionComponent = () => {
                 label: detail.status.toString(),
                 value: detail.status
             })
-            const revertedDate = new Date(detail.invoiceDate);
+
+            const revertedInstallDate = new Date(detail.installDate);
+            const revertedInvoiceDate = new Date(detail.invoiceDate);
+
+            setInstallDateState({
+                installDate: revertedInstallDate.toLocaleDateString("en-US")
+            })
 
             setInvoiceDateState({
-                invoiceDate: revertedDate.toLocaleDateString("en-US")
+                invoiceDate: revertedInvoiceDate.toLocaleDateString("en-US")
+            })
+
+            setInvoiceAddrState({
+                invAddr: {
+                    invAddress: detail.invAddress ? detail.invAddress : "",
+                    invCity: detail.invCity ? detail.invCity : "",
+                    invProvince: detail.invProvince ? detail.invProvince : "",
+                    invPostal: detail.invPostal ? detail.invPostal : ""
+                }
             })
         }
     }
@@ -262,6 +309,40 @@ export const Orders: React.FunctionComponent = () => {
             invoiceDate: e.currentTarget.value
         })
     }
+
+    const handleInstallDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInstallDateState({
+            installDate: e.currentTarget.value
+        })
+    }
+
+    const handleInvoiceAddr = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const addrType = e.currentTarget.id;
+        // const tmpInvAddr = {
+        //     invAddress: invoiceAddrState.invAddr.invAddress,
+        //     invCity: invoiceAddrState.invAddr.invCity,
+        //     invProvince: invoiceAddrState.invAddr.invProvince,
+        //     invPostal: invoiceAddrState.invAddr.invPostal
+        // }
+
+        // console.log(tmpInvAddr);
+
+        if (addrType === "invAddr") {
+            invoiceAddrState.invAddr.invAddress = e.currentTarget.value;
+        } else if (addrType === "invCity") {
+            invoiceAddrState.invAddr.invCity = e.currentTarget.value;
+        } else if (addrType === "invProvince") {
+            invoiceAddrState.invAddr.invProvince = e.currentTarget.value;
+        } else if (addrType === "invPostal") {
+            invoiceAddrState.invAddr.invPostal = e.currentTarget.value;
+        }
+
+        // console.log("===>", invoiceAddrState.invAddr);
+        setInvoiceAddrState({
+            invAddr: invoiceAddrState.invAddr
+        })
+
+    }
     //HandleStatus enum
 
     const handlePayment = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -274,11 +355,11 @@ export const Orders: React.FunctionComponent = () => {
 
     const onUpdate = async (e: React.MouseEvent) => {
 
-        const installDate = new Date().toLocaleString().replace(",", "").replace(/:.. /, " ")
+        // const installDate = new Date().toLocaleString().replace(",", "").replace(/:.. /, " ")
         const isUpdate = await updateOrder({
             variables: {
                 orderId: Number(detailState.orderDetail.id),
-                date: installDate,
+                date: installDateState.installDate,
                 input: {
                     customerId: Number(detailState.orderDetail.customer.id),
                     orderNo: detailState.orderDetail.orderNo,
@@ -289,7 +370,11 @@ export const Orders: React.FunctionComponent = () => {
                     installationDiscount: Number(installdcState.installationDC),
                     status: statusState.value,
                     payment: "cash",
-                    invoiceDate: new Date(invoiceDateState.invoiceDate)
+                    invoiceDate: new Date(invoiceDateState.invoiceDate),
+                    invAddress: invoiceAddrState.invAddr.invAddress,
+                    invCity: invoiceAddrState.invAddr.invCity,
+                    invProvince: invoiceAddrState.invAddr.invProvince,
+                    invPostal: invoiceAddrState.invAddr.invPostal
                 }
             }
         })
@@ -441,7 +526,7 @@ export const Orders: React.FunctionComponent = () => {
                                     onChange={toggleHst} />
                             </span>
                         </div>
-                        <div className="orderUpdate">
+                        <div className="orderUpdate" style={{ display: hstState.hst ? "" : "none" }}>
                             <span className="blodeFont">InvoiceDate : </span>
                             <span className="flex-item">
                                 <input
@@ -450,6 +535,58 @@ export const Orders: React.FunctionComponent = () => {
                                     placeholder="MM/DD/YYYY"
                                     value={invoiceDateState.invoiceDate}
                                     onChange={handleInvoiceDate}
+                                />
+                            </span>
+                        </div>
+                        <div className="orderUpdate" style={{ display: hstState.hst ? "" : "none" }}>
+                            <span className="blodeFont">Inv Address</span>
+                            <span className="flex-item">
+                                <input
+                                    className="orderInput"
+                                    type="text"
+                                    id="invAddr"
+                                    placeholder="address"
+                                    value={invoiceAddrState.invAddr.invAddress}
+                                    onChange={handleInvoiceAddr}
+                                />
+                            </span>
+                        </div>
+                        <div className="orderUpdate" style={{ display: hstState.hst ? "" : "none" }}>
+                            <span className="blodeFont">Inv City</span>
+                            <span className="flex-item">
+                                <input
+                                    className="orderInput"
+                                    type="text"
+                                    id="invCity"
+                                    placeholder="city"
+                                    value={invoiceAddrState.invAddr.invCity}
+                                    onChange={handleInvoiceAddr}
+                                />
+                            </span>
+                        </div>
+                        <div className="orderUpdate" style={{ display: hstState.hst ? "" : "none" }}>
+                            <span className="blodeFont">Inv Province</span>
+                            <span className="flex-item">
+                                <input
+                                    className="orderInput"
+                                    type="text"
+                                    id="invProvince"
+                                    placeholder="province"
+                                    value={invoiceAddrState.invAddr.invProvince}
+                                    onChange={handleInvoiceAddr}
+                                />
+                            </span>
+                        </div>
+                        <div className="orderUpdate" style={{ display: hstState.hst ? "" : "none" }}>
+                            <span className="blodeFont">Inv Postal</span>
+                            <span className="flex-item">
+                                <input
+                                    className="orderInput"
+                                    type="text"
+                                    id="invPostal"
+                                    placeholder="postal"
+                                    value={invoiceAddrState.invAddr.invPostal}
+                                    onChange={handleInvoiceAddr}
                                 />
                             </span>
                         </div>
@@ -482,6 +619,18 @@ export const Orders: React.FunctionComponent = () => {
                                     type="text"
                                     value={Number(installationState.installation)}
                                     onChange={handleInstallation} />
+                            </span>
+                        </div>
+                        <div className="orderUpdate">
+                            <span className="blodeFont">InstallDate : </span>
+                            <span className="flex-item">
+                                <input
+                                    className="dateInput"
+                                    type="text"
+                                    placeholder="MM/DD/YYYY"
+                                    value={installDateState.installDate}
+                                    onChange={handleInstallDate}
+                                />
                             </span>
                         </div>
                         <div className="orderUpdate">

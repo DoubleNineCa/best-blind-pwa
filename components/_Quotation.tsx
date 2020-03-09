@@ -1,4 +1,4 @@
-import React, { Fragment, useState, Component } from 'react';
+import React, { Fragment, useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from 'react-apollo';
 // import { Customer } from "../generated/graphql";
@@ -8,6 +8,14 @@ import { calFormatter, cashFormatter, roundUp } from '../util/formatter';
 
 export interface Props {
     orderNo: string
+}
+
+interface bgImg {
+    imgSrc: string
+}
+
+const defaultBgImg: bgImg = {
+    imgSrc: "none"
 }
 
 const GET_ORDER = gql(`
@@ -47,6 +55,7 @@ query getOrder($orderNo: String!){
 `);
 
 export const _Quotation: React.FC<Props> = ({ orderNo }) => {
+    const [bgImgState, setBgImgState] = useState<bgImg>(defaultBgImg);
     const { loading, error, data } = useQuery(GET_ORDER, {
         variables: {
             orderNo
@@ -82,8 +91,27 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     totalPrice.negoTotalPrice += order.installationDiscount;
     totalPrice.saleTotalPrice = totalPrice.selectTotalPrice - totalPrice.negoTotalPrice;
 
+    const doPrint = async () => {
+        await setBgImgState({
+            imgSrc: "none"
+        })
+        window.print();
+    }
+
+    const showPrint = () => {
+        setBgImgState({
+            imgSrc: "url(/static/print_icon1.gif) #f0f0f0 no-repeat 50% 50%"
+        })
+    }
+
+    const offPrint = () => {
+        setBgImgState({
+            imgSrc: "none"
+        })
+    }
+
     return <Fragment>
-        <div className="container">
+        <div className="container" onClick={doPrint} onMouseOver={showPrint} onMouseOut={offPrint} style={{ background: bgImgState.imgSrc }}>
             <div className="topSection">
                 <div className="companyInfo">
                     <div className="logo">
@@ -412,7 +440,6 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
             }
             .quoteList{
                 width: 100%;
-                background: white;
                 display: flex;
                 flex-direction: column;
                 border: 1px solid grey;
@@ -426,7 +453,6 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 border: none;
                 min-height: 25px;
                 border-bottom: 1px solid grey;
-                background: white;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -437,7 +463,6 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 border: none;
                 min-height: 25px;
                 border-bottom: 1px solid grey;
-                background: white;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -449,7 +474,6 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 min-height: 25px;
                 border-top: 2px solid grey;
                 border-bottom: 1px dashed grey;
-                background: white;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;

@@ -72,6 +72,9 @@ query GetCustomer{
       uuid
       name
       address
+      city
+      province
+      postal
       phone
       email
       note
@@ -111,6 +114,9 @@ mutation RegisterCustomer($input: RegisterCustomerInput!){
       id
       name
       address
+      city
+      province
+      postal
       phone
       email
     }
@@ -166,15 +172,15 @@ const Customers: React.FC = () => {
             customer: defaultDetailState.customer
         })
         setDisplayState({
-            on: !displayState.on,
-            title: "Register"
+            on: true,
+            title: displayState.title === "" || displayState.title === "Update" ? "Register" : ""
         })
     }
 
     const onUpdateView = (e: React.MouseEvent) => {
         setDisplayState({
-            on: !displayState.on,
-            title: "Edit"
+            on: true,
+            title: displayState.title === "" || displayState.title === "Register" ? "Update" : ""
         })
     }
 
@@ -184,6 +190,12 @@ const Customers: React.FC = () => {
             customer.name = e.currentTarget.value;
         } else if (e.currentTarget.id === "address") {
             customer.address = e.currentTarget.value;
+        } else if (e.currentTarget.id === "city") {
+            customer.city = e.currentTarget.value;
+        } else if (e.currentTarget.id === "province") {
+            customer.province = e.currentTarget.value;
+        } else if (e.currentTarget.id === "postal") {
+            customer.postal = e.currentTarget.value;
         } else if (e.currentTarget.id === "phone") {
             customer.phone = e.currentTarget.value;
         } else if (e.currentTarget.id === "email") {
@@ -193,6 +205,8 @@ const Customers: React.FC = () => {
         } else {
             alert("Something went wrong");
         }
+
+        console.log(customer);
         setDetailState({
             customer
         });
@@ -208,6 +222,9 @@ const Customers: React.FC = () => {
                     input: {
                         name: detailState.customer.name,
                         address: detailState.customer.address,
+                        city: detailState.customer.city,
+                        province: detailState.customer.province,
+                        postal: detailState.customer.postal,
                         phone: detailState.customer.phone,
                         email: detailState.customer.email,
                         note: detailState.customer.note
@@ -225,12 +242,16 @@ const Customers: React.FC = () => {
             //     alert("something went wrong");
             // }
         } else if (btnType === "update") {
+            console.log(detailState.customer);
             const mutationData = await updateCustomer({
                 variables: {
                     id: Number(detailState.customer.id),
                     data: {
                         name: detailState.customer.name,
                         address: detailState.customer.address,
+                        city: detailState.customer.city,
+                        province: detailState.customer.province,
+                        postal: detailState.customer.postal,
                         phone: detailState.customer.phone,
                         email: detailState.customer.email,
                         note: detailState.customer.note
@@ -294,7 +315,7 @@ const Customers: React.FC = () => {
         return router.push(`/quote?customerId=${editState.customerId}&orderNo=${editState.orderNo}`);
     }
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const keyword = e.currentTarget.value;
 
         if (loading) {
@@ -302,7 +323,6 @@ const Customers: React.FC = () => {
         } else if (error) {
             return <ErrorView errMsg={error.message} currentLocation={2} />
         } else {
-            console.log("here");
             if (data && data.getCustomers && keyword !== "") {
                 if (keyword === "all") {
                     setCustomerState({
@@ -327,7 +347,7 @@ const Customers: React.FC = () => {
     return (
         <Fragment>
             <div className="userSearchContainer">
-                <input type="text" placeholder="input customer's name or address" onChange={onChange} />
+                <input type="text" placeholder="input customer's name or address" onChange={onSearchChange} />
                 <div className="userTopSection">User List</div>
                 <div className="userTable">
                     <div className="customerTitles">
@@ -364,7 +384,7 @@ const Customers: React.FC = () => {
 
             <div className="userDetailContainer">
                 {
-                    displayState.on ?
+                    displayState.title === "" ?
                         <div className="userView">
                             <div className="userDetail">
                                 <div className="userDetailTable">
@@ -439,8 +459,19 @@ const Customers: React.FC = () => {
                                 </div>
                                 <div className="inputRow">
                                     <div className="rowTitle">ADDRESS</div>
-                                    <input type="text" id="address" className="registerInput" value={detailState.customer.address} onChange={changeHandle} />
+                                    <div className="addressSection">
+                                        <div className="addressRow">
+                                            <input type="text" id="address" className="addressInput" value={detailState.customer.address} onChange={changeHandle} />
+                                        </div>
+                                        <div className="addressRow">
+                                            <input type="text" id="city" className="addressDetailInput" value={detailState.customer.city ? detailState.customer.city : ""} placeholder="city" onChange={changeHandle} />
+                                            <input type="text" id="province" className="addressDetailInput" value={detailState.customer.province ? detailState.customer.province : ""} placeholder="province" onChange={changeHandle} />
+                                            <input type="text" id="postal" className="addressDetailInput" value={detailState.customer.postal ? detailState.customer.postal : ""} placeholder="postal" onChange={changeHandle} />
+                                        </div>
+                                    </div>
+
                                 </div>
+
                                 <div className="inputRow">
                                     <div className="rowTitle">PHONE</div>
                                     <input type="text" id="phone" className="registerInput" value={detailState.customer.phone} onChange={changeHandle} />
@@ -561,6 +592,30 @@ const Customers: React.FC = () => {
                 .registerInput{
                     width: 70%;
                     margin-top: 0;
+                }
+
+                .addressSection{
+                    width: 75%;
+                    min-height: 30px;
+                    margin-top: 0;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .addressRow{
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                .addressInput{
+                    width: 100%;
+                    margin-top:0;
+                }
+
+                .addressDetailInput{
+                    width: 25%;
+                    margin-top: 10px;
                 }
 
                 .customerSubmit{
