@@ -318,14 +318,6 @@ export const Orders: React.FunctionComponent = () => {
 
     const handleInvoiceAddr = (e: React.ChangeEvent<HTMLInputElement>) => {
         const addrType = e.currentTarget.id;
-        // const tmpInvAddr = {
-        //     invAddress: invoiceAddrState.invAddr.invAddress,
-        //     invCity: invoiceAddrState.invAddr.invCity,
-        //     invProvince: invoiceAddrState.invAddr.invProvince,
-        //     invPostal: invoiceAddrState.invAddr.invPostal
-        // }
-
-        // console.log(tmpInvAddr);
 
         if (addrType === "invAddr") {
             invoiceAddrState.invAddr.invAddress = e.currentTarget.value;
@@ -337,7 +329,6 @@ export const Orders: React.FunctionComponent = () => {
             invoiceAddrState.invAddr.invPostal = e.currentTarget.value;
         }
 
-        // console.log("===>", invoiceAddrState.invAddr);
         setInvoiceAddrState({
             invAddr: invoiceAddrState.invAddr
         })
@@ -359,7 +350,7 @@ export const Orders: React.FunctionComponent = () => {
         const isUpdate = await updateOrder({
             variables: {
                 orderId: Number(detailState.orderDetail.id),
-                date: installDateState.installDate,
+                date: new Date(installDateState.installDate),
                 input: {
                     customerId: Number(detailState.orderDetail.customer.id),
                     orderNo: detailState.orderDetail.orderNo,
