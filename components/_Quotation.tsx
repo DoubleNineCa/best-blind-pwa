@@ -273,7 +273,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                         </div>
                     </div>
                     <div className="stamp">
-
+                        <img src="/static/stamp1.png" />
                     </div>
                 </div>
             </div>
@@ -668,6 +668,11 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 width: 19.8%;
                 height: 100%;
                 border-right: 2px solid grey;
+                display: flex;
+                align-items: center;
+            }
+            .stamp img{
+                width: 100%;
             }
         `}
         </style>
