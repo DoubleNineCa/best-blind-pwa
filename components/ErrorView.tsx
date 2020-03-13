@@ -7,10 +7,10 @@ export interface Props {
 }
 export const ErrorView: React.FC<Props> = ({ errMsg, currentLocation }) => {
     const router = useRouter();
-
+    console.log(errMsg);
     if (errMsg.includes("not authenticated")) {
         router.push(`/login?currentLocation=${currentLocation}`);
     }
 
-    return <span>An error occured </span>
+    return <span>An error occured {errMsg} </span>
 }

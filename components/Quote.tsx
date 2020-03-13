@@ -6,6 +6,8 @@ import { orderNoGenerator } from '../util/formatter';
 import { useRouter } from 'next/router';
 import { Part, Item, Order } from '../generated/graphql';
 import { ErrorView } from './ErrorView';
+import { AutoComplete } from './AutoComplete';
+import { bind } from '@wry/context';
 
 
 interface Props {
@@ -108,6 +110,7 @@ query GetOrder($input: String!){
         id
         partId
         itemName
+        roomName
         width
         height
         price
@@ -257,10 +260,19 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
         return router.push(`/quote?customerId=${customerId}&orderNo=${inputFields[0].value}`);
     }
 
+    const preventEnter = (e: React.KeyboardEvent) => {
+        if (e.keyCode === 13) {
+            return;
+        }
+    }
+
     const itemHandleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const itemRouter = e.currentTarget.id;
 
+        const itemRouter = e.currentTarget.id;
+        if (selectedWidth.width === "0" || selectedHeight.height === "0") {
+            return;
+        }
         if (itemRouter === "add") {
             await addItem({
                 variables: {
@@ -270,6 +282,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                         coverColor: selectedCover.cover,
                         width: Number(selectedWidth.width),
                         height: Number(selectedHeight.height),
+                        roomName: selectedRoomName.roomName,
                         handrailType: selectedType.type,
                         handrailMaterial: selectedMaterial.material,
                         handrailLength: Number(selectedLength.length),
@@ -285,11 +298,14 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                         coverColor: selectedCover.cover,
                         width: Number(selectedWidth.width),
                         height: Number(selectedHeight.height),
+                        roomName: selectedRoomName.roomName,
                         handrailType: selectedType.type,
                         handrailMaterial: selectedMaterial.material,
                         handrailLength: Number(selectedLength.length)
                     }
                 }
+            }).catch(e => {
+                console.log("catch e", e);
             })
         } else {
             await deleteItem({
@@ -307,9 +323,9 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
         })
     }
 
-    const blindHandle = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const blindHandle = (blinds: string) => {
         setSelectedBlind({
-            blind: e.currentTarget.value
+            blind: blinds.split(" ")[0].replace(/[^(0-9)]/gi, "")
         })
     }
 
@@ -352,6 +368,9 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
     const editItem = (item: Item) => (e: React.MouseEvent) => {
         setSelectedState({
             currentLocation: Number(e.currentTarget.id)
+        })
+        setSelectedRoomName({
+            roomName: item.roomName ? item.roomName : ""
         })
         setSelectedBlind({
             blind: (item.partId).toString()
@@ -472,7 +491,14 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                 </div>
                                 <div className="itemInputRow">
                                     <div className="rowTitle">BLIND</div>
-                                    <select className="itemSelect" onChange={blindHandle}>
+                                    {
+                                        blindsData && blindsData.getParts ?
+                                            <AutoComplete options={blindsData.getParts} blindHandle={bind(blindHandle)} blindId={selectedBlind.blind} />
+                                            :
+                                            <input type="text" className="itemInput" />
+                                    }
+
+                                    {/* <select className="itemSelect" onChange={blindHandle}>
                                         {
                                             blindsData && blindsData.getParts ?
                                                 blindsData.getParts.map((part: Part) => {
@@ -481,7 +507,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                                 :
                                                 <option value="-1">none</option>
                                         }
-                                    </select>
+                                    </select> */}
                                 </div>
                                 <div className="itemInputRow">
                                     <div className="rowTitle">WIDTH</div>
@@ -528,7 +554,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                     </select>
                                 </div>
                                 <div className="buttonSection">
-                                    <button className="addBtn" id="add" onClick={itemHandleSubmit}>ADD</button>
+                                    <button className="addBtn" id="add" onClick={itemHandleSubmit} onKeyPress={preventEnter}>ADD</button>
                                     <button className="editBtn" id="edit" onClick={itemHandleSubmit}>EDIT</button>
                                     <button className="removeBtn" id="remove" onClick={itemHandleSubmit}>REMOVE</button>
                                 </div>

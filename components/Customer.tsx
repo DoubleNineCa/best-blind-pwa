@@ -205,8 +205,6 @@ const Customers: React.FC = () => {
         } else {
             alert("Something went wrong");
         }
-
-        console.log(customer);
         setDetailState({
             customer
         });
@@ -281,7 +279,7 @@ const Customers: React.FC = () => {
             alert("Invalid Request");
         }
 
-        // return router.reload();
+        return router.reload();
     }
 
     const viewDetails = (customer: Customer) => (e: React.MouseEvent) => {

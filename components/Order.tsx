@@ -133,6 +133,7 @@ const GET_ORDERS = gql(`
         id
         partId
         itemName
+        roomName
         width
         price
         height
@@ -464,7 +465,7 @@ export const Orders: React.FunctionComponent = () => {
                                     return <Fragment>
                                         <div className="detailOverview">
                                             <div className="itemNo">{i + 1}</div>
-                                            <div className="roomName">roomName</div>
+                                            <div className="roomName">{item.roomName}</div>
                                             <div className="blindStyle">{item.itemName}</div>
                                             <div className="coverColor">{item.coverColor}</div>
                                             <div className="bWidth">{item.width}</div>

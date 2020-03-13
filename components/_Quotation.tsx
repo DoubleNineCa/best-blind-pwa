@@ -35,6 +35,7 @@ query getOrder($orderNo: String!){
             width,
             height,
             price,
+            roomName,
             handrailMaterial,
             handrailType,
             handrailLength,
