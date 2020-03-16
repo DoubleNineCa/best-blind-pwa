@@ -240,15 +240,15 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     <div className="signature">
                         <div className="signatureOverview"></div>
                         <div className="signatureOverview">
-                            <div className="signatureType">[ 제작 ]</div>
+                            <div className="signatureType">[ Made by ]</div>
                             <div className="signatureInput"></div>
                         </div>
                         <div className="signatureOverview">
-                            <div className="signatureType">[ 설치 ]</div>
+                            <div className="signatureType">[ Installed by ]</div>
                             <div className="signatureInput"></div>
                         </div>
                         <div className="signatureOverview">
-                            <div className="signatureType">[ 결제 ]</div>
+                            <div className="signatureType">[ Paid to ]</div>
                             <div className="signatureInput"></div>
                         </div>
                     </div>

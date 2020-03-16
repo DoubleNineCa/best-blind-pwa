@@ -8,7 +8,7 @@ import { calFormatter, cashFormatter, numberFormatter, roundUp } from "../util/f
 import { ErrorView } from './ErrorView';
 
 export interface Props {
-    keyword: string;
+    keyword?: string;
 }
 
 interface hoverState {
@@ -164,7 +164,7 @@ mutation UpdateOrder($orderId: Float!, $date: DateTime!, $input: PlaceOrderInput
   }
 `)
 
-export const Orders: React.FunctionComponent = () => {
+export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     const router = useRouter();
     const [hoverState, setHoverState] = useState<hoverState>(defaultHoverState);
     const [detailState, setDetailState] = useState<detailState>(defaultOrderState);
@@ -177,18 +177,18 @@ export const Orders: React.FunctionComponent = () => {
     const [installDateState, setInstallDateState] = useState<installDateState>(defaultInstallDateState);
     const [invoiceDateState, setInvoiceDateState] = useState<invoiceDateState>(defaultInvoiceDateState);
     const [invoiceAddrState, setInvoiceAddrState] = useState<invoiceAddrState>(defaultInvoiceAddrState);
-    const { loading, error, data } = useQuery(GET_ORDERS);
+    const { loading, error, data } = useQuery(GET_ORDERS, {
+        onCompleted: async data => {
+            const isOrder = data.getOrders.filter((order: Order) => order.orderNo === keyword);
+            if (keyword && isOrder.length > 0) {
+                await setDetails(isOrder[0]);
+            }
+        }
+    });
+
     const [updateOrder] = useMutation(UPDATE_ORDER);
 
-    const statusList = [
-        { label: "MEASUER", value: Status.Measure },
-        { label: "MANUFACTURE", value: Status.Manufacture },
-        { label: "INSTALL", value: Status.Install },
-        { label: "REMAINING", value: Status.Ramaining },
-        { label: "COMPLETE", value: Status.Complete }
-    ]
-    const viewDetails = (order: Order) => (e: React.MouseEvent) => {
-
+    const setDetails = (order: Order) => {
         const detail = order;
 
         if (detail !== undefined) {
@@ -216,9 +216,8 @@ export const Orders: React.FunctionComponent = () => {
                 value: detail.status
             })
 
-            const revertedInstallDate = new Date(detail.installDate);
-            const revertedInvoiceDate = new Date(detail.invoiceDate);
-
+            const revertedInstallDate = detail.installDate ? new Date(detail.installDate) : new Date();
+            const revertedInvoiceDate = detail.invoiceDate ? new Date(detail.invoiceDate) : new Date();
             setInstallDateState({
                 installDate: revertedInstallDate.toLocaleDateString("en-US")
             })
@@ -238,8 +237,14 @@ export const Orders: React.FunctionComponent = () => {
         }
     }
 
+    const viewDetails = (order: Order) => (e: React.MouseEvent) => {
+        setHoverState({
+            currentLocation: Number(e.currentTarget.id)
+        })
+        setDetails(order)
+    }
+
     const togglePopup = () => {
-        //here
         window.open(`print2?customerName=${detailState.orderDetail.customer.name}&orderNo=${detailState.orderDetail.orderNo}`, "_blank")!.focus();
     }
 
@@ -423,7 +428,7 @@ export const Orders: React.FunctionComponent = () => {
                         {
                             getOrders.length > 0 ?
                                 getOrders.map((order: Order) => {
-                                    return (<div key={order.id} id={order.id} className={hoverState.currentLocation === Number(order.id) ? "orderOverviewOn" : "orderOverview"} onClick={viewDetails(order)} onMouseOver={onDisplay} onMouseLeave={offDisplay}>
+                                    return (<div key={order.id} id={order.id} className={hoverState.currentLocation === Number(order.id) || order.orderNo === keyword ? "orderOverviewOn" : "orderOverview"} onClick={viewDetails(order)}>
                                         <div className="orderNo">{order.orderNo}</div>
                                         <div className="orderName">{order.customer.name}</div>
                                         <div className="orderDate">{calFormatter(order.orderDate)}</div>
@@ -479,7 +484,7 @@ export const Orders: React.FunctionComponent = () => {
                                         </div>
                                     </Fragment>
                                 }) :
-                                <div> "hi"</div>
+                                <div> "no details"</div>
                         }
 
                     </div>
@@ -641,7 +646,7 @@ export const Orders: React.FunctionComponent = () => {
                                 <option value={Status.Measure}>MEASURE</option>
                                 <option value={Status.Manufacture}>MANUFACTURE</option>
                                 <option value={Status.Install}>INSTALL</option>
-                                <option value={Status.Ramaining}>REMAINING</option>
+                                <option value={Status.Remaining}>REMAINING</option>
                                 <option value={Status.Complete}>COMPLETE</option>
                             </select>
                         </div>

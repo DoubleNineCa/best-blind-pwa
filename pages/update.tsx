@@ -3,14 +3,21 @@ import { Fragment } from "react";
 
 import { Layout } from '../components/Layout';
 import { Parts } from "../components/Part";
+import { Grades } from "../components/Grade";
 
 const Update = () => {
     const router = useRouter();
 
     return <Fragment>
-        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={4} />
+        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={router.query.subMenu !== 'Parts' ? 4 : 5} />
         <div className="contentContainer">
-            <Parts />
+            {
+                router.query.subMenu === 'Parts' ?
+                    <Parts />
+                    :
+                    <Grades />
+            }
+
         </div>
         <style jsx>{`
                     .contentContainer {

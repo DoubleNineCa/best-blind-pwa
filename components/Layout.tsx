@@ -1,27 +1,33 @@
 import React, { useState, Fragment } from 'react';
 import Link from 'next/link';
 
-// interface SubHeaderState {
-//     currentLocation: number;
-// }
-
-// const defaultState: SubHeaderState = {
-//     currentLocation: 0
-// };
-
 interface Props {
     onTaskCreated: string[];
     currentLocation: number;
 }
 
+interface dropDownState {
+    mouseIn: boolean;
+}
+
+const defaultDropDwonState: dropDownState = {
+    mouseIn: false
+}
+
 export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentLocation }) => {
-    // const [subHeaderState, setSubHeaderState] = useState<SubHeaderState>(defaultState);
-    // const menuClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement, MouseEvent>) => {
-    //     const { id } = event.currentTarget;
-    //     setSubHeaderState({
-    //         currentLocation: Number(id)
-    //     })
-    // }
+    const [dropDownState, setDropDownState] = useState<dropDownState>(defaultDropDwonState);
+
+    const onMouseIn = (e: React.MouseEvent) => {
+        setDropDownState({
+            mouseIn: true
+        })
+    }
+
+    const onMouseOut = (e: React.MouseEvent) => {
+        setDropDownState({
+            mouseIn: false
+        })
+    }
 
     return <Fragment>
         <div className="pageContainer">
@@ -41,9 +47,37 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
                 {
                     onTaskCreated.map((menu: any, i) => {
                         return <Link href={`${menu === 'DashBoard' ? '/' : menu.toLowerCase()}`}>
-                            <a id={'' + i} className={i === currentLocation ? 'orders-option orders-option-selected' : 'secondaryheader-option'}>
-                                <div className="sidebar-option-text">{menu}</div>
-                            </a>
+                            {
+                                menu !== "Update" ?
+                                    <a className={i === currentLocation ? 'orders-option orders-option-selected' : 'secondaryheader-option'}>
+                                        <div className="sidebar-option-text">{menu}</div>
+                                    </a>
+                                    :
+                                    <div className={i === currentLocation || i + 1 === currentLocation ? 'orders-option orders-option-selected dropDown' : 'secondaryheader-option dropDown'} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}>
+                                        <div>Update</div>
+                                        <div className="dropDownContent" style={{ display: dropDownState.mouseIn ? "block" : "none" }}>
+
+                                            <Link href={{ pathname: '/update', query: { subMenu: "Grades" } }}>
+                                                <a>
+                                                    <div
+                                                        key="Grades"
+                                                        className={currentLocation === 4 ? "dropHeader-option dropHeader-option-selected" : "dropHeader-option"}>
+                                                        Grades
+                                                    </div>
+                                                </a>
+                                            </Link>
+                                            <Link href={{ pathname: '/update', query: { subMenu: "Parts" } }}>
+                                                <a>
+                                                    <div
+                                                        key="Parts"
+                                                        className={currentLocation === 5 ? "dropHeader-option dropHeader-option-selected" : "dropHeader-option"}>
+                                                        Parts
+                                                    </div>
+                                                </a>
+                                            </Link>
+                                        </div>
+                                    </div>
+                            }
                         </Link>
                     })
                 }
@@ -106,6 +140,8 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
             padding: none;
             z-index: 10;
         }
+
+        
         
         .secondaryheader a{
             text-decoration: none;
@@ -134,10 +170,47 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
             height: 50px;
             background: #F1F1F1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             box-shadow: 0px 1px 1px grey;
             z-index: 1;
+        }
+
+        .dropHeader-option{
+            height: 50px;
+            background: #F1F1F1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            // box-shadow: 0px 1px 1px grey;
+        }
+
+        .dropHeader-option-selected {
+            background: #F1F1F1;
+            padding-top: 3px;
+            border-bottom: 3px solid #2F3D4C;
+            z-index: 1;
+        }
+
+        .dropDown{
+            position: relative;
+        }
+
+        .dropDownContent{
+            display: block;
+            position: absolute;
+            margin-top: 78px;
+            background-color: #F1F1F1;
+            width: 100%;
+            box-shadow: 0px 1px 1px grey;
+            padding: 12px 16px;
+            z-index: 1;
+        }
+
+        .sidebar-option-text{
+            position: fixed;
         }
 
         .pageContainer {

@@ -10,7 +10,7 @@ const Order = () => {
     return <Fragment>
         <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={1} />
         <div className="contentContainer">
-            <Orders />
+            <Orders keyword={router.query.orderNo ? router.query.orderNo.toString() : undefined} />
         </div>
         <style jsx>{`
                     .contentContainer {

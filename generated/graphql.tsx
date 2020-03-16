@@ -90,6 +90,7 @@ export type Mutation = {
   deleteItem: Scalars['Boolean'],
   placeOrder: Order,
   updateOrder: Scalars['Boolean'],
+  updateStep: Scalars['Boolean'],
   deleteOrder: Scalars['Boolean'],
 };
 
@@ -175,6 +176,11 @@ export type MutationPlaceOrderArgs = {
 export type MutationUpdateOrderArgs = {
   data: PlaceOrderInput,
   installDate: Scalars['DateTime'],
+  orderId: Scalars['Float']
+};
+
+
+export type MutationUpdateStepArgs = {
   orderId: Scalars['Float']
 };
 
@@ -310,7 +316,7 @@ export enum Status {
   Measure = 'MEASURE',
   Manufacture = 'MANUFACTURE',
   Install = 'INSTALL',
-  Ramaining = 'RAMAINING',
+  Remaining = 'REMAINING',
   Complete = 'COMPLETE'
 }
 
@@ -468,6 +474,7 @@ export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversO
   deleteItem?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteItemArgs>,
   placeOrder?: Resolver<Order, ParentType, Context, MutationPlaceOrderArgs>,
   updateOrder?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateOrderArgs>,
+  updateStep?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateStepArgs>,
   deleteOrder?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteOrderArgs>,
 }>;
 

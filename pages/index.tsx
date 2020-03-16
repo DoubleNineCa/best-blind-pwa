@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { NextPage } from 'next';
 import { Layout } from '../components/Layout'
-import { Grades } from "../components/Grade";
+import { Dashboard } from '../components/Dashboard';
+import { SalesBoard } from '../components/SalesBoard';
 
 interface InitialProps {
     greetings: string;
@@ -17,7 +18,8 @@ const IndexPage: NextPage<Props, InitialProps> = () => {
     return <Fragment>
         <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={0} />
         <div className="contentContainer">
-            <Grades />
+            {/* <SalesBoard /> */}
+            <Dashboard />
         </div>
 
         <style jsx>{`
