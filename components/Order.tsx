@@ -238,6 +238,11 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     const viewDetails = (order: Order) => (e: React.MouseEvent) => {
+        if (e.currentTarget.parentNode!.querySelectorAll("div.orderOverviewOn").length > 0) {
+            e.currentTarget.parentNode!.querySelectorAll("div.orderOverviewOn").forEach(element => {
+                element.className = element.className.split(" ")[0] + " orderOverview";
+            })
+        }
         setHoverState({
             currentLocation: Number(e.currentTarget.id)
         })
