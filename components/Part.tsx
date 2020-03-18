@@ -413,6 +413,7 @@ export const Parts: React.FC = () => {
                                 <option value="6">$99</option>
                                 <option value="7">$110</option>
                                 <option value="8">$130</option>
+                                <option value="9">$250</option>
                             </select>
                         </div>
                     </div>
