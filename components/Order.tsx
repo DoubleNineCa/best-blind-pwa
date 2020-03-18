@@ -465,7 +465,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                     <div className="detailList">
                         {
                             detailState.orderDetail.items !== null && detailState.orderDetail.items !== undefined ?
-                                detailState.orderDetail.items.map((item, i) => {
+                                detailState.orderDetail.items.sort((a, b) => { return Number(a.id) - Number(b.id) }).map((item, i) => {
                                     const discountPrice = Math.round(item.price * (detailState.orderDetail.discount / 100) * 100) / 100;
                                     return <Fragment>
                                         <div className="detailOverview">

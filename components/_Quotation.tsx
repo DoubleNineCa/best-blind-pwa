@@ -87,7 +87,6 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
         totalPrice.selectTotalPrice += item.price;
         totalPrice.negoTotalPrice += item.price * order.discount / 100;
     });
-
     totalPrice.selectTotalPrice += order.installation;
     totalPrice.negoTotalPrice += order.installationDiscount;
     totalPrice.saleTotalPrice = totalPrice.selectTotalPrice - totalPrice.negoTotalPrice;
@@ -227,7 +226,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                             <div className="quoteBlind"></div>
                             <div className="quoteWidth"></div>
                             <div className="quoteHeight"></div>
-                            <div className="quoteSqrt">{totalPrice.sqrt}</div>
+                            <div className="quoteSqrt">{Math.floor(totalPrice.sqrt * 10) / 10}</div>
                             <div className="quoteLR"></div>
                             <div className="quoteControl"></div>
                             <div className="quoteSelectP">{cashFormatter(totalPrice.selectTotalPrice)}</div>
