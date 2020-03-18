@@ -271,7 +271,7 @@ export const Dashboard: React.FunctionComponent = () => {
                                     <div className="unpaidPhone">{order.customer.phone}</div>
                                     <div className="unpaidInstallDate">{new Date(order.installDate).toLocaleDateString("en-US")}<br />{order.invoiceDate ? new Date(order.invoiceDate).toLocaleDateString("en-US") : "-"}</div>
                                     <div className="unpaidRemain">
-                                        {cashFormatter(order.total! - order.deposit)}
+                                        {cashFormatter(order.total! + (order.hst ? order.total! * 0.13 : 0) - order.deposit)}
                                     </div>
                                     <div className="dropDownContent">
                                         <p onClick={onNext(order.id)} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}>Next Step</p>

@@ -269,7 +269,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                         </div>
                         <div className="summaryOverview">
                             <div className="summaryType">&nbsp;TOTAL PRICE</div>
-                            <div className="summaryValue">{cashFormatter(totalPrice.saleTotalPrice + totalPrice.saleTotalPrice * 0.13 - order.deposit)}</div>
+                            <div className="summaryValue">{cashFormatter(totalPrice.saleTotalPrice + (order.hst ? totalPrice.saleTotalPrice * 0.13 : 0) - order.deposit)}</div>
                         </div>
                     </div>
                     <div className="stamp">
