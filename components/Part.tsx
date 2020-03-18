@@ -403,7 +403,8 @@ export const Parts: React.FC = () => {
                         <div className="partInput">
                             <span className="blodeFont">GRADE : </span>
                             <select className="selectPartType" value={gradeState.grade} onChange={handleGrade}>
-                                <option value="0">Select grade...</option>
+                                <option value="-1">Select grade...</option>
+                                <option value="0">$27</option>
                                 <option value="1">$44</option>
                                 <option value="2">$55</option>
                                 <option value="3">$66</option>
