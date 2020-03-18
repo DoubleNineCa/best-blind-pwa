@@ -85,7 +85,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
         //Math.round(input * 100) / 100
         totalPrice.sqrt += roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5;
         totalPrice.selectTotalPrice += item.price;
-        totalPrice.negoTotalPrice += Math.floor(item.price * order.discount * 100) / 100;
+        totalPrice.negoTotalPrice += Math.floor(item.price * order.discount) / 100;
     });
     totalPrice.selectTotalPrice += order.installation;
     totalPrice.negoTotalPrice += order.installationDiscount;
@@ -159,7 +159,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     <div className="quoteList">
                         {
                             printedItems.map((item: Item, idx: any) => {
-                                const discountedPrice = Math.floor(item.price * order.discount * 100) / 100;
+                                const discountedPrice = Math.floor(item.price * order.discount) / 100;
                                 const salePrice = item.price - discountedPrice;
 
                                 if (item.id) {
