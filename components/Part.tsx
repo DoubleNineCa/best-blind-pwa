@@ -381,9 +381,12 @@ export const Parts: React.FC = () => {
                                 <option value="0">Select color...</option>
                                 <option value="WHITE">WHITE</option>
                                 <option value="IVORY">IVORY</option>
+                                <option value="CREAM">CREAM</option>
+                                <option value="OATMEAL">OATMEAL</option>
                                 <option value="GREY">GREY</option>
                                 <option value="BLACK">BLACK</option>
                                 <option value="BROWN">BROWN</option>
+
                             </select>
                         </div>
                         <div className="partInput">
