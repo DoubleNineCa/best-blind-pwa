@@ -475,7 +475,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                                             <div className="coverColor">{item.coverColor}</div>
                                             <div className="bWidth">{item.width}</div>
                                             <div className="bHeight">{item.height}</div>
-                                            <div className="baseArea">{roundUp((item.width * item.height) / 10000, 10)}</div>
+                                            <div className="baseArea">{roundUp((item.width * item.height) / 10000, 10) > 1.5 ? roundUp((item.width * item.height) / 10000, 10) : 1.5}</div>
                                             <div className="handlePosition">{item.handrailType}</div>
                                             <div className="controlHeight">{item.handrailLength}</div>
                                             <div className="regularPrice">{cashFormatter(item.price)}</div>

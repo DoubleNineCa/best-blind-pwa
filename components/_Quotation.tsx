@@ -85,7 +85,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
         //Math.round(input * 100) / 100
         totalPrice.sqrt += roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5;
         totalPrice.selectTotalPrice += item.price;
-        totalPrice.negoTotalPrice += item.price * order.discount / 100;
+        totalPrice.negoTotalPrice += Math.floor(item.price * order.discount * 100) / 100;
     });
     totalPrice.selectTotalPrice += order.installation;
     totalPrice.negoTotalPrice += order.installationDiscount;
@@ -159,7 +159,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     <div className="quoteList">
                         {
                             printedItems.map((item: Item, idx: any) => {
-                                const discountedPrice = item.price * order.discount / 100;
+                                const discountedPrice = Math.floor(item.price * order.discount * 100) / 100;
                                 const salePrice = item.price - discountedPrice;
 
                                 if (item.id) {
@@ -261,7 +261,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                         </div>
                         <div className="summaryOverview">
                             <div className="summaryType">&nbsp;HST(13%)</div>
-                            <div className="summaryValue">{cashFormatter(totalPrice.saleTotalPrice * 0.13)}</div>
+                            <div className="summaryValue">{order.hst ? cashFormatter(totalPrice.saleTotalPrice * 0.13) : cashFormatter(0)}</div>
                         </div>
                         <div className="summaryOverview">
                             <div className="summaryType">&nbsp;DEPOSIT</div>

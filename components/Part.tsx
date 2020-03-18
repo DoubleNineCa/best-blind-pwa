@@ -74,7 +74,7 @@ interface gradeState {
 }
 
 const defaultGradeState: gradeState = {
-    grade: "0"
+    grade: "-1"
 }
 
 const GET_PARTS = gql(`
