@@ -199,7 +199,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     <div className="quoteList">
                         {
                             _printedItems.map((item: Item, idx: any) => {
-                                const discountedPrice = Math.floor(item.price * order.discount) / 100;
+                                const discountedPrice = item.partType === PartType.Fabric ? Math.floor(item.price * order.discount) / 100 : 0;
                                 const salePrice = item.price - discountedPrice;
                                 if (item.id && idx !== 31 && idx !== 32 && idx !== 33) {
                                     return (<div className="quoteOverview">
@@ -213,7 +213,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                                         <div className="quoteControl">{item.handrailLength}</div>
                                         <div className="quoteSelectP">{cashFormatter(item.price)}</div>
                                         <div className="quoteNego">{item.partType === PartType.Fabric ? cashFormatter(discountedPrice) : ""}</div>
-                                        <div className="quoteSaleP">{item.partType === PartType.Fabric ? cashFormatter(item.price) : cashFormatter(item.price * Number(item.handrailLength))}</div>
+                                        <div className="quoteSaleP">{item.partType === PartType.Fabric ? cashFormatter(salePrice) : cashFormatter(item.price * Number(item.handrailLength))}</div>
                                     </div>)
                                 } else if (idx === 31 || idx === 32 || idx === 33) {
                                     return <div className={idx !== 33 ? "quoteOverviewNone" : "quoteOverviewNone NoneBottom"}></div>

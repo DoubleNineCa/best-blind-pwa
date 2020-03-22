@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import { Query, useQuery, useMutation } from 'react-apollo';
 import { useRouter } from 'next/router';
 
-import { Order, Item, Customer, Status } from "../generated/graphql";
+import { Order, Item, Customer, Status, PartType } from "../generated/graphql";
 import { calFormatter, cashFormatter, numberFormatter, roundUp } from "../util/formatter";
 import { ErrorView } from './ErrorView';
 
@@ -113,6 +113,24 @@ const defaultInvoiceAddrState: invoiceAddrState = {
     }
 }
 
+interface pureTotalState {
+    fabric: number,
+    component: number
+}
+
+const defaultPureTotalState: pureTotalState = {
+    fabric: 0,
+    component: 0
+}
+
+interface estimationState {
+    amount: number
+}
+
+const defaultEstimationState: estimationState = {
+    amount: 0
+}
+
 const GET_ORDERS = gql(`
 {
     getOrders{
@@ -132,6 +150,7 @@ const GET_ORDERS = gql(`
       items{
         id
         partId
+        partType
         itemName
         roomName
         width
@@ -177,6 +196,9 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     const [installDateState, setInstallDateState] = useState<installDateState>(defaultInstallDateState);
     const [invoiceDateState, setInvoiceDateState] = useState<invoiceDateState>(defaultInvoiceDateState);
     const [invoiceAddrState, setInvoiceAddrState] = useState<invoiceAddrState>(defaultInvoiceAddrState);
+    const [pureTotalState, setPureTotalState] = useState<pureTotalState>(defaultPureTotalState);
+    const [estimationState, setEstimationState] = useState<estimationState>(defaultEstimationState);
+
     const { loading, error, data } = useQuery(GET_ORDERS, {
         onCompleted: async data => {
             const isOrder = data.getOrders.filter((order: Order) => order.orderNo === keyword);
@@ -190,6 +212,16 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
 
     const setDetails = (order: Order) => {
         const detail = order;
+        let fabricTot = 0, componentTot = 0;
+
+        if (order.items) {
+            fabricTot = order.items.filter((item: Item) => item.partType === PartType.Fabric).reduce((acc, item: Item) => {
+                return acc + item.price;
+            }, 0)
+            componentTot = order.items.filter((item: Item) => item.partType === PartType.Component).reduce((acc, item: Item) => {
+                return acc + item.price * item.handrailLength;
+            }, 0)
+        }
 
         if (detail !== undefined) {
             setDetailState({
@@ -233,6 +265,15 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                     invProvince: detail.invProvince ? detail.invProvince : "",
                     invPostal: detail.invPostal ? detail.invPostal : ""
                 }
+            })
+
+            setPureTotalState({
+                fabric: fabricTot,
+                component: componentTot
+            })
+
+            setEstimationState({
+                amount: fabricTot * (100 - order.discount) / 100 + componentTot + order.installation - order.installationDiscount - order.deposit
             })
         }
     }
@@ -293,17 +334,27 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         setDiscountState({
             discount: Number(e.currentTarget.value)
         })
+        setEstimationState({
+            amount: pureTotalState.fabric * (100 - Number(e.currentTarget.value)) / 100 + pureTotalState.component + installationState.installation - Number(installdcState.installationDC)
+        })
     }
 
     const handleInstallation = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInstallationState({
             installation: Number(e.currentTarget.value)
         })
+        setEstimationState({
+            amount: pureTotalState.fabric * (100 - discountState.discount) / 100 + pureTotalState.component + Number(e.currentTarget.value) - Number(installdcState.installationDC)
+        })
     }
 
     const handleInstallationDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInstalldcState({
             installationDC: e.currentTarget.value
+        })
+
+        setEstimationState({
+            amount: pureTotalState.fabric * (100 - discountState.discount) / 100 + pureTotalState.component + installationState.installation - Number(e.currentTarget.value)
         })
     }
 
@@ -667,6 +718,14 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                         </div>
                     </div>
                     <div className="section">
+                        <div className="orderUpdate">
+                            <div className="blodeFont">Estimation : </div>
+                            <div className="blodeFont">{cashFormatter(estimationState.amount)}</div>
+                        </div>
+
+                    </div>
+                    <div className="section">
+
                         <div>Number of items</div>
                         <div>
                             <span className="blodeFont">Blinds : </span>
