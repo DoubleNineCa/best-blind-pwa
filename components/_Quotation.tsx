@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from 'react-apollo';
 // import { Customer } from "../generated/graphql";
-import { Item } from "../generated/graphql";
+import { Item, PartType } from "../generated/graphql";
 import { ErrorView } from './ErrorView';
 import { calFormatter, cashFormatter, roundUp } from '../util/formatter';
 
@@ -31,6 +31,7 @@ query getOrder($orderNo: String!){
         items{
             id,
             partId,
+            partType,
             itemName,
             width,
             height,
@@ -71,9 +72,44 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     const order = data.getOrder;
     const customer = order.customer;
     const items = order.items;
-    const printedItems = items.concat(new Array<Item>(24 - items.length));
+    const fabrics = order.items.filter((item: Item) => item.width > 0);
+    const component = order.items.filter((item: Item) => item.width === 0);
+    const printedItems = items.length < 24 ? fabrics.concat(new Array<Item>(24 - items.length)) : fabrics.concat(new Array<Item>(65 - items.length));
     const emptyItem = { itemName: "none" } as Item;
+    const emptyItemArr = [emptyItem, emptyItem, emptyItem];
+    let _printedItems;
+    if (items.length > 24) {
+        if (fabrics.length > 30) {
+            const firstArr = fabrics.slice(0, 31);
+            const followArr = fabrics.slice(30, fabrics.length);
+            const firstPage = firstArr.concat(emptyItemArr).concat(followArr);
+
+            if (component.length > 0) {
+                _printedItems = firstPage.concat(new Array<Item>(30 - component.length));
+                _printedItems.fill(emptyItem, firstPage.length, _printedItems.length - 1);
+                _printedItems = _printedItems.concat(component);
+            }
+        }
+    } else {
+        _printedItems = fabrics.concat(new Array<Item>(24 - fabrics.length - component.length));
+        _printedItems.fill(emptyItem, fabrics.length, _printedItems.length - 1);
+
+        if (component.length > 0) {
+            _printedItems = _printedItems.concat(component);
+        }
+    }
     printedItems.fill(emptyItem, items.length, printedItems.length - 1);
+    // if (component.length > 0) {
+    //     printedItems.fill(emptyItem, fabrics.length, printedItems.length - component.length - 1);
+    //     printedItems.fill(component, printedItems.length - component.length - 1, printedItems.length - 1);
+    // } else {
+    //     printedItems.fill(emptyItem, items.length, printedItems.length - 1);
+    // }
+
+    // To-Do
+    // Distribute print layout based on the number of order items
+    // Case 1. if order item has less than 24, the process will be the same
+    // Case 2. if order item has more than 24, need to print next page
 
     const totalPrice = {
         sqrt: 0,
@@ -83,9 +119,12 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     }
     items.map((item: Item) => {
         //Math.round(input * 100) / 100
-        totalPrice.sqrt += roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5;
-        totalPrice.selectTotalPrice += item.price;
-        totalPrice.negoTotalPrice += Math.floor(item.price * order.discount) / 100;
+        if (item.partType === PartType.Fabric) {
+            totalPrice.sqrt += roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5;
+            totalPrice.selectTotalPrice += item.price;
+            totalPrice.negoTotalPrice += Math.floor(item.price * order.discount) / 100;
+        }
+
     });
     totalPrice.selectTotalPrice += order.installation;
     totalPrice.negoTotalPrice += order.installationDiscount;
@@ -158,39 +197,40 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     </div>
                     <div className="quoteList">
                         {
-                            printedItems.map((item: Item, idx: any) => {
+                            _printedItems.map((item: Item, idx: any) => {
                                 const discountedPrice = Math.floor(item.price * order.discount) / 100;
                                 const salePrice = item.price - discountedPrice;
-
-                                if (item.id) {
+                                if (item.id && idx !== 31 && idx !== 32 && idx !== 33) {
                                     return (<div className="quoteOverview">
                                         <div className="quoteRoom">{item.roomName}</div>
-                                        <div className="quoteWindow">{idx + 1}</div>
+                                        <div className="quoteWindow">{idx < 31 ? idx + 1 : idx - 2}</div>
                                         <div className="quoteBlind">{item.itemName}</div>
-                                        <div className="quoteWidth">{item.width}</div>
-                                        <div className="quoteHeight">{item.height}</div>
+                                        <div className="quoteWidth">{item.partType === PartType.Fabric ? item.width : ""}</div>
+                                        <div className="quoteHeight">{item.partType === PartType.Fabric ? item.height : ""}</div>
                                         <div className="quoteSqrt">{roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5}</div>
-                                        <div className="quoteLR">{item.handrailType}</div>
-                                        <div className="quoteControl">{item.handrailLength}</div>
+                                        <div className="quoteLR">{item.partType === PartType.Fabric ? item.handrailType : ""}</div>
+                                        <div className="quoteControl">{item.partType === PartType.Fabric ? item.handrailLength : ""}</div>
                                         <div className="quoteSelectP">{cashFormatter(item.price)}</div>
-                                        <div className="quoteNego">{cashFormatter(discountedPrice)}</div>
-                                        <div className="quoteSaleP">{cashFormatter(salePrice)}</div>
+                                        <div className="quoteNego">{item.partType === PartType.Fabric ? cashFormatter(discountedPrice) : ""}</div>
+                                        <div className="quoteSaleP">{item.partType === PartType.Fabric ? cashFormatter(salePrice) : cashFormatter(item.price)}</div>
+                                    </div>)
+                                } else if (idx === 31 || idx === 32 || idx === 33) {
+                                    return <div className={idx !== 33 ? "quoteOverviewNone" : "quoteOverviewNone NoneBottom"}></div>
+                                } else {
+                                    return (<div className="quoteOverview">
+                                        <div className="quoteRoom"></div>
+                                        <div className="quoteWindow"></div>
+                                        <div className="quoteBlind"></div>
+                                        <div className="quoteWidth"></div>
+                                        <div className="quoteHeight"></div>
+                                        <div className="quoteSqrt"></div>
+                                        <div className="quoteLR"></div>
+                                        <div className="quoteControl"></div>
+                                        <div className="quoteSelectP"></div>
+                                        <div className="quoteNego"></div>
+                                        <div className="quoteSaleP"></div>
                                     </div>)
                                 }
-
-                                return (<div className="quoteOverview">
-                                    <div className="quoteRoom"></div>
-                                    <div className="quoteWindow"></div>
-                                    <div className="quoteBlind"></div>
-                                    <div className="quoteWidth"></div>
-                                    <div className="quoteHeight"></div>
-                                    <div className="quoteSqrt"></div>
-                                    <div className="quoteLR"></div>
-                                    <div className="quoteControl"></div>
-                                    <div className="quoteSelectP"></div>
-                                    <div className="quoteNego"></div>
-                                    <div className="quoteSaleP"></div>
-                                </div>)
 
                             })
                         }
@@ -456,6 +496,19 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+            }
+
+            .quoteOverviewNone{
+                width: 100%;
+                border: none;
+                min-height: 25px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .NoneBottom{
+                border-bottom: 1px solid grey;
             }
 
             .quoteOverviewLast{

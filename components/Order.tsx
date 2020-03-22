@@ -381,7 +381,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
             }
         })
         if (isUpdate) {
-            alert("Your request successfully done!");
+            alert("Your request is successfully done!");
             return router.reload();
         } else {
             alert("Something went wrong");

@@ -45,6 +45,7 @@ export type Item = {
   id: Scalars['ID'],
   uuid: Scalars['String'],
   partId: Scalars['Float'],
+  partType: Scalars['String'],
   itemName: Scalars['String'],
   width: Scalars['Float'],
   height: Scalars['Float'],
@@ -82,6 +83,7 @@ export type Mutation = {
   deleteCustomer: Scalars['Boolean'],
   registerGrade: Grade,
   updateGrade: Scalars['Boolean'],
+  deleteGrade: Scalars['Boolean'],
   registerPart: Part,
   updatePart: Scalars['Boolean'],
   deletePart: Scalars['Boolean'],
@@ -129,6 +131,11 @@ export type MutationRegisterGradeArgs = {
 
 export type MutationUpdateGradeArgs = {
   data: GradeInput,
+  gradeId: Scalars['Float']
+};
+
+
+export type MutationDeleteGradeArgs = {
   gradeId: Scalars['Float']
 };
 
@@ -239,7 +246,8 @@ export type PartInput = {
 export enum PartKind {
   Combi = 'COMBI',
   Roll = 'ROLL',
-  Triple = 'TRIPLE'
+  Triple = 'TRIPLE',
+  Component = 'COMPONENT'
 }
 
 export enum PartType {
@@ -446,6 +454,7 @@ export type ItemResolvers<Context = any, ParentType = Item> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
   partId?: Resolver<Scalars['Float'], ParentType, Context>,
+  partType?: Resolver<Scalars['String'], ParentType, Context>,
   itemName?: Resolver<Scalars['String'], ParentType, Context>,
   width?: Resolver<Scalars['Float'], ParentType, Context>,
   height?: Resolver<Scalars['Float'], ParentType, Context>,
@@ -466,6 +475,7 @@ export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversO
   deleteCustomer?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteCustomerArgs>,
   registerGrade?: Resolver<Grade, ParentType, Context, MutationRegisterGradeArgs>,
   updateGrade?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateGradeArgs>,
+  deleteGrade?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteGradeArgs>,
   registerPart?: Resolver<Part, ParentType, Context, MutationRegisterPartArgs>,
   updatePart?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdatePartArgs>,
   deletePart?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeletePartArgs>,

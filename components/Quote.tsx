@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { useQuery, useMutation } from 'react-apollo';
 import { orderNoGenerator } from '../util/formatter';
 import { useRouter } from 'next/router';
-import { Part, Item, Order } from '../generated/graphql';
+import { Part, Item, Order, PartType } from '../generated/graphql';
 import { ErrorView } from './ErrorView';
 import { AutoComplete } from './AutoComplete';
 import { bind } from '@wry/context';
@@ -93,7 +93,13 @@ const defaultOrderState: orderState = {
     order: {} as Order
 }
 
+interface blindTypeState {
+    type: PartType
+}
 
+const defaultBlindTypeState: blindTypeState = {
+    type: PartType.Fabric
+}
 
 const GET_ORDER = gql(`
 query GetOrder($input: String!){
@@ -214,6 +220,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
     const [selectedMaterial, setSelectedMaterial] = useState<selectedMaterial>(defaultSelectedMaterial);
     const [selectedLength, setSelectedLength] = useState<selectedLength>(defaultSelectedLength);
     const [selectedState, setSelectedState] = useState<selectedState>(defaultSelectedState);
+    const [blindTypeState, setBlindTypeState] = useState<blindTypeState>(defaultBlindTypeState);
 
     const [orderState, setOrderState] = useState<orderState>(defaultOrderState);
     const { loading, error, data } = useQuery(GET_ORDER, {
@@ -231,7 +238,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
     const [placeOrder] = useMutation(PLACE_ORDER);
     const { loading: blindsLoading, error: blindsError, data: blindsData } = useQuery(GET_BLINDS, {
         variables: {
-            input: "FABRIC",
+            input: "",
             keyword: ""
         }
     });
@@ -270,7 +277,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
         e.preventDefault();
 
         const itemRouter = e.currentTarget.id;
-        if (selectedWidth.width === "0" || selectedHeight.height === "0") {
+        if (blindTypeState.type === PartType.Fabric && (selectedWidth.width === "0" || selectedHeight.height === "0")) {
             return;
         }
         if (itemRouter === "add") {
@@ -323,9 +330,13 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
         })
     }
 
-    const blindHandle = (blinds: string) => {
+    const blindHandle = async (blinds: string) => {
         setSelectedBlind({
             blind: blinds.split(" ")[0].replace(/[^(0-9)]/gi, "")
+        })
+
+        await setBlindTypeState({
+            type: blindsData.getParts.filter((part: Part) => part.id === blinds.split(" ")[0].replace(/[^(0-9)]/gi, ""))[0].type
         })
     }
 

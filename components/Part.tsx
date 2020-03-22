@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from 'react-apollo';
 import { ErrorView } from './ErrorView';
-import { Part, PartType, PartKind } from '../generated/graphql';
+import { Part, PartType, PartKind, Grade } from '../generated/graphql';
 import { useRouter } from 'next/router';
 
 interface hoverState {
@@ -92,6 +92,15 @@ query GetParts($keyword: String!, $type: String!){
   }
 `);
 
+const GET_GRADES = gql(`
+query GetGrades{
+    getGrades{
+        name
+        price
+    }
+}
+`);
+
 const NEW_PART = gql(`
 mutation NEW_PART($data:PartInput!){
     registerPart(data: $data){
@@ -140,6 +149,8 @@ export const Parts: React.FC = () => {
             type: ""
         }
     });
+
+    const { loading: gradesLoading, error: gradesError, data: gradesData } = useQuery(GET_GRADES);
 
     const onNew = async (e: React.MouseEvent) => {
         const registeredPart = await newPart({
@@ -289,9 +300,11 @@ export const Parts: React.FC = () => {
         })
     }
 
-    if (loading) { return <p>Loading...</p> }
+    if (loading || gradesLoading) { return <p>Loading...</p> }
     else if (error) {
         return <ErrorView errMsg={error.message} currentLocation={4} />
+    } else if (gradesError) {
+        return <ErrorView errMsg={gradesError.message} currentLocation={4} />
     }
     else {
         return <Fragment>
@@ -359,9 +372,17 @@ export const Parts: React.FC = () => {
                             <span className="blodeFont">KIND : </span>
                             <select className="selectPartType" value={kindState.kind} onChange={handleKind}>
                                 <option value="0">Select kind...</option>
-                                <option value={PartKind.Combi}>COMBI</option>
-                                <option value={PartKind.Roll}>ROLL</option>
-                                <option value={PartKind.Triple}>TRIPLE</option>
+                                {
+                                    typeState.type === PartType.Fabric ?
+                                        <Fragment>
+                                            <option value={PartKind.Combi}>COMBI</option>
+                                            <option value={PartKind.Roll}>ROLL</option>
+                                            <option value={PartKind.Triple}>TRIPLE</option>
+                                        </Fragment>
+                                        :
+                                        <option value={PartKind.Component}>COMPONENT</option>
+                                }
+
                             </select>
                         </div>
                         <div className="partInput">
@@ -404,16 +425,11 @@ export const Parts: React.FC = () => {
                             <span className="blodeFont">GRADE : </span>
                             <select className="selectPartType" value={gradeState.grade} onChange={handleGrade}>
                                 <option value="-1">Select grade...</option>
-                                <option value="0">$27</option>
-                                <option value="1">$44</option>
-                                <option value="2">$55</option>
-                                <option value="3">$66</option>
-                                <option value="4">$77</option>
-                                <option value="5">$88</option>
-                                <option value="6">$99</option>
-                                <option value="7">$110</option>
-                                <option value="8">$130</option>
-                                <option value="9">$250</option>
+                                {
+                                    gradesData.getGrades.map((grade: Grade) => {
+                                        return <option value={grade.name}>({grade.name})-${grade.price}</option>
+                                    })
+                                }
                             </select>
                         </div>
                     </div>
