@@ -52,8 +52,9 @@ export const AutoComplete: React.FC<Props> = ({ options, blindId, blindHandle })
     const initiate = () => {
         if (selectedPart) {
             setUserInputState({
-                userInput: "[" + selectedPart.id + "] " + selectedPart.name + " (" + selectedPart.color + ")"
+                userInput: `[${selectedPart.id}] ${selectedPart.name} ${selectedPart.color !== "0" && selectedPart.color !== "NONE" ? "(" + selectedPart.color + ")" : ""}`
             })
+
         }
     }
 
@@ -159,7 +160,7 @@ export const AutoComplete: React.FC<Props> = ({ options, blindId, blindHandle })
                 onKeyDown={_onKeyDown}
                 onClick={_onClick}
                 value={userInputState.userInput}
-                placeholder="Input fabric name here"
+                placeholder="Input part name here"
             />
         </div>
         {
@@ -173,7 +174,7 @@ export const AutoComplete: React.FC<Props> = ({ options, blindId, blindHandle })
                                     className = "option-active";
                                 }
                                 return (<li className={className} key={part.id} onClick={_onClick}>
-                                    [{part.id}] {part.name} ({part.color})
+                                    [{part.id}] {part.name} {part.color !== "0" && part.color !== "NONE" ? "(" + part.color + ")" : ""}
                                 </li>);
                             })
                         }

@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from 'react-apollo';
-// import { Customer } from "../generated/graphql";
 import { Item, PartType } from "../generated/graphql";
 import { ErrorView } from './ErrorView';
 import { calFormatter, cashFormatter, roundUp } from '../util/formatter';
@@ -123,6 +122,8 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
             totalPrice.sqrt += roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5;
             totalPrice.selectTotalPrice += item.price;
             totalPrice.negoTotalPrice += Math.floor(item.price * order.discount) / 100;
+        } else if (item.partType === PartType.Component) {
+            totalPrice.selectTotalPrice += item.price * item.handrailLength;
         }
 
     });
@@ -203,16 +204,16 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                                 if (item.id && idx !== 31 && idx !== 32 && idx !== 33) {
                                     return (<div className="quoteOverview">
                                         <div className="quoteRoom">{item.roomName}</div>
-                                        <div className="quoteWindow">{idx < 31 ? idx + 1 : idx - 2}</div>
+                                        <div className="quoteWindow">{item.partType === PartType.Fabric ? idx < 31 ? idx + 1 : idx - 2 : ""}</div>
                                         <div className="quoteBlind">{item.itemName}</div>
                                         <div className="quoteWidth">{item.partType === PartType.Fabric ? item.width : ""}</div>
                                         <div className="quoteHeight">{item.partType === PartType.Fabric ? item.height : ""}</div>
-                                        <div className="quoteSqrt">{roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5}</div>
+                                        <div className="quoteSqrt">{item.partType === PartType.Fabric ? roundUp(item.width * item.height / 10000, 10) > 1.5 ? roundUp(item.width * item.height / 10000, 10) : 1.5 : ""}</div>
                                         <div className="quoteLR">{item.partType === PartType.Fabric ? item.handrailType : ""}</div>
-                                        <div className="quoteControl">{item.partType === PartType.Fabric ? item.handrailLength : ""}</div>
+                                        <div className="quoteControl">{item.handrailLength}</div>
                                         <div className="quoteSelectP">{cashFormatter(item.price)}</div>
                                         <div className="quoteNego">{item.partType === PartType.Fabric ? cashFormatter(discountedPrice) : ""}</div>
-                                        <div className="quoteSaleP">{item.partType === PartType.Fabric ? cashFormatter(salePrice) : cashFormatter(item.price)}</div>
+                                        <div className="quoteSaleP">{item.partType === PartType.Fabric ? cashFormatter(item.price) : cashFormatter(item.price * Number(item.handrailLength))}</div>
                                     </div>)
                                 } else if (idx === 31 || idx === 32 || idx === 33) {
                                     return <div className={idx !== 33 ? "quoteOverviewNone" : "quoteOverviewNone NoneBottom"}></div>

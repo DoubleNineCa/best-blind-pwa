@@ -636,7 +636,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                             </span>
                         </div>
                         <div className="orderUpdate">
-                            <span className="blodeFont">Installation D.C : </span>
+                            <span className="blodeFont">Round Off : </span>
                             <span className="flex-item">
                                 $<input
                                     className="orderInput"

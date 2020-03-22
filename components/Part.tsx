@@ -683,6 +683,7 @@ export const Parts: React.FC = () => {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                text-align: center;
             }
 
             .partDetails{

@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import gql from 'graphql-tag';
 import { useQuery } from "react-apollo";
 import { ErrorView } from "./ErrorView";
-import { Order, Item } from "../generated/graphql";
+import { Order, Item, PartType } from "../generated/graphql";
 import { cashFormatter } from "../util/formatter";
 
 export interface Props {
@@ -31,6 +31,7 @@ query getOrder($orderNo: String!){
         items{
             id,
             partId,
+            partType,
             itemName,
             width,
             height,
@@ -199,6 +200,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                     <div className="blindTitle">Blind Style</div>
                     <div className="widthTitle">Width</div>
                     <div className="heightTitle">Height</div>
+                    <div className="qtyTitle">Qty</div>
                     <div className="priceTitle">Amount</div>
                 </div>
 
@@ -208,9 +210,10 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                             return <div className="itemOverview endLine itemMinHeight">
                                 <div className="itemNo">{i + 1}</div>
                                 <div className="blind">&nbsp;&nbsp;{item.itemName}</div>
-                                <div className="bWidth">{item.width}</div>
-                                <div className="bHeight">{item.height}</div>
-                                <div className="price">{cashFormatter(item.price - item.price * (order.discount / 100))}&nbsp;&nbsp;</div>
+                                <div className="bWidth">{item.partType === PartType.Fabric ? item.width : ""}</div>
+                                <div className="bHeight">{item.partType === PartType.Fabric ? item.height : ""}</div>
+                                <div className="bQty">{item.partType === PartType.Fabric ? "1" : item.handrailLength}</div>
+                                <div className="price">{item.partType === PartType.Fabric ? cashFormatter(item.price - item.price * (order.discount / 100)) : cashFormatter(item.price * item.handrailLength)}&nbsp;&nbsp;</div>
                             </div>
                         }
 
@@ -219,6 +222,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                             <div className="blind"></div>
                             <div className="bWidth"></div>
                             <div className="bHeight"></div>
+                            <div className="bQty"></div>
                             <div className="price"></div>
                         </div>
 
@@ -233,6 +237,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                     <div className="blind nonRight"></div>
                     <div className="bWidth nonRight"></div>
                     <div className="bHeight nonRight"></div>
+                    <div className="bQty nonRight"></div>
                     <div className="price">{cashFormatter(order.installation)}&nbsp;&nbsp;</div>
                 </div>
                 <div className="itemOverview bottomMinHeight">
@@ -240,6 +245,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                     <div className="blind nonRight"></div>
                     <div className="bWidth nonRight"></div>
                     <div className="bHeight nonRight"></div>
+                    <div className="bQty nonRight"></div>
                     <div className="price">{cashFormatter(order.installationDiscount)}&nbsp;&nbsp;</div>
                 </div>
                 <div className="itemOverview">
@@ -462,7 +468,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
         }
 
         .blindTitle{
-            width: 50%;
+            width: 40%;
             border-right: 1px solid black;
             display:flex;
             align-items: center;
@@ -478,6 +484,14 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
         }
 
         .heightTitle{
+            width: 10%;
+            border-right: 1px solid black;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qtyTitle{
             width: 10%;
             border-right: 1px solid black;
             display:flex;
@@ -510,7 +524,7 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
         }
 
         .blind{
-            width: 50%;
+            width: 40%;
             border-right: 1px solid black;
             display:flex;
             align-items: center;
@@ -526,6 +540,14 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
         }
 
         .bHeight{
+            width: 10%;
+            border-right: 1px solid black;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bQty{
             width: 10%;
             border-right: 1px solid black;
             display:flex;

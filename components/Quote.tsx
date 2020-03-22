@@ -101,6 +101,7 @@ const defaultBlindTypeState: blindTypeState = {
     type: PartType.Fabric
 }
 
+
 const GET_ORDER = gql(`
 query GetOrder($input: String!){
     getOrder(orderNo:$input){
@@ -115,6 +116,7 @@ query GetOrder($input: String!){
       items{
         id
         partId
+        partType
         itemName
         roomName
         width
@@ -292,7 +294,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                         roomName: selectedRoomName.roomName,
                         handrailType: selectedType.type,
                         handrailMaterial: selectedMaterial.material,
-                        handrailLength: Number(selectedLength.length),
+                        handrailLength: Number(selectedLength.length)
                     }
                 }
             })
@@ -376,6 +378,12 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
         })
     }
 
+    const qtyHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedLength({
+            length: e.currentTarget.value
+        })
+    }
+
     const editItem = (item: Item) => (e: React.MouseEvent) => {
         setSelectedState({
             currentLocation: Number(e.currentTarget.id)
@@ -403,6 +411,9 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
         })
         setSelectedLength({
             length: item.handrailLength.toString()
+        })
+        setBlindTypeState({
+            type: item.partType as PartType
         })
     }
 
@@ -470,12 +481,12 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                                     <div className="itemNo">{idx + 1}</div>
                                                     <div className="roomName">{item.roomName}</div>
                                                     <div className="blindName">{item.itemName}</div>
-                                                    <div className="itemWidth">{item.width}</div>
-                                                    <div className="itemHeight">{item.height}</div>
-                                                    <div className="itemCoverColor">{item.coverColor}</div>
-                                                    <div className="handrailType">{item.handrailType}</div>
-                                                    <div className="handrailMaterial">{item.handrailMaterial}</div>
-                                                    <div className="handrailLength">{item.handrailLength}(M)</div>
+                                                    <div className="itemWidth">{item.partType === PartType.Fabric ? item.width : ""}</div>
+                                                    <div className="itemHeight">{item.partType === PartType.Fabric ? item.height : ""}</div>
+                                                    <div className="itemCoverColor">{item.partType === PartType.Fabric ? item.coverColor : ""}</div>
+                                                    <div className="handrailType">{item.partType === PartType.Fabric ? item.handrailType : ""}</div>
+                                                    <div className="handrailMaterial">{item.partType === PartType.Fabric ? item.handrailMaterial : ""}</div>
+                                                    <div className="handrailLength">{item.handrailLength}{item.partType === PartType.Fabric ? "(M)" : "(EA)"}</div>
                                                 </div>
                                             })
                                             :
@@ -508,62 +519,61 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                             :
                                             <input type="text" className="itemInput" />
                                     }
-
-                                    {/* <select className="itemSelect" onChange={blindHandle}>
-                                        {
-                                            blindsData && blindsData.getParts ?
-                                                blindsData.getParts.map((part: Part) => {
-                                                    return <option value={part.id} selected={part.id === selectedBlind.blind ? true : false}> [{part.id}] / {part.name}[{part.color}]</option>
-                                                })
-                                                :
-                                                <option value="-1">none</option>
-                                        }
-                                    </select> */}
                                 </div>
-                                <div className="itemInputRow">
-                                    <div className="rowTitle">WIDTH</div>
-                                    <input type="text" className="itemInput" value={selectedWidth.width.toString()} onChange={widthHandle} />
-                                </div>
-                                <div className="itemInputRow">
-                                    <div className="rowTitle">HEIGHT</div>
-                                    <input type="text" className="itemInput" value={selectedHeight.height.toString()} onChange={heightHandle} />
-                                </div>
-                                <div className="itemInputRow">
-                                    <div className="rowTitle">COVER COLOR</div>
-                                    <select className="itemSelect" onChange={coverHandle} value={selectedCover.cover}>
-                                        <option value="WHITE">white</option>
-                                        <option value="IVORY">ivory</option>
-                                        <option value="GREY">grey</option>
-                                        <option value="BLACK">black</option>
-                                        <option value="BROWN">brown</option>
-                                    </select>
-                                </div>
-                                <div className="itemInputRow">
-                                    <div className="rowTitle">HANDRAIL TYPE</div>
-                                    <select className="itemSelect" onChange={typeHandle} value={selectedType.type}>
-                                        <option value="R">R</option>
-                                        <option value="L">L</option>
-                                    </select>
-                                </div>
-                                <div className="itemInputRow">
-                                    <div className="rowTitle">HANDRAIL MATERIAL</div>
-                                    <select className="itemSelect" onChange={materialHandle} value={selectedMaterial.material}>
-                                        <option value="BASIC">BASIC</option>
-                                        <option value="CRYSTAL">CRYSTAL</option>
-                                        <option value="METAL">METAL</option>
-                                        <option value="MOTOR">MOTOR</option>
-                                    </select>
-                                </div>
-                                <div className="itemInputRow">
-                                    <div className="rowTitle">HANDRAIL LENGTH</div>
-                                    <select className="itemSelect" onChange={lengthHandle} value={selectedLength.length}>
-                                        <option value="1.0">1.0M</option>
-                                        <option value="1.2">1.2M</option>
-                                        <option value="1.5">1.5M</option>
-                                        <option value="2.0">2.0M</option>
-                                        <option value="9.9">CUSTOM</option>
-                                    </select>
-                                </div>
+                                {
+                                    blindTypeState.type === PartType.Fabric ?
+                                        <Fragment>
+                                            <div className="itemInputRow">
+                                                <div className="rowTitle">WIDTH</div>
+                                                <input type="text" className="itemInput" value={selectedWidth.width.toString()} onChange={widthHandle} />
+                                            </div>
+                                            <div className="itemInputRow">
+                                                <div className="rowTitle">HEIGHT</div>
+                                                <input type="text" className="itemInput" value={selectedHeight.height.toString()} onChange={heightHandle} />
+                                            </div>
+                                            <div className="itemInputRow">
+                                                <div className="rowTitle">COVER COLOR</div>
+                                                <select className="itemSelect" onChange={coverHandle} value={selectedCover.cover}>
+                                                    <option value="WHITE">white</option>
+                                                    <option value="IVORY">ivory</option>
+                                                    <option value="GREY">grey</option>
+                                                    <option value="BLACK">black</option>
+                                                    <option value="BROWN">brown</option>
+                                                </select>
+                                            </div>
+                                            <div className="itemInputRow">
+                                                <div className="rowTitle">HANDRAIL TYPE</div>
+                                                <select className="itemSelect" onChange={typeHandle} value={selectedType.type}>
+                                                    <option value="R">R</option>
+                                                    <option value="L">L</option>
+                                                </select>
+                                            </div>
+                                            <div className="itemInputRow">
+                                                <div className="rowTitle">HANDRAIL MATERIAL</div>
+                                                <select className="itemSelect" onChange={materialHandle} value={selectedMaterial.material}>
+                                                    <option value="BASIC">BASIC</option>
+                                                    <option value="CRYSTAL">CRYSTAL</option>
+                                                    <option value="METAL">METAL</option>
+                                                    <option value="MOTOR">MOTOR</option>
+                                                </select>
+                                            </div>
+                                            <div className="itemInputRow">
+                                                <div className="rowTitle">HANDRAIL LENGTH</div>
+                                                <select className="itemSelect" onChange={lengthHandle} value={selectedLength.length}>
+                                                    <option value="1.0">1.0M</option>
+                                                    <option value="1.2">1.2M</option>
+                                                    <option value="1.5">1.5M</option>
+                                                    <option value="2.0">2.0M</option>
+                                                    <option value="9.9">CUSTOM</option>
+                                                </select>
+                                            </div>
+                                        </Fragment>
+                                        :
+                                        <div className="itemInputRow">
+                                            <div className="rowTitle">Quantity</div>
+                                            <input type="text" className="itemInput" value={selectedLength.length} onChange={qtyHandle} />
+                                        </div>
+                                }
                                 <div className="buttonSection">
                                     <button className="addBtn" id="add" onClick={itemHandleSubmit} onKeyPress={preventEnter}>ADD</button>
                                     <button className="editBtn" id="edit" onClick={itemHandleSubmit}>EDIT</button>
