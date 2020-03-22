@@ -1,3 +1,5 @@
+import { Item, PartType } from "../generated/graphql";
+
 export function calFormatter(date: Date) {
 
     if (date === undefined || date === null) {
@@ -29,14 +31,16 @@ export function orderNoGenerator(orderNo: string) {
 export function roundUp(input: number, digits: number) {
     return Math.ceil((Math.floor(input * digits * 10) / (digits * 10)) * digits) / 10;
 }
-function digitConverter(input: number) {
-    if (input < 10) {
-        return "000" + input;
-    } else if (input >= 10 && input < 100) {
-        return "00" + input;
-    } else if (input >= 100 && input < 1000) {
-        return "0" + input;
-    } else {
-        return input;
+
+export const totalCal =
+    async (items: Item[], discount: number, installation: number, installationDiscount: number) => {
+        const total = items.reduce((accumulator, item) => {
+            const singlePrice = item.partType === PartType.Fabric ? (item.price - Math.floor(item.price * discount) / 100) : item.price * item.handrailLength;
+            return accumulator + singlePrice;
+        }, 0);
+        return roundCal(total + installation - installationDiscount, 100);
     }
+
+export const roundCal = (input: number, digits: number) => {
+    return Math.round(input * digits) / digits
 }
