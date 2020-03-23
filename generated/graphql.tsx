@@ -13,6 +13,12 @@ export type BaseEntityWithUuid = {
   uuid: Scalars['String'],
 };
 
+export type Color = {
+  id: Scalars['ID'],
+  uuid: Scalars['String'],
+  color: Scalars['String'],
+};
+
 export type Customer = {
   id: Scalars['ID'],
   uuid: Scalars['String'],
@@ -94,6 +100,8 @@ export type Mutation = {
   updateOrder: Scalars['Boolean'],
   updateStep: Scalars['Boolean'],
   deleteOrder: Scalars['Boolean'],
+  addColor: Color,
+  deleteColor: Scalars['Boolean'],
 };
 
 
@@ -196,6 +204,16 @@ export type MutationDeleteOrderArgs = {
   id: Scalars['Float']
 };
 
+
+export type MutationAddColorArgs = {
+  color: Scalars['String']
+};
+
+
+export type MutationDeleteColorArgs = {
+  color: Scalars['String']
+};
+
 export type Order = {
   id: Scalars['ID'],
   uuid: Scalars['String'],
@@ -279,6 +297,7 @@ export type Query = {
   getParts: Array<Part>,
   getOrder?: Maybe<Order>,
   getOrders: Array<Order>,
+  getColors: Array<Color>,
 };
 
 
@@ -424,6 +443,12 @@ export type BaseEntityWithUuidResolvers<Context = any, ParentType = BaseEntityWi
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
 }>;
 
+export type ColorResolvers<Context = any, ParentType = Color> = ResolversObject<{
+  id?: Resolver<Scalars['ID'], ParentType, Context>,
+  uuid?: Resolver<Scalars['String'], ParentType, Context>,
+  color?: Resolver<Scalars['String'], ParentType, Context>,
+}>;
+
 export type CustomerResolvers<Context = any, ParentType = Customer> = ResolversObject<{
   id?: Resolver<Scalars['ID'], ParentType, Context>,
   uuid?: Resolver<Scalars['String'], ParentType, Context>,
@@ -486,6 +511,8 @@ export type MutationResolvers<Context = any, ParentType = Mutation> = ResolversO
   updateOrder?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateOrderArgs>,
   updateStep?: Resolver<Scalars['Boolean'], ParentType, Context, MutationUpdateStepArgs>,
   deleteOrder?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteOrderArgs>,
+  addColor?: Resolver<Color, ParentType, Context, MutationAddColorArgs>,
+  deleteColor?: Resolver<Scalars['Boolean'], ParentType, Context, MutationDeleteColorArgs>,
 }>;
 
 export type OrderResolvers<Context = any, ParentType = Order> = ResolversObject<{
@@ -531,6 +558,7 @@ export type QueryResolvers<Context = any, ParentType = Query> = ResolversObject<
   getParts?: Resolver<ArrayOrIterable<Part>, ParentType, Context, QueryGetPartsArgs>,
   getOrder?: Resolver<Maybe<Order>, ParentType, Context, QueryGetOrderArgs>,
   getOrders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
+  getColors?: Resolver<ArrayOrIterable<Color>, ParentType, Context>,
 }>;
 
 export type StaffResolvers<Context = any, ParentType = Staff> = ResolversObject<{
@@ -542,6 +570,7 @@ export type StaffResolvers<Context = any, ParentType = Staff> = ResolversObject<
 
 export type IResolvers<Context = any> = ResolversObject<{
   BaseEntityWithUuid?: BaseEntityWithUuidResolvers<Context>,
+  Color?: ColorResolvers<Context>,
   Customer?: CustomerResolvers<Context>,
   DateTime?: GraphQLScalarType,
   Grade?: GradeResolvers<Context>,

@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from 'react-apollo';
 import { ErrorView } from './ErrorView';
-import { Part, PartType, PartKind, Grade } from '../generated/graphql';
+import { Part, PartType, PartKind, Grade, Color } from '../generated/graphql';
 import { useRouter } from 'next/router';
 
 interface hoverState {
@@ -77,6 +77,22 @@ const defaultGradeState: gradeState = {
     grade: "-1"
 }
 
+interface addColorState {
+    color: string;
+}
+
+const defaultAddColorState: addColorState = {
+    color: ""
+}
+
+interface dispAddColor {
+    is: boolean;
+}
+
+const defaultDispAddColor: dispAddColor = {
+    is: false
+}
+
 const GET_PARTS = gql(`
 query GetParts($keyword: String!, $type: String!){
     getParts(keyword:$keyword, type:$type){
@@ -128,6 +144,29 @@ mutation DELETE_PART($id: Float!){
   }
 `);
 
+const GET_COLORS = gql(`
+query getColors{
+    getColors{
+      id
+      color
+    }
+  }
+`);
+
+const ADD_COLOR = gql(`
+mutation addColor($color: String!){
+    addColor(color: $color){
+      color
+    }
+  }
+`);
+
+const REMOVE_COLOR = gql(`
+mutation removeColor($color: String!){
+    deleteColor(color: $color)
+  }
+`);
+
 export const Parts: React.FC = () => {
     const router = useRouter();
     const [hoverState, setHoverState] = useState<hoverState>(defaultHoverState);
@@ -139,9 +178,14 @@ export const Parts: React.FC = () => {
     const [colorState, setColorState] = useState<colorState>(defaultColorState);
     const [companyState, setCompanyState] = useState<companyState>(defaultCompanyState);
     const [gradeState, setGradeState] = useState<gradeState>(defaultGradeState);
+    const [addColorState, setAddColorState] = useState<addColorState>(defaultAddColorState);
+    const [dispAddColorState, setDispAddColorState] = useState<dispAddColor>(defaultDispAddColor);
+
     const [newPart] = useMutation(NEW_PART);
     const [updatePart] = useMutation(UPDATE_PART);
     const [deletePart] = useMutation(DELETE_PART);
+    const [newColor] = useMutation(ADD_COLOR);
+    const [deleteColor] = useMutation(REMOVE_COLOR);
 
     const { loading, error, data } = useQuery(GET_PARTS, {
         variables: {
@@ -151,6 +195,7 @@ export const Parts: React.FC = () => {
     });
 
     const { loading: gradesLoading, error: gradesError, data: gradesData } = useQuery(GET_GRADES);
+    const { loading: colorLoading, error: colorError, data: colorData } = useQuery(GET_COLORS);
 
     const onNew = async (e: React.MouseEvent) => {
         const registeredPart = await newPart({
@@ -300,11 +345,45 @@ export const Parts: React.FC = () => {
         })
     }
 
-    if (loading || gradesLoading) { return <p>Loading...</p> }
+    const handleAddColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setAddColorState({
+            color: e.currentTarget.value
+        })
+    }
+
+    const handleDisp = (e: React.MouseEvent) => {
+        setDispAddColorState({ is: !dispAddColorState.is })
+    }
+
+    const addColor = (e: React.MouseEvent) => {
+        newColor({
+            variables: {
+                color: addColorState.color.toUpperCase()
+            }
+        }).then(() => {
+            setDispAddColorState({ is: false })
+            setAddColorState({ color: "" });
+        })
+    }
+
+    const removeColor = (e: React.MouseEvent) => {
+        deleteColor({
+            variables: {
+                color: addColorState.color.toUpperCase()
+            }
+        }).then(() => {
+            setDispAddColorState({ is: false })
+            setAddColorState({ color: "" });
+        })
+    }
+
+    if (loading || gradesLoading || colorLoading) { return <p>Loading...</p> }
     else if (error) {
         return <ErrorView errMsg={error.message} currentLocation={4} />
     } else if (gradesError) {
         return <ErrorView errMsg={gradesError.message} currentLocation={4} />
+    } else if (colorError) {
+        return <ErrorView errMsg={colorError.message} currentLocation={4} />
     }
     else {
         return <Fragment>
@@ -398,18 +477,44 @@ export const Parts: React.FC = () => {
                         </div>
                         <div className="partInput">
                             <span className="blodeFont">COLOR : </span>
-                            <select className="selectPartType" value={colorState.color} onChange={handleColor}>
-                                <option value="0">Select color...</option>
-                                <option value="WHITE">WHITE</option>
-                                <option value="IVORY">IVORY</option>
-                                <option value="CREAM">CREAM</option>
-                                <option value="OATMEAL">OATMEAL</option>
-                                <option value="GREY">GREY</option>
-                                <option value="BLACK">BLACK</option>
-                                <option value="BROWN">BROWN</option>
+                            <div className="colorSection">
+                                <select className="selectPartType colorSelect" value={colorState.color} onChange={handleColor}>
+                                    <option value="0">Select color...</option>
+                                    {
+                                        colorData.getColors.map((color: Color) => {
+                                            return <option value={color.color}>{color.color}</option>
+                                        })
+                                    }
+                                </select>
+                                {
+                                    addColorState.color === "" ?
+                                        <button onClick={handleDisp}>{!dispAddColorState.is ? "Add/Remove" : "Fold"}</button>
+                                        :
+                                        <Fragment>
+                                            <button onClick={addColor}>+</button> <button onClick={removeColor}>-</button>
+                                        </Fragment>
+                                }
 
-                            </select>
+                            </div>
                         </div>
+                        {
+                            dispAddColorState.is ?
+                                <div className="colorInput">
+                                    <span className="blodeFont"></span>
+                                    <span className="flex-item">
+                                        <input
+                                            className="styledInput"
+                                            type="text"
+                                            placeholder="Input color to add/remove"
+                                            value={addColorState.color}
+                                            onChange={handleAddColor}
+                                        />
+                                    </span>
+                                </div>
+                                :
+                                <Fragment></Fragment>
+                        }
+
                         <div className="partInput">
                             <span className="blodeFont">COMPANY : </span>
                             <span className="flex-item">
@@ -727,6 +832,14 @@ export const Parts: React.FC = () => {
                 margin-top: 15px;
             }
 
+            .colorInput{
+                width:100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 15px;
+            }
+
             .styledInput{
                 width: 200px;
                 border: none;
@@ -734,7 +847,14 @@ export const Parts: React.FC = () => {
                 font-size: 14px;
                 text-align:right;
             }
-            
+
+            .colorSection{
+                width: 230px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
             .selectPartType{
                 width: 230px;
                 border: 1px solid #dde5ff;
@@ -744,6 +864,10 @@ export const Parts: React.FC = () => {
                 color: #5d647b;
                 padding: 10px;
                 text-align:right;
+            }
+
+            .colorSelect{
+                width: 150px;
             }
 
             .flex-item {
