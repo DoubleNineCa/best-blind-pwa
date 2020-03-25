@@ -135,6 +135,12 @@ mutation DeleteCustomer($id : Float!){
 }
 `);
 
+const DELETE_ORDER = gql(`
+mutation deleteOrder($orderNo: Float!){
+    deleteOrder(orderNo: $orderNo)
+  }
+`);
+
 interface GetCustomersQuery {
     getCustomers: {
         id: any,
@@ -165,6 +171,7 @@ const Customers: React.FC = () => {
     const [registerCustomer] = useMutation(REGISTER_CUSTOMER);
     const [updateCustomer] = useMutation(UPDATE_CUSTOMER);
     const [deleteCustomer] = useMutation(DELETE_CUSTOMER);
+    const [deleteOrder] = useMutation(DELETE_ORDER);
 
 
     const onRegisterView = (e: React.MouseEvent) => {
@@ -240,7 +247,6 @@ const Customers: React.FC = () => {
             //     alert("something went wrong");
             // }
         } else if (btnType === "update") {
-            console.log(detailState.customer);
             const mutationData = await updateCustomer({
                 variables: {
                     id: Number(detailState.customer.id),
@@ -311,6 +317,27 @@ const Customers: React.FC = () => {
             return;
         }
         return router.push(`/quote?customerId=${editState.customerId}&orderNo=${editState.orderNo}`);
+    }
+
+    const onDelete = async (e: React.MouseEvent) => {
+        if (editState.orderNo === "" || editState.customerId !== detailState.customer.id) {
+            alert("Invaild request");
+            return;
+        }
+
+        const isDeleted = await deleteOrder({
+            variables: {
+                orderNo: Number(editState.orderNo)
+            }
+        }).catch(error => {
+            alert(error);
+        });
+
+        if (isDeleted && isDeleted.data.deleteOrder) {
+            alert(`Your request for deleting orderNo : ${editState.orderNo} has successfully deleted!`);
+        }
+
+        router.reload();
     }
 
     const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -410,7 +437,7 @@ const Customers: React.FC = () => {
                                         </div>
                                         <div className="btnSection">
                                             <button className="editBtn" onClick={onEdit}>edit</button>
-                                            <button className="removeBtn">remove</button>
+                                            <button className="removeBtn" onClick={onDelete}>remove</button>
                                         </div>
                                     </div>
                                     <div className="listTable">
