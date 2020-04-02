@@ -1,4 +1,4 @@
-import { Item, PartType } from "../generated/graphql";
+import { Item, PartType, Order } from "../generated/graphql";
 
 export function calFormatter(date: Date) {
 
@@ -43,4 +43,19 @@ export const totalCal =
 
 export const roundCal = (input: number, digits: number) => {
     return Math.round(input * digits) / digits
+}
+
+export const monthlyCal = (order: any) => {
+    if (order !== undefined) {
+        order.invTot = sumUp(order.invoice);
+        order.cashTot = sumUp(order.cash);
+    }
+}
+
+export const sumUp = (orders: Array<Order>) => {
+    if (orders !== undefined) {
+        return orders.reduce((acc, order) => {
+            return acc + order.total!
+        }, 0);
+    }
 }

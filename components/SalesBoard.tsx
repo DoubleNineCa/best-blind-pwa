@@ -2,10 +2,116 @@ import React, { Fragment, useState } from 'react';
 import gql from 'graphql-tag';
 import { Query, useQuery } from 'react-apollo';
 
-import { cashFormatter } from '../util/formatter';
+import { cashFormatter, monthlyCal } from '../util/formatter';
 import { ErrorView } from './ErrorView';
+import { Order } from '../generated/graphql';
+
+interface sales {
+    year: string
+}
+
+const defaultSales: sales = {
+    year: new Date().getFullYear().toString()
+}
+
+const GET_ORDERS = gql(`
+query GetSalesOrders($year: String!){
+    getSalesOrders(year: $year){
+      id
+      orderNo
+      hst
+      deposit
+      discount
+      installationDiscount
+      payment
+      orderDate
+      installDate
+      invoiceDate
+      status
+      installation
+      total
+      items{
+        id
+        partId
+        partType
+        itemName
+        roomName
+        width
+        price
+        height
+        price
+        handrailType
+        handrailMaterial
+        handrailLength
+        coverColor
+      }
+      customer{
+        id
+        name
+        address
+        phone
+        note
+      }
+      invAddress
+      invCity
+      invProvince
+      invPostal
+    }
+  }
+`);
 
 export const SalesBoard: React.FunctionComponent = () => {
+    const [salesState, setSalesState] = useState<sales>(defaultSales);
+
+    const { loading, error, data } = useQuery(GET_ORDERS, {
+        variables: {
+            year: salesState.year && salesState.year.length >= 4 ? salesState.year : new Date().getFullYear().toString()
+        }
+    });
+
+
+    const annual = new Array(12);
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    if (loading) { return <p> Loading..</p> }
+    else if (error) {
+        return <ErrorView errMsg={error.message} currentLocation={1} />
+    }
+
+    if (!data && !data.getSalesOrders) {
+        console.log("invalid request");
+    }
+
+
+    data.getSalesOrders.map((order: Order, i: any) => {
+        if (order.hst) {
+            const invDate = new Date(order.invoiceDate).getMonth();
+
+            if (annual[invDate] === undefined) {
+                annual[invDate] = {
+                    invoice: new Array<Order>(),
+                    cash: new Array<Order>()
+                };
+            }
+            annual[invDate].invoice.push(order);
+        } else {
+            const instDate = new Date(order.installDate).getMonth();
+            if (annual[instDate] === undefined) {
+                annual[instDate] = {
+                    invoice: new Array<Order>(),
+                    cash: new Array<Order>()
+                };
+            }
+            annual[instDate].cash.push(order);
+        }
+    });
+
+    const handleYear = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSalesState({
+            year: e.currentTarget.value
+        })
+    }
+
     return <Fragment>
         <div className="fillBlank"></div>
         <div className="salesContainer">
@@ -14,89 +120,57 @@ export const SalesBoard: React.FunctionComponent = () => {
             </div>
             <div className="salesTable">
                 <div className="salesTitles">
-                    <div className="emptyTitle"></div>
+                    <div className="emptyTitle">
+                        <input
+                            type="text"
+                            value={salesState.year}
+                            onChange={handleYear}
+                        />
+                    </div>
                     <div className="invoiceTitle">Invoice</div>
                     <div className="cashTitle">Cash</div>
                     <div className="monthlyTotalTitle">Total</div>
                 </div>
                 <div className="salesList">
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">January</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">February</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">March</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">April</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">May</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">June</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">July</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">August</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">September</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">October</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">November</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
-                    <div className="salesOverview">
-                        <div className="monthlyHeader">December</div>
-                        <div className="invoice">{cashFormatter(15500)}</div>
-                        <div className="cash">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal">{cashFormatter(24000)}</div>
-                    </div>
+                    {
+                        months.map((month: any, i) => {
+                            if (annual[i] !== undefined) {
+                                monthlyCal(annual[i]);
+                                return <div className="salesOverview">
+                                    <div className="monthlyHeader">{month}</div>
+                                    <div className="invoice">{cashFormatter(annual[i].invTot)}</div>
+                                    <div className="cash">{cashFormatter(annual[i].cashTot)}</div>
+                                    <div className="monthlyTotal">{cashFormatter(annual[i].invTot + annual[i].cashTot)}</div>
+                                </div>
+                            } else {
+                                return <div className="salesOverview">
+                                    <div className="monthlyHeader">{month}</div>
+                                    <div className="invoice">-</div>
+                                    <div className="cash">-</div>
+                                    <div className="monthlyTotal">-</div>
+                                </div>
+                            }
+
+                        })
+                    }
+
                     <div className="salesOverview">
                         <div className="monthlyHeader _total">Total</div>
-                        <div className="invoice _total">{cashFormatter(15500)}</div>
-                        <div className="cash _total">{cashFormatter(8500)}</div>
-                        <div className="monthlyTotal _total">{cashFormatter(24000)}</div>
+                        <div className="invoice _total">{
+                            cashFormatter(annual.reduce((acc, order) => {
+                                return acc + order.invTot;
+                            }, 0))
+                        }</div>
+                        <div className="cash _total">{
+                            cashFormatter(annual.reduce((acc, order) => {
+                                return acc + order.cashTot;
+                            }, 0))
+                        }</div>
+                        <div className="monthlyTotal _total">{
+                            cashFormatter(annual.reduce((acc, order) => {
+                                return acc + order.invTot + order.cashTot;
+                            }, 0))
+                        }</div>
                     </div>
                 </div>
             </div>

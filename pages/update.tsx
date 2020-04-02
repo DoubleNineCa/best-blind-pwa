@@ -4,18 +4,22 @@ import { Fragment } from "react";
 import { Layout } from '../components/Layout';
 import { Parts } from "../components/Part";
 import { Grades } from "../components/Grade";
+import { SalesBoard } from "../components/SalesBoard";
 
 const Update = () => {
     const router = useRouter();
 
     return <Fragment>
-        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={router.query.subMenu !== 'Parts' ? 4 : 5} />
+        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={router.query.subMenu !== 'Parts' && router.query.subMenu !== 'Sales' ? 4 : router.query.subMenu === "Parts" ? 5 : 6} />
         <div className="contentContainer">
             {
                 router.query.subMenu === 'Parts' ?
                     <Parts />
                     :
-                    <Grades />
+                    router.query.subMenu === 'Grades' ?
+                        <Grades />
+                        :
+                        <SalesBoard />
             }
 
         </div>

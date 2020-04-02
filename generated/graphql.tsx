@@ -201,7 +201,7 @@ export type MutationUpdateStepArgs = {
 
 
 export type MutationDeleteOrderArgs = {
-  id: Scalars['Float']
+  orderNo: Scalars['Float']
 };
 
 
@@ -297,6 +297,7 @@ export type Query = {
   getParts: Array<Part>,
   getOrder?: Maybe<Order>,
   getOrders: Array<Order>,
+  getSalesOrders: Array<Order>,
   getColors: Array<Color>,
 };
 
@@ -314,6 +315,11 @@ export type QueryGetPartsArgs = {
 
 export type QueryGetOrderArgs = {
   orderNo: Scalars['String']
+};
+
+
+export type QueryGetSalesOrdersArgs = {
+  year: Scalars['String']
 };
 
 export type RegisterCustomerInput = {
@@ -558,6 +564,7 @@ export type QueryResolvers<Context = any, ParentType = Query> = ResolversObject<
   getParts?: Resolver<ArrayOrIterable<Part>, ParentType, Context, QueryGetPartsArgs>,
   getOrder?: Resolver<Maybe<Order>, ParentType, Context, QueryGetOrderArgs>,
   getOrders?: Resolver<ArrayOrIterable<Order>, ParentType, Context>,
+  getSalesOrders?: Resolver<ArrayOrIterable<Order>, ParentType, Context, QueryGetSalesOrdersArgs>,
   getColors?: Resolver<ArrayOrIterable<Color>, ParentType, Context>,
 }>;
 

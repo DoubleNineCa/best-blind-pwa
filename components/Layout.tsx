@@ -75,6 +75,15 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
                                                     </div>
                                                 </a>
                                             </Link>
+                                            <Link href={{ pathname: '/update', query: { subMenu: "Sales" } }}>
+                                                <a>
+                                                    <div
+                                                        key="Sales"
+                                                        className={currentLocation === 6 ? "dropHeader-option dropHeader-option-selected" : "dropHeader-option"}>
+                                                        Sales
+                                                    </div>
+                                                </a>
+                                            </Link>
                                         </div>
                                     </div>
                             }
