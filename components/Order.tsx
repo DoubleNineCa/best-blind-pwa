@@ -502,15 +502,15 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                                             <div className="itemNo">{i + 1}</div>
                                             <div className="roomName">{item.roomName}</div>
                                             <div className="blindStyle">{item.itemName}</div>
-                                            <div className="coverColor">{item.coverColor}</div>
-                                            <div className="bWidth">{item.width}</div>
-                                            <div className="bHeight">{item.height}</div>
-                                            <div className="baseArea">{roundUp((item.width * item.height) / 10000, 10) > 1.5 ? roundUp((item.width * item.height) / 10000, 10) : 1.5}</div>
-                                            <div className="handlePosition">{item.handrailType}</div>
+                                            <div className="coverColor">{item.partType === PartType.Component ? "-" : item.coverColor}</div>
+                                            <div className="bWidth">{item.partType === PartType.Component ? "-" : item.width}</div>
+                                            <div className="bHeight">{item.partType === PartType.Component ? "-" : item.height}</div>
+                                            <div className="baseArea">{item.partType === PartType.Component ? "-" : roundUp((item.width * item.height) / 10000, 10) > 1.5 ? roundUp((item.width * item.height) / 10000, 10) : 1.5}</div>
+                                            <div className="handlePosition">{item.partType === PartType.Component ? "-" : item.handrailType}</div>
                                             <div className="controlHeight">{item.handrailLength}</div>
                                             <div className="regularPrice">{cashFormatter(item.price)}</div>
-                                            <div className="discount">{cashFormatter(discountPrice)}</div>
-                                            <div className="finalPrice">{cashFormatter(Math.round((item.price - discountPrice) * 100) / 100)}</div>
+                                            <div className="discount">{item.partType === PartType.Component ? "-" : cashFormatter(discountPrice)}</div>
+                                            <div className="finalPrice">{item.partType === PartType.Component ? cashFormatter(item.price * item.handrailLength) : cashFormatter(Math.round((item.price - discountPrice) * 100) / 100)}</div>
                                         </div>
                                     </Fragment>
                                 }) :
@@ -711,8 +711,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                     </div>
                     <div className="buttonSection">
                         <button className="specific" onClick={onDetail}>{detailState.status ? "List" : "Detail"}</button>
-                        <button className="updateButton" onClick={onUpdate}>Edit</button>
-                        <button className="printButton" onClick={togglePopup}>Print</button>
+                        <button className="updateButton" onClick={onUpdate}>Update</button>
                     </div>
                 </div>
             </div>
@@ -769,6 +768,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         width: 23%;
         align-items: center;
         display:flex;
+        
     }
 
     .printBtnSection{
@@ -778,12 +778,12 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: space-evenly;
         align-items: center;
         font-family: tecnico;
-        font-size: 0.7rem;
     }
 
     .worksheetBtn{
         width: 40%;
         height: 30px;
+        font-size: 0.7rem;
         background: #FFBD00;
         color: white;
         box-shadow: 1px 1px 1px grey;
@@ -795,6 +795,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .invoiceBtn{
         width: 27%;
         height: 30px;
+        font-size: 0.7rem;
         background: #FFBD00;
         color: white;
         box-shadow: 1px 1px 1px grey;
@@ -806,6 +807,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .stickerBtn{
         width: 27%;
         height: 30px;
+        font-size: 0.7rem;
         background: #FFBD00;
         color: white;
         box-shadow: 1px 1px 1px grey;

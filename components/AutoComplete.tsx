@@ -61,23 +61,30 @@ export const AutoComplete: React.FC<Props> = ({ options, blindId, blindHandle })
     useEffect(initiate, [blindId]);
 
     const _onClick = (e: React.MouseEvent) => {
-        setActiveOptionState({
-            activeOption: 0
-        });
+        if (e.currentTarget.innerHTML !== "" && e.currentTarget.innerHTML !== undefined) {
+            setActiveOptionState({
+                activeOption: 0
+            });
 
-        setFilteredOptionState({
-            filteredOption: []
-        });
+            setFilteredOptionState({
+                filteredOption: []
+            });
 
-        setShowOptionsState({
-            showOptions: false
-        });
+            setShowOptionsState({
+                showOptions: false
+            });
 
-        setUserInputState({
-            userInput: e.currentTarget.innerHTML
-        })
+            setUserInputState({
+                userInput: e.currentTarget.innerHTML
+            })
 
-        blindHandle(e.currentTarget.innerHTML);
+            blindHandle(e.currentTarget.innerHTML);
+        } else {
+            setUserInputState({
+                userInput: ""
+            })
+        }
+
     }
 
     const _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

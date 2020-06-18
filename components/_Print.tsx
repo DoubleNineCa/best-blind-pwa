@@ -2,7 +2,7 @@ import React, { Fragment, useState, Component } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from 'react-apollo';
 // import { Customer } from "../generated/graphql";
-import { Item } from "../generated/graphql";
+import { Item, PartType } from "../generated/graphql";
 import { ErrorView } from './ErrorView';
 
 
@@ -37,6 +37,7 @@ query getOrder($orderNo: String!){
         items{
             id
             partId
+            partType
             itemName
             width
             height
@@ -61,18 +62,26 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
     });
 
 
-    const doPrint = () => {
-        window.print();
+    const doPrint = async () => {
+        await window.print();
         window.close();
     }
 
     if (loading) return <p>Loading...</p>
     else if (error) return <ErrorView errMsg={error.message} currentLocation={1} />
 
-    const items = data.getOrder.items;
+    const items = data.getOrder.items.filter((item: Item) => {
+        return item.partType === PartType.Fabric;
+    });
     return <html>
         <img src="/static/logo.png" onLoad={doPrint} />
         <div className="printItems">
+            <div className="item"></div>
+            <div className="item"></div>
+            <div className="item"></div>
+            <div className="item"></div>
+            <div className="item"></div>
+            <div className="item"></div>
             {
                 items !== undefined && items !== null && items.length > 0 ?
                     items.map((item: Item, i: any) => {
@@ -81,19 +90,21 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
                             <div className="itemHeader">
                                 <div className="hLeft">{i + 1}</div>
                                 <div className="hCenter">{Number(new Date(Date.now()).getMonth()) + 1} / {(new Date(Date.now()).getDate())}</div>
-                                <div className="hRight">{customerName}</div>
+                                <div className="hRight">{customerName.length > 10 ? customerName.substr(0, 10) : customerName}</div>
                             </div>
-                            <div className="itemContent">{item.itemName}</div>
+                            <div className="itemContent">
+                                <div className={"cover" + " " + coverClass}>{item.coverColor}</div> {item.itemName}
+                            </div>
                             <div className="itemFooter">
                                 {/* <div className="fLeft" style={{ background: item.coverColor === "IVORY" ? "Wheat" : item.coverColor.toLowerCase(), color: item.coverColor === "BLACK" || item.coverColor === "BROWN" ? "white" : "black" }}>{item.coverColor}</div> */}
-                                <div className={"fLeft" + " " + coverClass}>{item.coverColor}</div>
+                                {/* <div className={"fLeft" + " " + coverClass}>{item.coverColor}</div> */}
                                 <div className="fCenter">{item.width} X {item.height}</div>
                                 <div className="fRight">{item.handrailMaterial.substr(0, 1)}({item.handrailType})-{item.handrailLength}</div>
                             </div>
                         </div>
                     })
                     :
-                    <div> "hi" </div>
+                    <div> No items on the order. </div>
             }
         </div>
         <style jsx>{`
@@ -127,6 +138,7 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             border: 1px none black;
             border-radius: 5pt;
             margin-right: 15px;
+            font-weight: bold;
             padding: 2px 5px 2px;
             font-family: tecnico;
             float:left;
@@ -139,23 +151,26 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             text-align: center;
         }
         .hLeft{
-            width: 30%;
+            width: 10%;
             text-align: left;
             color: skyblue;
             margin-left: 10px;
         }
         .hCenter{
-            width: 40%;
+            width: 25%;
         }
         .hRight{
-            width: 30%;
-            text-align: right;
+            width: 65%;
+            text-align: center;
         }
 
         .itemContent{
             height: 50%;
-            line-height: 45px;
+            font-size: 0.9rem;
+            display: flex;
             text-align: center;
+            justify-content: space-around;
+            align-items: center;
         }
         .itemFooter{
             height: 25%;
@@ -163,16 +178,17 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             text-align: center;
             justify-content: space-evenly;
         }
-        .fLeft{
-            width: 25%;
+
+        .cover{
+            width: 20%;
             height: 18px;
-            text-align: center;
-            margin-left: 10px;
-            justify-content:center;
+            font-size: 0.8rem;
             border-radius: 5px;
             font-weight: bold;
-            align-items: flex-start;
-            border: 1px solid;
+            margin-left: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .ivory{
             -webkit-print-color-adjust: exact !important;
@@ -196,7 +212,7 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             color: white;
         }
         .fCenter{
-            width: 40%;
+            width: 60%;
             color: red;
             background: yellow;
             font-weight: bold;
@@ -204,8 +220,8 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             height: 18px;
         }
         .fRight{
-            width: 30%;
-            text-align: right;
+            width: 40%;
+            text-align: center;
             height: 18px;
         }
     `}</style>

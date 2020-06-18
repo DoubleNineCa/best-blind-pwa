@@ -128,8 +128,9 @@ export const SalesBoard: React.FunctionComponent = () => {
                         />
                     </div>
                     <div className="invoiceTitle">Invoice</div>
+                    <div className="taxTitle">Tax</div>
                     <div className="cashTitle">Cash</div>
-                    <div className="monthlyTotalTitle">Total</div>
+                    <div className="monthlyTotalTitle">Total (incl.Tax)</div>
                 </div>
                 <div className="salesList">
                     {
@@ -139,13 +140,15 @@ export const SalesBoard: React.FunctionComponent = () => {
                                 return <div className="salesOverview">
                                     <div className="monthlyHeader">{month}</div>
                                     <div className="invoice">{cashFormatter(annual[i].invTot)}</div>
+                                    <div className="tax">{cashFormatter(annual[i].invTot * 0.13)}</div>
                                     <div className="cash">{cashFormatter(annual[i].cashTot)}</div>
-                                    <div className="monthlyTotal">{cashFormatter(annual[i].invTot + annual[i].cashTot)}</div>
+                                    <div className="monthlyTotal">{cashFormatter(annual[i].invTot + annual[i].cashTot)} ({cashFormatter(annual[i].invTot + annual[i].invTot * 0.13 + annual[i].cashTot)})</div>
                                 </div>
                             } else {
                                 return <div className="salesOverview">
                                     <div className="monthlyHeader">{month}</div>
                                     <div className="invoice">-</div>
+                                    <div className="tax">-</div>
                                     <div className="cash">-</div>
                                     <div className="monthlyTotal">-</div>
                                 </div>
@@ -159,6 +162,11 @@ export const SalesBoard: React.FunctionComponent = () => {
                         <div className="invoice _total">{
                             cashFormatter(annual.reduce((acc, order) => {
                                 return acc + order.invTot;
+                            }, 0))
+                        }</div>
+                        <div className="tax _total">{
+                            cashFormatter(annual.reduce((acc, order) => {
+                                return acc + order.invTot * 0.13;
                             }, 0))
                         }</div>
                         <div className="cash _total">{
@@ -264,7 +272,17 @@ export const SalesBoard: React.FunctionComponent = () => {
             }
 
             .invoiceTitle{
-                width: 25%;
+                width: 12.5%;
+                height: auto;
+                font-family: tecnico;
+                border-right: 1pt solid black;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .taxTitle{
+                width: 12.5%;
                 height: auto;
                 font-family: tecnico;
                 border-right: 1pt solid black;
@@ -319,7 +337,17 @@ export const SalesBoard: React.FunctionComponent = () => {
             }
 
             .invoice{
-                width: 25%;
+                width: 12.5%;
+                height: 50px;
+                border-right: 1px solid grey;
+                z-index: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .tax{
+                width: 12.5%;
                 height: 50px;
                 border-right: 1px solid grey;
                 z-index: 1;
@@ -342,6 +370,7 @@ export const SalesBoard: React.FunctionComponent = () => {
                 width: 25%;
                 height: 50px;
                 z-index: 1;
+                color: #FFF;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -349,6 +378,7 @@ export const SalesBoard: React.FunctionComponent = () => {
             }
 
             ._total{
+                color: #FFF;
                 background: #AFADAC;
             }
 

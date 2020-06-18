@@ -333,6 +333,9 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
     }
 
     const blindHandle = async (blinds: string) => {
+        if (blinds === undefined) {
+            return;
+        }
         setSelectedBlind({
             blind: blinds.split(" ")[0].replace(/[^(0-9)]/gi, "")
         })
@@ -421,7 +424,9 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
     else if (error) {
         return <ErrorView errMsg={error.message} currentLocation={3} />
     }
+    console.log(data.getOrder.orderNo);
     return (
+
         <Fragment>
             {
                 orderNo === undefined || orderNo === "last" ?
@@ -576,7 +581,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                                 }
                                 <div className="buttonSection">
                                     <button className="addBtn" id="add" onClick={itemHandleSubmit} onKeyPress={preventEnter}>ADD</button>
-                                    <button className="editBtn" id="edit" onClick={itemHandleSubmit}>EDIT</button>
+                                    <button className="editBtn" id="edit" onClick={itemHandleSubmit}>UPDATE</button>
                                     <button className="removeBtn" id="remove" onClick={itemHandleSubmit}>REMOVE</button>
                                 </div>
                             </form>

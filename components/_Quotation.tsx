@@ -163,7 +163,8 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     <div className="location">
                         # 11 - 70 GIBSON DR.<br />
                         MARKHAM, ON L3R 4C2<br />
-                        ☎︎: (647)718-0333, (416)385-3030
+                        ☎︎: (647)718-0333, (416)385-3030<br />
+                        Email: bestblindsca@gmail.com
                     </div>
                 </div>
                 <div className="workTitle">
@@ -181,6 +182,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                     </div>
                 </div>
             </div>
+            <div className="sizeUnit">(Unit : CM)</div>
             <div className="listSection">
                 <div className="quoteTable">
                     <div className="quoteTitles">
@@ -189,7 +191,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                         <div className="quoteBlindTitle">BLIND STYLE</div>
                         <div className="quoteWidthTitle">WIDTH</div>
                         <div className="quoteHeightTitle">HEIGHT</div>
-                        <div className="quoteSqrtTitle">훼배</div>
+                        <div className="quoteSqrtTitle">G.A</div>
                         <div className="quoteLRTitle">L/R</div>
                         <div className="quoteControlTitle">Control Height</div>
                         <div className="quoteSelectPTitle">SELECT PRICE</div>
@@ -314,7 +316,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                         </div>
                     </div>
                     <div className="stamp">
-                        <img src="/static/stamp1.png" />
+                        2 years warranty
                     </div>
                 </div>
             </div>
@@ -348,6 +350,11 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
             .logo img{
                 width: 70%;
             }
+            .webAddr{
+                font-size: 1rem;
+                font-weight: bold;
+                color: #68c6d9;
+            }
             .workTitle{
                 width: 36%;
                 height:100%;
@@ -368,9 +375,16 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 margin-top: 25px;
             }
 
+            .sizeUnit{
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 3px;
+                padding: 0;
+                font-size: 0.675rem;
+            }
+
             .listSection{
                 width:100%;
-                margin-top: 10px;
                 height:830px;
             }
 
@@ -724,10 +738,9 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 border-right: 2px solid grey;
                 display: flex;
                 align-items: center;
+                justify-content: center;
             }
-            .stamp img{
-                width: 100%;
-            }
+            
         `}
         </style>
     </Fragment>

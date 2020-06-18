@@ -363,6 +363,7 @@ export const Parts: React.FC = () => {
         }).then(() => {
             setDispAddColorState({ is: false })
             setAddColorState({ color: "" });
+            router.reload();
         })
     }
 
@@ -374,6 +375,7 @@ export const Parts: React.FC = () => {
         }).then(() => {
             setDispAddColorState({ is: false })
             setAddColorState({ color: "" });
+            router.reload();
         })
     }
 
@@ -868,6 +870,7 @@ export const Parts: React.FC = () => {
 
             .colorSelect{
                 width: 150px;
+                margin-right: 5px;
             }
 
             .flex-item {

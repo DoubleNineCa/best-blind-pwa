@@ -174,6 +174,12 @@ const Customers: React.FC = () => {
     const [deleteOrder] = useMutation(DELETE_ORDER);
 
 
+    if (loading) {
+        return <p> Loading...</p>
+    } else if (error) {
+        return <ErrorView errMsg={error.message} currentLocation={2} />
+    }
+
     const onRegisterView = (e: React.MouseEvent) => {
         setDetailState({
             customer: defaultDetailState.customer
@@ -340,38 +346,40 @@ const Customers: React.FC = () => {
         router.reload();
     }
 
+    const initCustomer = () => {
+        setCustomerState({
+            customers: data.getCustomers
+        })
+    }
+
     const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const keyword = e.currentTarget.value;
 
-        if (loading) {
-            return <p> Loading...</p>
-        } else if (error) {
-            return <ErrorView errMsg={error.message} currentLocation={2} />
-        } else {
-            if (data && data.getCustomers && keyword !== "") {
-                if (keyword === "all") {
-                    setCustomerState({
-                        customers: data.getCustomers
-                    })
-                } else {
-                    const _customers = data.getCustomers.filter((customer: Customer) =>
-                        customer.name.toLowerCase().includes(keyword) || customer.address.toLowerCase().includes(keyword)
-                    );
-                    setCustomerState({
-                        customers: _customers
-                    })
-                }
-            } else {
+        if (data && data.getCustomers && keyword !== "") {
+            if (keyword === "all") {
                 setCustomerState({
-                    customers: defaultCustomerState.customers
+                    customers: data.getCustomers
+                })
+            } else {
+                const _customers = data.getCustomers.filter((customer: Customer) =>
+                    customer.name.toLowerCase().includes(keyword) || customer.address.toLowerCase().includes(keyword)
+                );
+                setCustomerState({
+                    customers: _customers
                 })
             }
+
+        } else {
+            setCustomerState({
+                customers: defaultCustomerState.customers
+            })
         }
     }
 
     return (
         <Fragment>
-            <div className="userSearchContainer">
+            <div className="userSearchContainer" >
+                <img src="/static/logo.png" onLoad={initCustomer} />
                 <input type="text" placeholder="input customer's name or address" onChange={onSearchChange} />
                 <div className="userTopSection">User List</div>
                 <div className="userTable">
@@ -530,6 +538,10 @@ const Customers: React.FC = () => {
 
 
             <style jsx>{`
+                img{
+                    display: none;
+                }
+                
                 .userSearchContainer {
                 width: 20vw;
                 max-height: 74vh;
