@@ -76,12 +76,6 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
     return <html>
         <img src="/static/logo.png" onLoad={doPrint} />
         <div className="printItems">
-            <div className="item"></div>
-            <div className="item"></div>
-            <div className="item"></div>
-            <div className="item"></div>
-            <div className="item"></div>
-            <div className="item"></div>
             {
                 items !== undefined && items !== null && items.length > 0 ?
                     items.map((item: Item, i: any) => {

@@ -77,6 +77,8 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     const emptyItem = { itemName: "none" } as Item;
     const emptyItemArr = [emptyItem, emptyItem, emptyItem];
     let _printedItems;
+    let notes = [];
+
     if (items.length > 24) {
         if (fabrics.length > 30) {
             const firstArr = fabrics.slice(0, 31);
@@ -131,6 +133,12 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     totalPrice.negoTotalPrice += order.installationDiscount;
     totalPrice.saleTotalPrice = totalPrice.selectTotalPrice - totalPrice.negoTotalPrice;
 
+    if (customer.note) {
+        console.log(customer.note);
+        notes = customer.note.split(",");
+        console.log(notes);
+    }
+
     const doPrint = async () => {
         await setBgImgState({
             imgSrc: "none"
@@ -169,6 +177,14 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 </div>
                 <div className="workTitle">
                     WORK SHEET
+                    <div className="workNote">
+                        <ul>{
+                            notes.length > 0 ? notes.map((note: string) => {
+                                return <li>※ {note}</li>
+                            })
+                                : ""
+                        }</ul>
+                    </div>
                 </div>
                 <div className="customerInfo">
                     <div className="orderDate">
@@ -361,6 +377,23 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 text-align: center;
                 font-weight: bold;
                 font-size: 20px;
+            }
+            .workNote{
+                width: 100%;
+                height: 80%;
+                text-align: left;
+                font-weight: bold;
+            }
+            .workNote ul{
+                padding: 10px 10px 0 10px;
+                background: yellow;
+            }
+            .workNote li{
+                list-style: none;
+                line-height: 1.5;
+                font-size: 0.8rem;
+                font-weight: normal;
+                color: red;
             }
             .customerInfo{
                 width: 27%;
