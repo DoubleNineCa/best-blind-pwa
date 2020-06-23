@@ -384,7 +384,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
             }
             .workNote ul{
                 padding: 10px 10px 0 10px;
-                background: yellow;
+                
             }
             .workNote li{
                 list-style: none;
@@ -392,6 +392,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 font-size: 0.8rem;
                 font-weight: normal;
                 color: red;
+                background: yellow;
             }
             .customerInfo{
                 width: 27%;
@@ -606,6 +607,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                text-align: center;
             }
             .quoteWindow{
                 width: 5%;
