@@ -207,13 +207,15 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                 {
                     itemLists.map((item, i) => {
                         if (item.id) {
+                            const discountedPrice = item.partType === PartType.Fabric ? Math.floor(item.price * order.discount) / 100 : 0;
+                            const salePrice = item.price - discountedPrice;
                             return <div className="itemOverview endLine itemMinHeight">
                                 <div className="itemNo">{i + 1}</div>
                                 <div className="blind">&nbsp;&nbsp;{item.itemName}</div>
                                 <div className="bWidth">{item.partType === PartType.Fabric ? item.width : ""}</div>
                                 <div className="bHeight">{item.partType === PartType.Fabric ? item.height : ""}</div>
                                 <div className="bQty">{item.partType === PartType.Fabric ? "1" : item.handrailLength}</div>
-                                <div className="price">{item.partType === PartType.Fabric ? cashFormatter(item.price - item.price * (order.discount / 100)) : cashFormatter(item.price * item.handrailLength)}&nbsp;&nbsp;</div>
+                                <div className="price">{item.partType === PartType.Fabric ? cashFormatter(salePrice) : cashFormatter(item.price * Number(item.handrailLength))}&nbsp;&nbsp;</div>
                             </div>
                         }
 

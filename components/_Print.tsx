@@ -184,6 +184,12 @@ export const _Print: React.FC<Props> = ({ orderNo, customerName }) => {
             justify-content: center;
             align-items: center;
         }
+
+        .white{
+            -webkit-print-color-adjust: exact !important;
+            border: 1px solid black;
+        }
+
         .ivory{
             -webkit-print-color-adjust: exact !important;
             background: Wheat;

@@ -7,7 +7,7 @@ export function calFormatter(date: Date) {
     }
     const oDate = new Date(date);
 
-    return `${oDate.getFullYear()} / ${(oDate.getMonth() + 1)} / ${oDate.getDate()}`;
+    return `${oDate.getFullYear()}/${(oDate.getMonth() + 1)}/${oDate.getDate()}`;
 }
 
 export function cashFormatter(money: number | undefined | null) {
@@ -58,4 +58,14 @@ export const sumUp = (orders: Array<Order>) => {
             return acc + order.total!
         }, 0);
     }
+}
+
+export const paymentSlice = (payment: string) => {
+    if (payment === "" || payment.indexOf(",") === -1) {
+        return 0;
+    } else if (payment.split(",").length < 3) {
+        return 0;
+    }
+
+    return (Number)(payment.split(",")[2].trim());
 }

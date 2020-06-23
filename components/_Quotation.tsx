@@ -134,9 +134,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
     totalPrice.saleTotalPrice = totalPrice.selectTotalPrice - totalPrice.negoTotalPrice;
 
     if (customer.note) {
-        console.log(customer.note);
         notes = customer.note.split(",");
-        console.log(notes);
     }
 
     const doPrint = async () => {

@@ -1,10 +1,10 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import gql from 'graphql-tag';
-import { Query, useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from 'react-apollo';
 import { useRouter } from 'next/router';
 
-import { Order, Item, Customer, Status, PartType } from "../generated/graphql";
-import { calFormatter, cashFormatter, numberFormatter, roundUp, totalCal } from "../util/formatter";
+import { Order, Status, PartType } from "../generated/graphql";
+import { calFormatter, cashFormatter, roundUp, totalCal, paymentSlice, roundCal } from "../util/formatter";
 import { ErrorView } from './ErrorView';
 
 export interface Props {
@@ -121,6 +121,61 @@ const defaultEstimationState: estimationState = {
     amount: 0
 }
 
+interface searchMonthState {
+    month: number
+}
+
+const defaultSearchMonthState: searchMonthState = {
+    month: new Date().getMonth() + 1
+}
+
+interface searchYearState {
+    year: number
+}
+
+const defaultSearchYearState: searchYearState = {
+    year: new Date().getFullYear()
+}
+
+interface searchPaymentState {
+    paymentType: string
+}
+
+const defaultSearchPaymentState: searchPaymentState = {
+    paymentType: "all"
+}
+
+interface searchStatusState {
+    status: any
+}
+
+const defaultSearchStatusState: searchStatusState = {
+    status: "all"
+}
+
+interface searchOrderState {
+    orders: Order[]
+}
+
+const defaultSearchOrderState: searchOrderState = {
+    orders: []
+}
+
+interface midPaymentState {
+    payment: string
+}
+
+const defaultMidPaymentState: midPaymentState = {
+    payment: ""
+}
+interface lastPaymentState {
+    payment: string
+}
+
+const defaultLastPaymentState: lastPaymentState = {
+    payment: ""
+}
+
 const GET_ORDERS = gql(`
 {
     getOrders{
@@ -163,6 +218,8 @@ const GET_ORDERS = gql(`
       invCity
       invProvince
       invPostal
+      midPayment
+      finalPayment
     }
   }
 `);
@@ -187,6 +244,13 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     const [invoiceDateState, setInvoiceDateState] = useState<invoiceDateState>(defaultInvoiceDateState);
     const [invoiceAddrState, setInvoiceAddrState] = useState<invoiceAddrState>(defaultInvoiceAddrState);
     const [estimationState, setEstimationState] = useState<estimationState>(defaultEstimationState);
+    const [searchMonthState, setSearchMonthState] = useState<searchMonthState>(defaultSearchMonthState);
+    const [searchYearState, setSearchYearState] = useState<searchYearState>(defaultSearchYearState);
+    const [searchPaymentState, setSearchPaymentState] = useState<searchPaymentState>(defaultSearchPaymentState);
+    const [searchStatusState, setSearchStatusState] = useState<searchStatusState>(defaultSearchStatusState);
+    const [searchOrderState, setSearchOrderState] = useState<searchOrderState>(defaultSearchOrderState);
+    const [midPaymentState, setMidPaymentState] = useState<midPaymentState>(defaultMidPaymentState);
+    const [lastPaymentState, setLastPaymentState] = useState<lastPaymentState>(defaultLastPaymentState);
 
     const { loading, error, data } = useQuery(GET_ORDERS, {
         onCompleted: async data => {
@@ -194,6 +258,13 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
             if (keyword && isOrder.length > 0) {
                 await setDetails(isOrder[0]);
             }
+
+            setSearchOrderState({
+                orders: data.getOrders.filter((order: Order) => {
+                    const current = new Date(order.orderDate);
+                    return current.getFullYear() === searchYearState.year && current.getMonth() + 1 === searchMonthState.month;
+                })
+            })
         }
     });
 
@@ -249,6 +320,14 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
             setEstimationState({
                 amount: order.items ? await totalCal(order.items, order.discount, order.installation, order.installationDiscount) : 0
             })
+
+            setMidPaymentState({
+                payment: detail.midPayment
+            })
+
+            setLastPaymentState({
+                payment: detail.finalPayment
+            })
         }
     }
 
@@ -268,12 +347,6 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         window.open(`print2?customerName=${detailState.orderDetail.customer.name}&orderNo=${detailState.orderDetail.orderNo}`, "_blank")!.focus();
     }
 
-    const onDisplay = (e: React.MouseEvent) => {
-        setHoverState({
-            currentLocation: Number(e.currentTarget.id)
-        })
-    }
-
     const onDetail = (e: React.MouseEvent) => {
         if (detailState.orderDetail.customer === undefined) {
             alert("Please select order before request details");
@@ -282,13 +355,6 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         setDetailState({
             orderDetail: detailState.orderDetail,
             status: !detailState.status
-        })
-    }
-
-    const offDisplay = (e: React.MouseEvent) => {
-        const { id } = e.currentTarget
-        setHoverState({
-            currentLocation: 0
         })
     }
 
@@ -396,12 +462,14 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                     installation: installationState.installation,
                     installationDiscount: Number(installdcState.installationDC),
                     status: statusState.value,
-                    payment: "cash",
+                    payment: detailState.orderDetail.payment,
                     invoiceDate: new Date(invoiceDateState.invoiceDate),
                     invAddress: invoiceAddrState.invAddr.invAddress,
                     invCity: invoiceAddrState.invAddr.invCity,
                     invProvince: invoiceAddrState.invAddr.invProvince,
-                    invPostal: invoiceAddrState.invAddr.invPostal
+                    invPostal: invoiceAddrState.invAddr.invPostal,
+                    midPayment: midPaymentState.payment,
+                    finalPayment: lastPaymentState.payment
                 }
             }
         })
@@ -422,17 +490,165 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         window.open(`printInvoice?orderNo=${detailState.orderDetail.orderNo}`, "_blank")!.focus();
     }
 
+    // search option handlers
+
+    const handleConditionMonth = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSearchMonthState({
+            month: Number(e.currentTarget.value)
+        })
+    }
+
+    const handleConditionYear = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchYearState({
+            year: Number(e.currentTarget.value)
+        })
+    }
+
+    const handleConditionPayment = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchPaymentState({
+            paymentType: e.currentTarget.value
+        })
+    }
+
+    const handleConditionStatus = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSearchStatusState({
+            status: e.currentTarget.value
+        })
+    }
+
+    // orderList filter
+    //   Month        Payment     Status    (All: O, X: filter)
+    //1    O             O          O
+    //2    O             O          X
+    //3    O             X          O
+    //4    O             X          X
+    //5    X             O          O
+    //6    X             O          X
+    //7    X             X          O
+    //8    X             X          X
+
+    const handleOrderList = () => {
+
+        resetState();
+
+        if (data && data.getOrders) {
+            setSearchOrderState({
+                orders: data.getOrders.filter((order: Order) => {
+                    const current = new Date(order.orderDate);
+                    if (searchMonthState.month === -1 && searchPaymentState.paymentType === "all" && searchStatusState.status === "all") {
+                        return current.getFullYear() === searchYearState.year;
+                    } else if (searchMonthState.month === -1 && searchPaymentState.paymentType === "all" && searchStatusState.status !== "all") {
+                        return current.getFullYear() === searchYearState.year &&
+                            order.status === searchStatusState.status;
+                    } else if (searchMonthState.month === -1 && searchPaymentState.paymentType !== "all" && searchStatusState.status === "all") {
+                        return current.getFullYear() === searchYearState.year &&
+                            order.hst === (searchPaymentState.paymentType === "tax");
+                    } else if (searchMonthState.month === -1 && searchPaymentState.paymentType !== "all" && searchStatusState.status !== "all") {
+                        return current.getFullYear() === searchYearState.year &&
+                            order.status === searchStatusState.status &&
+                            order.hst === (searchPaymentState.paymentType === "tax");
+                    } else if (searchMonthState.month !== -1 && searchPaymentState.paymentType === "all" && searchStatusState.status === "all") {
+                        return current.getFullYear() === searchYearState.year &&
+                            current.getMonth() + 1 === searchMonthState.month;
+                    } else if (searchMonthState.month !== -1 && searchPaymentState.paymentType === "all" && searchStatusState.status !== "all") {
+                        return current.getFullYear() === searchYearState.year &&
+                            current.getMonth() + 1 === searchMonthState.month &&
+                            order.status === searchStatusState.status;
+                    } else if (searchMonthState.month !== -1 && searchPaymentState.paymentType !== "all" && searchStatusState.status === "all") {
+                        return current.getFullYear() === searchYearState.year &&
+                            current.getMonth() + 1 === searchMonthState.month &&
+                            order.hst === (searchPaymentState.paymentType === "tax");
+                    } else {
+                        return current.getFullYear() === searchYearState.year &&
+                            current.getMonth() + 1 === searchMonthState.month &&
+                            order.status === searchStatusState.status &&
+                            order.hst === (searchPaymentState.paymentType === "tax");
+                    }
+                })
+            })
+        }
+    }
+
+    useEffect(handleOrderList, [searchYearState.year, searchMonthState.month, searchPaymentState.paymentType, searchStatusState.status]);
+
+    const resetState = () => {
+        setDetailState(defaultOrderState);
+        setHoverState(defaultHoverState);
+        setInvoiceAddrState(defaultInvoiceAddrState);
+        setInvoiceDateState(defaultInvoiceDateState);
+        setEstimationState(defaultEstimationState);
+        setHstState(defaultHstState);
+        setDepositState(defaultDepositState);
+        setDiscountState(defaultDiscountState);
+        setInstallationState(defaultInstallationState);
+        setInstallDateState(defaultInstallDateState);
+        setInstalldcState(defaultInstallcState);
+        setStatusState(defaultStatusState);
+    }
+
+    const handleMidPay = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMidPaymentState({
+            payment: e.currentTarget.value
+        })
+    }
+
+    const handleLastPay = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLastPaymentState({
+            payment: e.currentTarget.value
+        })
+    }
+
+
+
     if (loading) { return <p> Loading..</p> }
     else if (error) {
         return <ErrorView errMsg={error.message} currentLocation={1} />
     }
     else {
-        const getOrders = data && data.getOrders ? data.getOrders : [];
         return <Fragment>
             <div className="orderContainer">
                 <div className="orderTopSection">
                     <div className="orderSectionTitle">
                         {!detailState.status ? "Orders" : "Detail"}
+                    </div>
+                    <div className="orderSectionSearch">
+                        <select className="selectPartType" value={searchMonthState.month} onChange={handleConditionMonth}>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                            <option value="-1">ALL</option>
+                        </select>
+                        <span className="flex-item search-item">
+                            <input className="dateInput" type="text" placeholder="Input year" value={searchYearState.year} onChange={handleConditionYear} />
+                        </span>
+                        <label>
+                            <input type="radio" value="tax" checked={searchPaymentState.paymentType === "tax"} onChange={handleConditionPayment} />TAX
+                        </label>
+                        <label>
+                            <input type="radio" value="cash" checked={searchPaymentState.paymentType === "cash"} onChange={handleConditionPayment} />CASH
+                        </label>
+                        <label>
+                            <input type="radio" value="all" checked={searchPaymentState.paymentType === "all"} onChange={handleConditionPayment} />ALL
+                        </label>
+
+                        <select className="selectPartType" value={searchStatusState.status} onChange={handleConditionStatus}>
+                            <option value="all">ALL</option>
+                            <option value={Status.Measure}>MEASURE</option>
+                            <option value={Status.Manufacture}>MANUFACTURE</option>
+                            <option value={Status.Install}>INSTALL</option>
+                            <option value={Status.Remaining}>REMAINING</option>
+                            <option value={Status.Complete}>COMPLETE</option>
+                        </select>
+
                     </div>
                     <div className="printSection">
                         <div className="printBtnSection">
@@ -446,27 +662,50 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                 <div className="orderTable" style={{ display: detailState.status ? "none" : "block" }}>
                     <div className="orderTitles">
                         <div className="orderNoTitle">ORDER #</div>
-                        <div className="orderNameTitle">NAME</div>
                         <div className="orderDateTitle">ORDER DATE</div>
-                        <div className="orderInstallTitle">INSTALL DATE</div>
+                        <div className="orderNameTitle">NAME</div>
+                        <div className="orderPhoneTitle">PHONE</div>
+                        <div className="orderAddressTitle">ADDRESS</div>
                         <div className="orderStatusTitle">STATUS</div>
-                        <div className="orderInstallationTitle">INSTALLATION</div>
-                        <div className="orderDepositTitle">DEPOSIT</div>
+                        <div className="orderPriceTitle">PRICE</div>
+                        <div className="orderHstTitle">HST</div>
                         <div className="orderTotalTitle">TOTAL</div>
+                        <div className="orderDepositTitle">DEPOSIT</div>
+                        <div className="orderSecondTitle">2ND PAY</div>
+                        <div className="orderBalanceTitle">3RD PAY</div>
                     </div>
                     <div className="orderList">
                         {
-                            getOrders.length > 0 ?
-                                getOrders.map((order: Order) => {
+                            searchOrderState.orders.length > 0 ?
+                                searchOrderState.orders.map((order: Order) => {
+                                    const midPay = paymentSlice(order.midPayment);
+                                    const finalPay = paymentSlice(order.finalPayment);
+                                    let balance = finalPay;
+                                    if (order.total && finalPay === 0) {
+                                        if (order.hst) {
+                                            balance = order.total * 1.13 - order.deposit - midPay;
+                                        } else {
+                                            balance = order.total - order.deposit - midPay;
+                                        }
+                                    }
+
+                                    if (roundCal(balance, 100) === -0) {
+                                        balance = 0;
+                                    }
+
                                     return (<div key={order.id} id={order.id} className={hoverState.currentLocation === Number(order.id) || order.orderNo === keyword ? "orderOverviewOn" : "orderOverview"} onClick={viewDetails(order)}>
                                         <div className="orderNo">{order.orderNo}</div>
-                                        <div className="orderName">{order.customer.name}</div>
                                         <div className="orderDate">{calFormatter(order.orderDate)}</div>
-                                        <div className="orderInstall">{calFormatter(order.installDate)}</div>
+                                        <div className="orderName">{order.customer.name}</div>
+                                        <div className="orderPhone">{order.customer.phone}</div>
+                                        <div className="orderAddress">{order.customer.address}</div>
                                         <div className="orderStatus">{order.status}</div>
-                                        <div className="orderInstallation">{cashFormatter(order.installation)}</div>
+                                        <div className="orderPrice">{cashFormatter(order.total)}</div>
+                                        <div className="orderHst">{order.total && order.hst ? cashFormatter(order.total * 0.13) : cashFormatter(0)}</div>
+                                        <div className="orderTotal">{order.total && order.hst ? cashFormatter(order.total * 1.13) : cashFormatter(order.total)}</div>
                                         <div className="orderDeposit">{cashFormatter(order.deposit)}</div>
-                                        <div className="orderTotal">{cashFormatter(order.total)}</div>
+                                        <div className="orderSecond">{cashFormatter(midPay)}</div>
+                                        <div className={balance === 0 || finalPay > 0 ? "orderBalance complete" : "orderBalance"}>{cashFormatter(balance)}</div>
                                     </div>)
                                 })
                                 :
@@ -525,19 +764,19 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
             <div className="orderController">
                 <div className="orderDetails">
                     <div className="section-1">
-                        <div>
-                            <span className="blodeFont">Contact : </span>
-                            {detailState.orderDetail.customer === undefined ? '' : detailState.orderDetail.customer.phone}
-                        </div>
-                        <div>
-                            <span className="blodeFont">Address : </span><br />
-                            <span className="addressSection">{detailState.orderDetail.customer === undefined ? '' : detailState.orderDetail.customer.address}</span>
-                        </div>
-                    </div>
-                    <div className="section">
                         <div>* Note *</div>
-                        <div className="noteSection">
-                            {detailState.orderDetail.customer === undefined ? '' : detailState.orderDetail.customer.note}
+                        <div className="noteSection workNote">
+                            <ul>
+                                {
+                                    detailState.orderDetail.customer === undefined ?
+                                        '' :
+                                        detailState.orderDetail.customer.note === undefined || detailState.orderDetail.customer.note === null ?
+                                            '' :
+                                            detailState.orderDetail.customer.note.split(",").map(comment => {
+                                                return <li>※ {comment}</li>
+                                            })
+                                }
+                            </ul>
                         </div>
                     </div>
                     <div className="section">
@@ -546,7 +785,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                             <span className="blodeFont">HST : </span>
                             <span className="flex-item">
                                 <input
-                                    className="orderHst"
+                                    className="_orderHst"
                                     name="isHST"
                                     type="checkbox"
                                     checked={hstState.hst}
@@ -687,6 +926,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                                     className="orderInput"
                                     type="text"
                                     value={detailState.orderDetail.payment}
+                                    placeholder="Date(MM/DD), Method"
                                     onChange={handlePayment} />
                             </span>
                         </div>
@@ -696,17 +936,39 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                             <div className="blodeFont">Estimation : </div>
                             <div className="blodeFont">{cashFormatter(estimationState.amount)}</div>
                         </div>
+                        <div className="orderUpdate">
+                            <div className="blodeFont">Tax : </div>
+                            <div className="blodeFont">{detailState.orderDetail.hst ? cashFormatter(estimationState.amount * 0.13) : cashFormatter(0)}</div>
+                        </div>
 
                     </div>
                     <div className="section">
-
-                        <div>Number of items</div>
-                        <div>
-                            <span className="blodeFont">Blinds : </span>
-                            {detailState.orderDetail.items === undefined || detailState.orderDetail.items === null ? 0 : detailState.orderDetail.items.length}
+                        <div className="orderUpdate">
+                            <div className="blodeFont">Total : </div>
+                            <div className="blodeFont">{detailState.orderDetail.hst ? cashFormatter(estimationState.amount + estimationState.amount * 0.13) : cashFormatter(estimationState.amount)}</div>
                         </div>
-                        <div>
-                            <span className="blodeFont">Components : </span>
+                    </div>
+                    <div className="section">
+                        <div>Installment Payment</div>
+                        <div className="orderUpdate">
+                            <div className="blodeFont">2ND</div>
+                            <span className="payment-item">
+                                <input className="paymentInput"
+                                    type="text"
+                                    placeholder="Date(MM/DD), Method, Amount"
+                                    value={midPaymentState.payment}
+                                    onChange={handleMidPay} />
+                            </span>
+                        </div>
+                        <div className="orderUpdate">
+                            <div className="blodeFont">3RD</div>
+                            <span className="payment-item">
+                                <input className="paymentInput"
+                                    type="text"
+                                    placeholder="Date(MM/DD), Method, Amount"
+                                    value={lastPaymentState.payment}
+                                    onChange={handleLastPay} />
+                            </span>
                         </div>
                     </div>
                     <div className="buttonSection">
@@ -730,6 +992,18 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: flex-start;
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .selectPartType{
+        width: 150px;
+        border: 1px solid #dde5ff;
+        margin: 0 5px;
+        border-radius: 4px;
+        font-family: tecnico;
+        font-size: 14px;
+        color: #5d647b;
+        padding: 10px;
+        text-align:right;
     }
 
     .orderController{
@@ -764,8 +1038,16 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: flex-start;
         align-items: flex-start;
     }
+
+    .orderSectionSearch{
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
     .printSection{
-        width: 23%;
+        width: 33%;
         align-items: center;
         display:flex;
         
@@ -862,7 +1144,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderContainer .orderTable .orderTitles .orderNoTitle{
-        width: 18%;
+        width: 7.5%;
         height: auto;
         font-family: tecnico;
         border-right: 1px solid black;
@@ -871,7 +1153,37 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: center;
     }
 
+    .orderContainer .orderTable .orderTitles .orderDateTitle{
+        width: 10%;
+        height: auto;
+        font-family: tecnico;
+        border-right: 1pt solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .orderContainer .orderTable .orderTitles .orderNameTitle{
+        width: 15%;
+        height: auto;
+        font-family: tecnico;
+        border-right: 1pt solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orderContainer .orderTable .orderTitles .orderPhoneTitle{
+        width: 10%;
+        height: auto;
+        font-family: tecnico;
+        border-right: 1pt solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orderContainer .orderTable .orderTitles .orderAddressTitle{
         width: 20%;
         height: auto;
         font-family: tecnico;
@@ -881,28 +1193,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: center;
     }
 
-    .orderContainer .orderTable .orderTitles .orderDateTitle{
-        width: 15%;
-        height: auto;
-        font-family: tecnico;
-        border-right: 1pt solid black;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .orderContainer .orderTable .orderTitles .orderInstallTitle{
-        width: 15%;
-        height: auto;
-        font-family: tecnico;
-        border-right: 1pt solid black;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
     .orderContainer .orderTable .orderTitles .orderStatusTitle{
-        width: 8%;
+        width: 7.5%;
         height: auto;
         font-family: tecnico;
         border-right: 1pt solid black;
@@ -911,8 +1203,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: center;
     }
 
-    .orderContainer .orderTable .orderTitles .orderInstallationTitle{
-        width: 8%;
+    .orderContainer .orderTable .orderTitles .orderPriceTitle{
+        width: 7.5%;
         height: auto;
         font-family: tecnico;
         border-right: 1pt solid black;
@@ -921,8 +1213,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: center;
     }
 
-    .orderContainer .orderTable .orderTitles .orderDepositTitle{
-        width: 8%;
+    .orderContainer .orderTable .orderTitles .orderHstTitle{
+        width: 7.5%;
         height: auto;
         font-family: tecnico;
         border-right: 1pt solid black;
@@ -932,7 +1224,37 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderContainer .orderTable .orderTitles .orderTotalTitle{
-        width: 8%;
+        width: 7.5%;
+        height: auto;
+        font-family: tecnico;
+        border-right: 3pt double black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orderContainer .orderTable .orderTitles .orderDepositTitle{
+        width: 7.5%;
+        height: auto;
+        font-family: tecnico;
+        border-right: 1pt solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .orderContainer .orderTable .orderTitles .orderSecondTitle{
+        width: 7.5%;
+        height: auto;
+        font-family: tecnico;
+        border-right: 1pt solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .orderContainer .orderTable .orderTitles .orderBalanceTitle{
+        width: 7.5%;
         height: auto;
         font-family: tecnico;
         display: flex;
@@ -1140,7 +1462,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderNo{
-        width: 18%;
+        width: 7.5%;
         height: 50px;
         border-right: 1px solid grey;
         z-index: 1;
@@ -1149,7 +1471,37 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         align-items: center;
     }
 
+    .orderDate{
+        width: 10%;
+        height: 50px;
+        border-right: 1pt solid grey;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .orderName{
+        width: 15%;
+        height: 50px;
+        border-right: 1pt solid grey;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orderPhone{
+        width: 10%;
+        height: 50px;
+        border-right: 1pt solid grey;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orderAddress{
         width: 20%;
         height: 50px;
         border-right: 1pt solid grey;
@@ -1159,28 +1511,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: center;
     }
 
-    .orderDate{
-        width: 15%;
-        height: 50px;
-        border-right: 1pt solid grey;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .orderInstall{
-        width: 15%;
-        height: 50px;
-        border-right: 1pt solid grey;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
     .orderStatus{
-        width: 8%;
+        width: 7.5%;
         height: 50px;
         border-right: 1pt solid grey;
         z-index: 1;
@@ -1189,8 +1521,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: center;
     }
 
-    .orderInstallation{
-        width: 8%;
+    .orderPrice{
+        width: 7.5%;
         height: 50px;
         border-right: 1pt solid grey;
         z-index: 1;
@@ -1199,8 +1531,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         justify-content: center;
     }
 
-    .orderDeposit{
-        width: 8%;
+    .orderHst{
+        width: 7.5%;
         height: 50px;
         border-right: 1pt solid grey;
         z-index: 1;
@@ -1210,12 +1542,47 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderTotal{
-        width: 8%;
+        width: 7.5%;
         height: 50px;
+        border-right: 3pt double grey;
         z-index: 1;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .orderDeposit{
+        width: 7.5%;
+        height: 50px;
+        border-right: 1pt solid grey;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orderSecond{
+        width: 7.5%;
+        height: 50px;
+        border-right: 1pt solid grey;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orderBalance{
+        width: 7.5%;
+        height: 50px;
+        z-index: 1;
+        display: flex;
+        color: red;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .complete{
+        color: green;
     }
 
     .itemNo{
@@ -1397,8 +1764,32 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         text-align:right;
       }
 
+      .payment-item{
+        width: 80%;
+        justify-content: center;
+        margin-top:5px;
+        border: 1px solid #dde5ff;
+        border-radius: 4px;
+        color: #5d647b;
+        outline: 0;
+        padding: 10px;
+        text-align:right;
+      }
+
+      .search-item{
+          margin: 0;
+      }
+
     .orderInput{
         width: 70px;
+        border: none;
+        font-family: tecnico;
+        font-size: 0.775rem;
+        text-align:right;
+    }
+
+    .paymentInput{
+        width: 90%;
         border: none;
         font-family: tecnico;
         font-size: 0.775rem;
@@ -1435,7 +1826,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         text-align:right;
     }
 
-    .orderHst{
+    ._orderHst{
         height: 10px;
     }
     
@@ -1489,6 +1880,20 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         border: none;
         border-radius: 4pt;
     }
+
+    .workNote{
+        width: 100%;
+        text-align: left;
+    }
+    .workNote ul{
+        padding-left: 0px;
+    }
+    .workNote li{
+        list-style: none;
+        line-height: 1.2;
+        font-size: 0.775rem;
+    }
+
 `}
             </style>
         </Fragment>
