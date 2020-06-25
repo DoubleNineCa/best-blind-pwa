@@ -691,6 +691,8 @@ const Customers: React.FC = () => {
                 .userTopSection{
                     margin: 30px 0 30px 10px;
                     justify-content: center;
+                    font-family: 'Montserrat', sans-serif;
+                    font-weight: 300;
                     width: 100%;
                     backgroud: yellow
                     border:2px solid black;

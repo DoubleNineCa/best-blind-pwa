@@ -1,5 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import Link from 'next/link';
+import Head from 'next/head';
 
 interface Props {
     onTaskCreated: string[];
@@ -30,6 +31,11 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
     }
 
     return <Fragment>
+        <Head>
+            <title>BestBlinds</title>
+            <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@100;300;400;700;900&family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet" />
+            <script src="https://kit.fontawesome.com/1c3760c942.js"></script>
+        </Head>
         <div className="pageContainer">
             <header className="appHeader">
                 <div className="appHeaderLeft"></div>

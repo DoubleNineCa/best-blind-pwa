@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import { NextPage } from 'next';
 import { Layout } from '../components/Layout'
 import { Dashboard } from '../components/Dashboard';
-import Head from 'next/head';
 
 interface InitialProps {
     greetings: string;
@@ -17,10 +16,6 @@ interface Props extends InitialProps {
 const IndexPage: NextPage<Props, InitialProps> = () => {
     return (
         <div>
-            <Head>
-                <title>BestBlinds</title>
-                <link key="googleFont" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;900&family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet" />
-            </Head>
             <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={0} />
             <div className="contentContainer">
                 <Dashboard />

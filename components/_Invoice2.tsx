@@ -57,8 +57,8 @@ query getOrder($orderNo: String!){
         invAddress,
         invCity,
         invProvince,
-        invPostal
-        
+        invPostal,
+        installAddress
     }
 }
 `);
@@ -167,9 +167,9 @@ const _Invoice2: React.FC<Props> = ({ orderNo }) => {
                     </div>
                     <div className="addrInfo">
                         {customer.name}<br />
-                        {customer.address}<br />
-                        {customer.city} {customer.city && customer.province ? ", " : ""} {customer.province}<br />
-                        {customer.postal}
+                        {order.installAddress ? order.installAddress : customer.address}<br />
+                        {order.installAddress ? '' : customer.city} {!order.installAddress ? customer.city && customer.province ? ", " : "" : ''} {order.installAddress ? '' : customer.province}<br />
+                        {order.installAddress ? '' : customer.postal}
                     </div>
                 </div>
             </div>

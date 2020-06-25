@@ -361,6 +361,7 @@ export const Dashboard: React.FunctionComponent = () => {
         height: auto;
         font-size: 1.125rem;
         font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
         color: #2F3D4C;
         padding: 10px 0px 0px 10px;
         display: flex;
@@ -373,6 +374,7 @@ export const Dashboard: React.FunctionComponent = () => {
         height: auto;
         font-size: 1.125rem;
         font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
         color: #2F3D4C;
         padding: 10px 0px 0px 10px;
         display: flex;
