@@ -105,7 +105,7 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
             align-items: center;
             display: flex;
             flex-direction:column;
-            font-family: tecnico;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .loginTitleSection{
@@ -148,7 +148,7 @@ export const LoginView: React.FC<Props> = ({ currentLocation }) => {
         .customerSubmit{
             width: 100%;
             height: 40px;
-            font-family: tecnico;
+            font-family: 'Montserrat', sans-serif;
             background: #FFBD00;
             color: white;
             font-size: 0.875rem;

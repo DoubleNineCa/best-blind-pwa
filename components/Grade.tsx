@@ -407,7 +407,7 @@ export const Grades: React.FunctionComponent = () => {
         width: 100px;
         height: auto;
         font-size: 1.125rem;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         color: #2F3D4C;
         padding: 10px 0px 0px 10px;
         display: flex;
@@ -422,7 +422,7 @@ export const Grades: React.FunctionComponent = () => {
         background: #2F3D4C;
         color: white;
         border: 1pt solid black;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-radius: 25pt;
         box-shadow: 0px 1px 1px #F1F1F1;
         justify-content: space-evenly;
@@ -475,7 +475,7 @@ export const Grades: React.FunctionComponent = () => {
     .gradeContainer .gradeTable .gradeTitles .gradeNameTitle{
         width: 60%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -485,7 +485,7 @@ export const Grades: React.FunctionComponent = () => {
     .gradePriceTitle{
         width: 40%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -513,7 +513,7 @@ export const Grades: React.FunctionComponent = () => {
         min-height: 50px;
         font-size: 0.7rem;
         border: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-bottom: 1px solid black;
         background: white;
         display: flex;
@@ -561,7 +561,7 @@ export const Grades: React.FunctionComponent = () => {
         border: 2px solid black;
         border-top: 10px solid #2F3D4C;
         border-radius: 10pt;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         background: white;
         display: flex;
         flex-direction: column;
@@ -623,7 +623,7 @@ export const Grades: React.FunctionComponent = () => {
     .styledInput{
         width: 140px;
         border: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         font-size: 14px;
         text-align:right;
     }
@@ -631,7 +631,7 @@ export const Grades: React.FunctionComponent = () => {
     .combiInput{
         width: 120px;
         border: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         font-size: 0.775rem;
         text-align:right;
     }
@@ -651,7 +651,7 @@ export const Grades: React.FunctionComponent = () => {
     .styledInput-1{
         width: 70px;
         border: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         font-size: 14px;
         text-align:right;
     }
@@ -660,7 +660,7 @@ export const Grades: React.FunctionComponent = () => {
         width: 200px;
         border: 1px solid #dde5ff;
         border-radius: 4px;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         font-size: 14px;
         color: #5d647b;
         padding: 10px;
@@ -708,7 +708,7 @@ export const Grades: React.FunctionComponent = () => {
     .newBtn{
         width: 30%;
         height: 40px;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         background: #FFBD00;
         color: white;
         font-size: 0.875rem;
@@ -721,7 +721,7 @@ export const Grades: React.FunctionComponent = () => {
     .updateBtn{
         width: 30%;
         height: 40px;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         background: #FFBD00;
         color: white;
         font-size: 0.875rem;
@@ -734,7 +734,7 @@ export const Grades: React.FunctionComponent = () => {
     .deleteBtn{
         width: 30%;
         height: 40px;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         background: #FFBD00;
         color: white;
         font-size: 0.875rem;

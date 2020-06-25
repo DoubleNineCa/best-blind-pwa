@@ -235,7 +235,7 @@ const _Invoice: React.FC<Props> = ({ orderNo }) => {
             align-items: center;
             flex-direction:column;
             font-size: 0.8rem;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Montserrat', sans-serif;
         }
         .topSection{
             width:90%;

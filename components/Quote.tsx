@@ -151,6 +151,7 @@ mutation PlaceOrder($input: PlaceOrderInput!){
       orderNo
       deposit
       payment
+      installAddress
       items{
         partId
       }
@@ -260,6 +261,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     deposit: Number(inputFields[1].value),
                     installation: Number(inputFields[2].value),
                     payment: inputFields[3].value,
+                    installAddress: inputFields[5].value,
                     customerId: Number(customerId)
 
                 }
@@ -424,7 +426,6 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
     else if (error) {
         return <ErrorView errMsg={error.message} currentLocation={3} />
     }
-    console.log(data.getOrder.orderNo);
     return (
 
         <Fragment>
@@ -455,6 +456,10 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                             <div className="inputRow">
                                 <div className="rowTitle">CUSTOMER</div>
                                 <input type="text" className="registerInput" readOnly value={customerData && customerData.getCustomer ? customerData.getCustomer.name : "Loading..."} />
+                            </div>
+                            <div className="inputRow">
+                                <div className="rowTitle">INSTALLATION ADDRESS</div>
+                                <input type="text" className="registerInput" placeholder="Input address for the blinds installation" />
                             </div>
 
                             <div className="inputRow">
@@ -618,7 +623,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     align-items: center;
                     display: flex;
                     flex-direction:column;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                 }
                 
                 .registerTitleSection{
@@ -661,7 +666,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     margin-top: 50px;
                     width: 100%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -704,7 +709,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .itemNoTitle{
                     width: 5%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -714,7 +719,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .roomNameTitle{
                     width: 20%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -724,7 +729,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .blindNameTitle{
                     width: 20%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -734,7 +739,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .itemWidthTitle{
                     width: 5%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -744,7 +749,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .itemHeightTitle{
                     width: 5%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -754,7 +759,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .itemCoverColorTitle{
                     width: 10%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -764,7 +769,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .handrailTypeTitle{
                     width: 10%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -774,7 +779,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .handrailMaterialTitle{
                     width: 15%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-right: 1px solid black;
                     display: flex;
                     align-items: center;
@@ -784,7 +789,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .handrailLengthTitle{
                     width: 10%;
                     height: auto;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -799,7 +804,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     flex-direction: column;
                     border: 2px solid black;
                     border-top: none;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border-bottom-left-radius: 10pt;
                     border-bottom-right-radius: 10pt;
                     z-index: 1;
@@ -834,7 +839,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .noneItem{
                     width: 100%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -844,7 +849,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 5%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -854,7 +859,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 20%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -864,7 +869,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 20%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -874,7 +879,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 5%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -884,7 +889,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 5%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -894,7 +899,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 10%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -904,7 +909,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 10%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -914,7 +919,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 15%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -923,7 +928,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .handrailLength{
                     width: 10%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -933,7 +938,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 18vw;
                     max-height: 74vh;
                     margin-left: 3vw;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     border: 2px solid black;
                     border-top: 10px solid #2F3D4C;
                     border-radius: 10pt;
@@ -987,7 +992,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                     width: 70%;
                     border: 1px solid #dde5ff;
                     border-radius: 4px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     font-size: 14px;
                     color: #5d647b;
                     padding: 10px;
@@ -1011,7 +1016,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .addBtn{
                     width: 30%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -1024,7 +1029,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .editBtn{
                     width: 30%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -1037,7 +1042,7 @@ export const Quotes: React.FC<Props> = ({ customerId, orderNo }) => {
                 .removeBtn{
                     width: 30%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;

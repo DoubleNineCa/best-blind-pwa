@@ -582,7 +582,7 @@ export const Parts: React.FC = () => {
                 width: 100px;
                 height: auto;
                 font-size: 1.125rem;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 color: #2F3D4C;
                 padding: 10px 0px 0px 10px;
                 display: flex;
@@ -615,7 +615,7 @@ export const Parts: React.FC = () => {
             .partNoTitle{
                 width: 20%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1px solid black;
                 display: flex;
                 align-items: center;
@@ -625,7 +625,7 @@ export const Parts: React.FC = () => {
             .partTypeTitle{
                 width: 10%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1px solid black;
                 display: flex;
                 align-items: center;
@@ -635,7 +635,7 @@ export const Parts: React.FC = () => {
             .partKindTitle{
                 width: 10%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1px solid black;
                 display: flex;
                 align-items: center;
@@ -645,7 +645,7 @@ export const Parts: React.FC = () => {
             .partNameTitle{
                 width: 20%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1px solid black;
                 display: flex;
                 align-items: center;
@@ -655,7 +655,7 @@ export const Parts: React.FC = () => {
             .partColorTitle{
                 width: 10%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1px solid black;
                 display: flex;
                 align-items: center;
@@ -665,7 +665,7 @@ export const Parts: React.FC = () => {
             .partManufacturerTitle{
                 width: 20%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1px solid black;
                 display: flex;
                 align-items: center;
@@ -675,7 +675,7 @@ export const Parts: React.FC = () => {
             .partGradeTitle{
                 width: 10%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -689,7 +689,7 @@ export const Parts: React.FC = () => {
                 flex-direction: column;
                 border: 2px solid black;
                 border-top: none;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-bottom-left-radius: 10pt;
                 border-bottom-right-radius: 10pt;
                 z-index: 1;
@@ -796,7 +796,7 @@ export const Parts: React.FC = () => {
             .partDetails{
                 width: 100%;
                 height: 88%;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 background: white;
                 overflow: scroll;
             }
@@ -845,7 +845,7 @@ export const Parts: React.FC = () => {
             .styledInput{
                 width: 200px;
                 border: none;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 font-size: 14px;
                 text-align:right;
             }
@@ -861,7 +861,7 @@ export const Parts: React.FC = () => {
                 width: 230px;
                 border: 1px solid #dde5ff;
                 border-radius: 4px;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 font-size: 14px;
                 color: #5d647b;
                 padding: 10px;
@@ -901,7 +901,7 @@ export const Parts: React.FC = () => {
             .newBtn{
                 width: 30%;
                 height: 40px;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 background: #FFBD00;
                 color: white;
                 font-size: 0.875rem;
@@ -914,7 +914,7 @@ export const Parts: React.FC = () => {
             .updateBtn{
                 width: 30%;
                 height: 40px;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 background: #FFBD00;
                 color: white;
                 font-size: 0.875rem;
@@ -927,7 +927,7 @@ export const Parts: React.FC = () => {
             .deleteBtn{
                 width: 30%;
                 height: 40px;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 background: #FFBD00;
                 color: white;
                 font-size: 0.875rem;

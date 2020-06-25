@@ -176,6 +176,14 @@ const defaultLastPaymentState: lastPaymentState = {
     payment: ""
 }
 
+interface installAddressState {
+    installAddress: string
+}
+
+const defaultInstallAddressState: installAddressState = {
+    installAddress: ""
+}
+
 const GET_ORDERS = gql(`
 {
     getOrders{
@@ -220,6 +228,7 @@ const GET_ORDERS = gql(`
       invPostal
       midPayment
       finalPayment
+      installAddress
     }
   }
 `);
@@ -251,6 +260,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     const [searchOrderState, setSearchOrderState] = useState<searchOrderState>(defaultSearchOrderState);
     const [midPaymentState, setMidPaymentState] = useState<midPaymentState>(defaultMidPaymentState);
     const [lastPaymentState, setLastPaymentState] = useState<lastPaymentState>(defaultLastPaymentState);
+    const [installAddressState, setInstallAddressState] = useState<installAddressState>(defaultInstallAddressState);
 
     const { loading, error, data } = useQuery(GET_ORDERS, {
         onCompleted: async data => {
@@ -328,6 +338,10 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
             setLastPaymentState({
                 payment: detail.finalPayment
             })
+
+            setInstallAddressState({
+                installAddress: detail.installAddress === undefined || detail.installAddress === null ? '' : detail.installAddress
+            })
         }
     }
 
@@ -344,7 +358,11 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     const togglePopup = () => {
-        window.open(`print2?customerName=${detailState.orderDetail.customer.name}&orderNo=${detailState.orderDetail.orderNo}`, "_blank")!.focus();
+        const stickerPosition = prompt("How many empty fields do you need to print this?");
+        if (stickerPosition === null) {
+            return;
+        }
+        window.open(`print2?customerName=${detailState.orderDetail.customer.name}&orderNo=${detailState.orderDetail.orderNo}&stickerPosition=${stickerPosition === "" ? 0 : stickerPosition}`, "_blank")!.focus();
     }
 
     const onDetail = (e: React.MouseEvent) => {
@@ -436,7 +454,12 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         })
 
     }
-    //HandleStatus enum
+
+    const handleInstallAddr = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInstallAddressState({
+            installAddress: e.currentTarget.value
+        })
+    }
 
     const handlePayment = (e: React.ChangeEvent<HTMLInputElement>) => {
         detailState.orderDetail.payment = e.currentTarget.value;
@@ -469,7 +492,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                     invProvince: invoiceAddrState.invAddr.invProvince,
                     invPostal: invoiceAddrState.invAddr.invPostal,
                     midPayment: midPaymentState.payment,
-                    finalPayment: lastPaymentState.payment
+                    finalPayment: lastPaymentState.payment,
+                    installAddress: installAddressState.installAddress
                 }
             }
         })
@@ -698,7 +722,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                                         <div className="orderDate">{calFormatter(order.orderDate)}</div>
                                         <div className="orderName">{order.customer.name}</div>
                                         <div className="orderPhone">{order.customer.phone}</div>
-                                        <div className="orderAddress">{order.customer.address}</div>
+                                        <div className="orderAddress">{order.installAddress ? order.installAddress : order.customer.address}</div>
                                         <div className="orderStatus">{order.status}</div>
                                         <div className="orderPrice">{cashFormatter(order.total)}</div>
                                         <div className="orderHst">{order.total && order.hst ? cashFormatter(order.total * 0.13) : cashFormatter(0)}</div>
@@ -808,7 +832,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                             <span className="blodeFont">Inv Address</span>
                             <span className="flex-item">
                                 <input
-                                    className="orderInput"
+                                    className="dateInput"
                                     type="text"
                                     id="invAddr"
                                     placeholder="address"
@@ -821,7 +845,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                             <span className="blodeFont">Inv City</span>
                             <span className="flex-item">
                                 <input
-                                    className="orderInput"
+                                    className="dateInput"
                                     type="text"
                                     id="invCity"
                                     placeholder="city"
@@ -834,7 +858,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                             <span className="blodeFont">Inv Province</span>
                             <span className="flex-item">
                                 <input
-                                    className="orderInput"
+                                    className="dateInput"
                                     type="text"
                                     id="invProvince"
                                     placeholder="province"
@@ -847,13 +871,26 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
                             <span className="blodeFont">Inv Postal</span>
                             <span className="flex-item">
                                 <input
-                                    className="orderInput"
+                                    className="dateInput"
                                     type="text"
                                     id="invPostal"
                                     placeholder="postal"
                                     value={invoiceAddrState.invAddr.invPostal}
                                     onChange={handleInvoiceAddr}
                                 />
+                            </span>
+                        </div>
+                        <div className="orderUpdate">
+                            <span className="blodeFont">Install Address : </span>
+                            <span className="flex-item">
+                                <input
+                                    className="dateInput"
+                                    type="text"
+                                    placeholder="Install address"
+                                    value={installAddressState.installAddress}
+                                    onChange={handleInstallAddr}
+                                />
+
                             </span>
                         </div>
                         <div className="orderUpdate">
@@ -987,6 +1024,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer{
         width: 79vw;
         max-height: 81vh;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         position: relative;
         display: flex;
         justify-content: flex-start;
@@ -999,7 +1038,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         border: 1px solid #dde5ff;
         margin: 0 5px;
         border-radius: 4px;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         font-size: 14px;
         color: #5d647b;
         padding: 10px;
@@ -1031,7 +1071,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         width: 100px;
         height: auto;
         font-size: 1.125rem;
-        font-family: tecnico;
+        font-weight: 100;
+        font-family: 'Montserrat', sans-serif;
         color: #2F3D4C;
         padding: 10px 0px 0px 10px;
         display: flex;
@@ -1059,7 +1100,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         display: flex;
         justify-content: space-evenly;
         align-items: center;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
     }
 
     .worksheetBtn{
@@ -1146,7 +1188,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderNoTitle{
         width: 7.5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1156,7 +1199,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderDateTitle{
         width: 10%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1166,7 +1210,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderNameTitle{
         width: 15%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1174,9 +1219,10 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderContainer .orderTable .orderTitles .orderPhoneTitle{
-        width: 10%;
+        width: 9%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1186,7 +1232,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderAddressTitle{
         width: 20%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1194,9 +1241,10 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderContainer .orderTable .orderTitles .orderStatusTitle{
-        width: 7.5%;
+        width: 9%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1206,7 +1254,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderPriceTitle{
         width: 7.5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1216,7 +1265,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderHstTitle{
         width: 7.5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1226,7 +1276,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderTotalTitle{
         width: 7.5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 3pt double black;
         display: flex;
         align-items: center;
@@ -1236,7 +1287,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderDepositTitle{
         width: 7.5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1246,7 +1298,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderSecondTitle{
         width: 7.5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1pt solid black;
         display: flex;
         align-items: center;
@@ -1256,7 +1309,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderContainer .orderTable .orderTitles .orderBalanceTitle{
         width: 7.5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1265,7 +1319,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .itemNoTitle{
         width: 5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1275,7 +1330,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .roomNameTitle{
         width: 15%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1284,7 +1340,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .blindStyleTitle{
         width: 16%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1293,7 +1350,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .coverColorTitle{
         width: 7%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1303,7 +1361,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .bWidthTitle{
         width: 5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1313,7 +1372,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .bHeightTitle{
         width: 5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1323,7 +1383,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .baseAreaTitle{
         width: 5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1333,7 +1394,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .handlePositionTitle{
         width: 5%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1343,7 +1405,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .controlHeightTitle{
         width: 7%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1353,7 +1416,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .regularPriceTitle{
         width: 10%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1363,7 +1427,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .discountTitle{
         width: 10%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -1373,7 +1438,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .finalPriceTitle{
         width: 10%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1387,7 +1453,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         flex-direction: column;
         border: 2px solid black;
         border-top: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-bottom-left-radius: 10pt;
         border-bottom-right-radius: 10pt;
         z-index: 1;
@@ -1404,7 +1471,8 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
         flex-direction: column;
         position:absolute;
         border: 2px solid black;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 100;
         border-bottom-left-radius: 10pt;
         border-bottom-right-radius: 10pt;
         z-index: 1;
@@ -1427,7 +1495,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     .orderOverview{
         width: 100%;
         min-height: 50px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         border: none;
         border-bottom: 1px solid black;
         background: white;
@@ -1492,7 +1560,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderPhone{
-        width: 10%;
+        width: 9%;
         height: 50px;
         border-right: 1pt solid grey;
         z-index: 1;
@@ -1512,7 +1580,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .orderStatus{
-        width: 7.5%;
+        width: 9%;
         height: 50px;
         border-right: 1pt solid grey;
         z-index: 1;
@@ -1789,7 +1857,7 @@ export const Orders: React.FunctionComponent<Props> = ({ keyword }) => {
     }
 
     .paymentInput{
-        width: 90%;
+        width: 100%;
         border: none;
         font-family: tecnico;
         font-size: 0.775rem;

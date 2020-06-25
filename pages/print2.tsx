@@ -10,6 +10,7 @@ const Print2 = () => {
         <_Print
             orderNo={router.query.orderNo.toString()}
             customerName={router.query.customerName.toString()}
+            stickerPosition={Number(router.query.stickerPosition)}
         />
     </Fragment>
 }

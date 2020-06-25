@@ -582,7 +582,7 @@ const Customers: React.FC = () => {
                     align-items: center;
                     display: flex;
                     flex-direction:column;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                 }
                 
                 .registerTitleSection{
@@ -659,7 +659,7 @@ const Customers: React.FC = () => {
                     margin-top: 30px;
                     width: 100%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -679,7 +679,7 @@ const Customers: React.FC = () => {
                     margin-top: 30px;
                     width: 48%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -723,7 +723,7 @@ const Customers: React.FC = () => {
                 .customerNameTitle{
                     width: 25%;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -731,7 +731,7 @@ const Customers: React.FC = () => {
 
                 .customerAddressTitle{
                     width:75%;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -749,7 +749,7 @@ const Customers: React.FC = () => {
                     min-height: 40px;
                     width:100%;
                     font-size: 0.8rem;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -772,7 +772,7 @@ const Customers: React.FC = () => {
                     width: 25%;
                     height: 40px;
                     border-right: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     justify-content: center;
                     display: flex;
                     align-items: center;
@@ -781,7 +781,7 @@ const Customers: React.FC = () => {
                 .userAddress{
                     width: 75%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -790,7 +790,7 @@ const Customers: React.FC = () => {
                 .noneUser{
                     width:100%;
                     margin-top: 37px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -815,7 +815,7 @@ const Customers: React.FC = () => {
                 .specific{
                     width: 30%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -828,7 +828,7 @@ const Customers: React.FC = () => {
                 .cstmerEditBtn{
                     width: 30%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -840,7 +840,7 @@ const Customers: React.FC = () => {
                 .cstmerRegisterBtn{
                     width: 30%;
                     height: 40px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -860,7 +860,7 @@ const Customers: React.FC = () => {
                 .userDetailTable{
                     width: 95%;
                     height:70%;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     display: flex;
                     align-items: center;
                     justify-content: flex-start;
@@ -889,7 +889,7 @@ const Customers: React.FC = () => {
                 }
 
                 .listHeader{
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     display:flex;
                     justify-content:space-between;
                 }
@@ -902,7 +902,7 @@ const Customers: React.FC = () => {
 
                 .listTitle{
                     display: flex;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #2F3D4C;
                     font-size: 0.875rem;
                     color: white;
@@ -975,13 +975,13 @@ const Customers: React.FC = () => {
                 .listOverview{
                     display: flex;
                     border-bottom: 1px solid black;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     font-size: 0.7rem;
                 }
 
                 .listOverviewOn{
                     width: 100%;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     font-size: 0.7rem;
                     border-bottom: 1px solid black;
                     background: #C0C0C0;
@@ -995,7 +995,7 @@ const Customers: React.FC = () => {
                     justify-content: center;
                     display: flex;
                     align-items: center;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                 }
 
                 .orderNo{
@@ -1067,7 +1067,7 @@ const Customers: React.FC = () => {
                     height: 25px;
                     margin-right: 5px;
                     margin-bottom: 3px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;
@@ -1082,7 +1082,7 @@ const Customers: React.FC = () => {
                     height: 25px;
                     margin-right: 5px;
                     margin-bottom: 3px;
-                    font-family: tecnico;
+                    font-family: 'Montserrat', sans-serif;
                     background: #FFBD00;
                     color: white;
                     font-size: 0.875rem;

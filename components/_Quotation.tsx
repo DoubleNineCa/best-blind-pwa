@@ -49,7 +49,8 @@ query getOrder($orderNo: String!){
             address,
             phone,
             note
-        }
+        },
+        installAddress
         
     }
 }
@@ -192,7 +193,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                         ORDER # : {orderNo}<br />
                         NAME: {customer.name}<br />
                         TEL: {customer.phone}<br />
-                        ADDRESS: <br />{customer.address}<br />
+                        ADDRESS: <br />{order.installAddress ? order.installAddress : customer.address}<br />
                     </div>
                 </div>
             </div>
@@ -343,7 +344,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 margin-left: 20px;
                 margin-right: 20px;
                 flex-direction:column;
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: 'Montserrat', sans-serif;
             }
             .topSection{
                 width:100%;
@@ -624,6 +625,7 @@ export const _Quotation: React.FC<Props> = ({ orderNo }) => {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                text-align: center;
             }
             .quoteWidth{
                 width: 8%;

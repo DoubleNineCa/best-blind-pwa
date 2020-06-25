@@ -237,6 +237,7 @@ export type Order = {
   invPostal?: Maybe<Scalars['String']>,
   midPayment: Scalars['String'],
   finalPayment: Scalars['String'],
+  installAddress?: Maybe<Scalars['String']>,
 };
 
 export type Part = {
@@ -292,6 +293,7 @@ export type PlaceOrderInput = {
   invoiceDate?: Maybe<Scalars['DateTime']>,
   midPayment?: Maybe<Scalars['String']>,
   finalPayment?: Maybe<Scalars['String']>,
+  installAddress?: Maybe<Scalars['String']>,
 };
 
 export type Query = {
@@ -548,6 +550,7 @@ export type OrderResolvers<Context = any, ParentType = Order> = ResolversObject<
   invPostal?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
   midPayment?: Resolver<Scalars['String'], ParentType, Context>,
   finalPayment?: Resolver<Scalars['String'], ParentType, Context>,
+  installAddress?: Resolver<Maybe<Scalars['String']>, ParentType, Context>,
 }>;
 
 export type PartResolvers<Context = any, ParentType = Part> = ResolversObject<{

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { NextPage } from 'next';
 import { Layout } from '../components/Layout'
 import { Dashboard } from '../components/Dashboard';
-import { SalesBoard } from '../components/SalesBoard';
+import Head from 'next/head';
 
 interface InitialProps {
     greetings: string;
@@ -15,20 +15,18 @@ interface Props extends InitialProps {
 
 
 const IndexPage: NextPage<Props, InitialProps> = () => {
-    return <Fragment>
-        <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={0} />
-        <div className="contentContainer">
-            {/* <SalesBoard /> */}
-            <Dashboard />
-        </div>
+    return (
+        <div>
+            <Head>
+                <title>BestBlinds</title>
+                <link key="googleFont" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;900&family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet" />
+            </Head>
+            <Layout onTaskCreated={["DashBoard", "Orders", "Customer", "Quote", "Update"]} currentLocation={0} />
+            <div className="contentContainer">
+                <Dashboard />
+            </div>
 
-        <style jsx>{`
-                    @font-face {
-                        font-family: 'tecnico';
-                        src: local('tecnico'), local('tecnico regular');
-                        url(../fonts/tecnico_regular.ttf) format('ttf')
-                    }
-
+            <style jsx>{`
                     .contentContainer {
                         width: 100vw;
                         height: 87vh;
@@ -38,20 +36,16 @@ const IndexPage: NextPage<Props, InitialProps> = () => {
                         padding: 10px;
                         display: flex;
                         align-content: center;
+                        font-family: 'Montserrat', sans-serif;
                         justify-content: space-between;
                     }
 
-                    @font-face {
-                        font-family: 'tecnico';
-                        font-style: normal;
-                        font-weight: normal;
-                        src: local('tecnico_regular'), url('../fonts/tecnico_regular.tff') format('tff');
-                      }
                 `}
-        </style>
-    </Fragment>
+            </style>
+        </div>
 
 
+    )
 };
 
 IndexPage.getInitialProps = async () => ({

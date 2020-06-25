@@ -360,7 +360,7 @@ export const Dashboard: React.FunctionComponent = () => {
         width: 20vw;
         height: auto;
         font-size: 1.125rem;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         color: #2F3D4C;
         padding: 10px 0px 0px 10px;
         display: flex;
@@ -372,7 +372,7 @@ export const Dashboard: React.FunctionComponent = () => {
         width: 25vw;
         height: auto;
         font-size: 1.125rem;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         color: #2F3D4C;
         padding: 10px 0px 0px 10px;
         display: flex;
@@ -437,7 +437,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .recapNameTitle{
         width: 25%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -447,7 +447,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .recapAddrTitle{
         width: 40%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -457,7 +457,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .recapPhoneTitle{
         width: 35%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -466,7 +466,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .unpaidNameTitle{
         width: 20%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -476,7 +476,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .unpaidPhoneTitle{
         width: 30%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -486,7 +486,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .unpaidInstallDateTitle{
         width: 30%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-right: 1px solid black;
         display: flex;
         align-items: center;
@@ -496,7 +496,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .unpaidRemainTitle{
         width: 20%;
         height: auto;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -523,7 +523,7 @@ export const Dashboard: React.FunctionComponent = () => {
         min-height: 50px;
         font-size: 0.65rem;
         border: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         border-bottom: 1px solid black;
         background: white;
         display: flex;
@@ -609,7 +609,7 @@ export const Dashboard: React.FunctionComponent = () => {
         border: 2px solid black;
         border-top: 10px solid #2F3D4C;
         border-radius: 10pt;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         background: white;
         display: flex;
         flex-direction: column;
@@ -671,7 +671,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .styledInput{
         width: 170px;
         border: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         font-size: 14px;
         text-align:right;
     }
@@ -691,7 +691,7 @@ export const Dashboard: React.FunctionComponent = () => {
     .styledInput-1{
         width: 70px;
         border: none;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         font-size: 14px;
         text-align:right;
     }
@@ -700,7 +700,7 @@ export const Dashboard: React.FunctionComponent = () => {
         width: 200px;
         border: 1px solid #dde5ff;
         border-radius: 4px;
-        font-family: tecnico;
+        font-family: 'Montserrat', sans-serif;
         font-size: 14px;
         color: #5d647b;
         padding: 10px;

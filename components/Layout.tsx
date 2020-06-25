@@ -97,7 +97,6 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
             display: block;
         }
         box-sizing: border-box;
-        font-family: tecnico;
         -webkit-tap-highlight-color: transparent;
 
         .appHeader{
@@ -144,6 +143,7 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
             align-items: center;
             justify-content: center;
             position: fixed;
+            font-family: 'Montserrat', sans-serif;
             top: 50px;
             width: 99vw;
             padding: none;
@@ -224,6 +224,7 @@ export const Layout: React.FunctionComponent<Props> = ({ onTaskCreated, currentL
 
         .pageContainer {
             text-align: center;
+            font-family: 'Montserrat', sans-serif;
           }
         `}
             </style>

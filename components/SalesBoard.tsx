@@ -215,7 +215,7 @@ export const SalesBoard: React.FunctionComponent = () => {
                 width: 30vw;
                 height: auto;
                 font-size: 1.125rem;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 color: #2F3D4C;
                 padding: 10px 0px 0px 10px;
                 display: flex;
@@ -264,7 +264,7 @@ export const SalesBoard: React.FunctionComponent = () => {
             .emptyTitle{
                 width: 25%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1pt solid black;
                 display: flex;
                 align-items: center;
@@ -274,7 +274,7 @@ export const SalesBoard: React.FunctionComponent = () => {
             .invoiceTitle{
                 width: 12.5%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1pt solid black;
                 display: flex;
                 align-items: center;
@@ -284,7 +284,7 @@ export const SalesBoard: React.FunctionComponent = () => {
             .taxTitle{
                 width: 12.5%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1pt solid black;
                 display: flex;
                 align-items: center;
@@ -294,7 +294,7 @@ export const SalesBoard: React.FunctionComponent = () => {
             .cashTitle{
                 width: 25%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-right: 1pt solid black;
                 display: flex;
                 align-items: center;
@@ -304,7 +304,7 @@ export const SalesBoard: React.FunctionComponent = () => {
             .monthlyTotalTitle{
                 width: 25%;
                 height: auto;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -314,7 +314,7 @@ export const SalesBoard: React.FunctionComponent = () => {
                 width: 100%;
                 min-height: 50px;
                 font-size: 0.7rem;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 border-bottom: 1px solid black;
                 background: white;
                 display: flex;

@@ -84,7 +84,7 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
                 width: 100px;
                 height: auto;
                 font-size: 1.125rem;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 color: #2F3D4C;
                 padding: 10px 0px 0px 10px;
                 display: flex;
@@ -129,7 +129,7 @@ export const Print: React.FC<Props> = ({ items, customerName }) => {
                 border-radius: 5pt;
                 margin-right: 15px;
                 padding: 2px 5px 2px;
-                font-family: tecnico;
+                font-family: 'Montserrat', sans-serif;
                 float:left;
                 align-items: center;
                 justify-content: center;
